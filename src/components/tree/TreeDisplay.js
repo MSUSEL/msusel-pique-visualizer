@@ -1,10 +1,10 @@
 import React, {useEffect,useRef} from "react";
 import * as d3 from "react-d3-library";
-import "./tree.css"
+import "./tree.css";
 
-const TreeDisplay = () => {
+const TreeDisplay = (file_data) => {
 
-    const d3Chart = useRef()
+    const d3Chart = useRef();
 
     return (
         <div id="d3demo">
@@ -13,3 +13,5 @@ const TreeDisplay = () => {
     )
 
 }
+
+export default TreeDisplay;
