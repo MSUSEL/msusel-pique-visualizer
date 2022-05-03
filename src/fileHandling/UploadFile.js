@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import TreeDisplay from "../components/tree/TreeDisplay";
 
 export function UploadFile() {
     const [file, setFile] = useState("");
@@ -24,6 +25,8 @@ export function UploadFile() {
             {file ? null : <input type="file" onChange={handleChange} />}
             <br />
             { file ? "Uploaded file content -- " + JSON.stringify(fileJSON.additionalData): null}
+
+            {file ? <TreeDisplay fileData={fileJSON}/> : null}
 
         </>
     );
