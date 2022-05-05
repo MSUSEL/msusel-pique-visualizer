@@ -8,9 +8,6 @@ export function TopHeader() {
                     PIQUE Visualizer
                 </h4>
             </div>
-            <UploadFile>
-                <button>Upload File</button>
-            </UploadFile>
         </>
     )
 }
