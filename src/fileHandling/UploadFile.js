@@ -23,8 +23,6 @@ export function UploadFile() {
             { file ? <h4 align={"center"}>Visualization of {fileName}</h4> : <h4 align={"center"}>Upload PIQUE json file to visualize the results.</h4>}
 
             {file ? null : <input type="file" onChange={handleChange} />}
-            <br />
-            { file ? "Uploaded file content -- " + JSON.stringify(fileJSON.additionalData): null}
 
             {file ? <TreeDisplay fileData={fileJSON}/> : null}
 
