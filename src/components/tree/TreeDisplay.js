@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from "react";
-//import * as rd3 from "react-d3-library";
 import * as d3 from "d3";
 import TreeNode from "../treeNode/TreeNode";
 import "./TreeDisplay.css"
@@ -13,6 +12,12 @@ function TreeDisplay(props) {
     const [childrenVisibility,setChildrenVisibility] = useState(true);
     const [width,setWidth] = useState(window_width);
     const [height,setHeight] = useState(window_height);
+    const [x,setX] = useState(0);
+    const [y,setY] = useState(0)
+    // Used in measuring the zoom level
+    const [zoomLevel,setZoomLevel] = useState(0);
+
+    console.log("zoom level is ",zoomLevel);
 
     // Setting the dimensions of each node
     const node_width = 120;
@@ -37,6 +42,8 @@ function TreeDisplay(props) {
             treeNodes.push(new TreeNode(props.fileData.factors.tqi[tqi_],node_width,node_height,tqi_node_x,tqi_node_y))
         }
 
+        console.log("tqi x is ", treeNodes[0].x)
+
         const num_of_quality_aspects = Object.keys(props.fileData.factors.quality_aspects).length
 
         const quality_aspect_spacing = (width-(node_width*(num_of_quality_aspects))) / (num_of_quality_aspects + 1);
@@ -51,58 +58,64 @@ function TreeDisplay(props) {
             item++;
         }
 
-
         // ****** Important piece ********************
         // Removes duplicate svg canvas (for some weird reason there is a duplicate svg every rerender without this line)
         d3.select(tree_canvas.current).selectAll("svg").remove();
 
+        const zoom = (e) => {
+            if (e.deltaY < 0) zoomIn()
+            else zoomOut()
+        }
+        const zoomIn = () => {
+            setWidth(width => 9*width/10);
+            setHeight(height => 9*height/10);
+            setZoomLevel(zoomLevel => zoomLevel+1)
+        }
+        const zoomOut = () => {
+            setWidth(width => 10 * width/9);
+            setHeight(height => 10 * height/9);
+            setZoomLevel(zoomLevel => zoomLevel-1)
+        }
+
+        const handleKeyPress = (e) => {
+            if (e.key === "a") setX(x => x-40)
+            else if (e.key === "d") setX(x => x+40)
+            else if (e.key === "w") setY(y => y-40)
+            else if (e.key === "s") setY(y => y+40)
+
+        }
+        // Put all keyboard events in here because the body element recognizes them, not the svg element
+        d3.select("body").on("keydown",handleKeyPress)
 
         const svg = d3.select(tree_canvas.current)
             .attr("id","canvas")
             .append("svg")
-            .attr("viewBox",`0 0 ${width} ${height}`)
+            .attr("viewBox",`${x} ${y} ${width} ${height}`)
+            .on("mousewheel",zoom)
 
-        const zoomIn = () => {
-            setWidth(width => 9*width/10);
-            setHeight(height => 9*height/10);
+
+        // Testing static (!dynamic) placement of nodes
+        // Successful!! Implement in other nodes
+
+        let test_width_height = 100
+        let num_tests = 5;
+        let test_space = 50;
+        function calc_test_x(iter) {
+            let center = width/2;
+            let test_total_width = num_tests * test_width_height + (num_tests-1) * test_space;
+            let start_x = center - test_total_width/2;
+            return start_x + (iter*(test_width_height+test_space))
+        }
+        for (let i = 0; i < num_tests; i++) {
+            svg.append("rect")
+                .attr("width",test_width_height)
+                .attr("height",test_width_height)
+                .attr("x",calc_test_x(i))
+                .attr("y",700)
+                .attr("fill","blue")
         }
 
-        const zoomOut = () => {
-            setWidth(width => 10 * width/9);
-            setHeight(height => 10 * height/9);
-        }
-
-        // Making the zoom buttons
-        // ------------------------
-        // Zoom in button
-        svg.append("rect")
-            .attr("width",width/30)
-            .attr("height",width/30)
-            .attr("x",28*width/30)
-            .attr("y",0)
-            .attr("fill","orange")
-            .on("click",zoomIn);
-        svg.append("text").text("In")
-            .attr("class","unselectableText")
-            .attr("x",28.5*width/30)
-            .attr("y",width/30 / 2)
-            .attr("dominant-baseline","middle")
-            .attr("text-anchor","middle");
-
-        // Zoom out button
-        svg.append("rect")
-            .attr("width",width/30)
-            .attr("height",width/30)
-            .attr("x",29*width/30)
-            .attr("y",0)
-            .attr("fill","green")
-            .on("click",zoomOut);
-        svg.append("text").text("Out")
-            .attr("class","unselectableText")
-            .attr("x",29.5*width/30)
-            .attr("y",width/30 / 2)
-            .attr("dominant-baseline","middle")
-            .attr("text-anchor","middle");
+        // ------------------------X
 
 
 
@@ -128,14 +141,14 @@ function TreeDisplay(props) {
                 .attr("dy","-3")
                 .attr("font-weight","bold")
                 .append("textPath")
-                    .attr("startOffset",`${(treeNodes[0].node_center_x < treeNodes[item].node_center_x ? 50 : 34)}%`)
+                    .attr("startOffset",`${(treeNodes[0].node_center_x < treeNodes[item].node_center_x ? 50 : 30)}%`)
                     .attr("font-size","8px")
                     .attr("xlink:href",function () {return "#edge" + item})
                     .text(Object.values(treeNodes[0].json_data.weights)[item-1].toFixed(6))
         }
 
         // how to rotate text - first argument is degrees rotated, second is x, third is y
-    //.attr("transform",`rotate(180,${treeNodes[item].x + node_width * 0.5},${treeNodes[item].y + node_height * 0.4})`)
+        //.attr("transform",`rotate(180,${treeNodes[item].x + node_width * 0.5},${treeNodes[item].y + node_height * 0.4})`)
 
         const handleChildrenToggle = () => {
             setChildrenVisibility(childrenVisibility => !childrenVisibility);
@@ -178,23 +191,39 @@ function TreeDisplay(props) {
                 .attr("text-anchor","middle");
         }
 
-        // ---------------------------------
-        // Testing creating the weight nodes
-        // ---------------------------------
+        // -----------------------------------------
+        // Testing creating the product factor nodes
+        // -----------------------------------------
 
-        const weight_width = node_width * 0.4;
+        const p_factor_size_scale = 1;
 
-        const weight_height = node_height * 0.4;
+        const p_factor_width = node_width * p_factor_size_scale;
+        const p_factor_height = node_height * p_factor_size_scale;
+        const p_factor_y = 550;
 
-        const num_of_weights = Object.keys(props.fileData.factors.quality_aspects.Availability.weights).length
+        const num_of_p_factors = Object.keys(props.fileData.factors.quality_aspects.Availability.weights).length
 
-        console.log(props.fileData.factors.quality_aspects.Availability.weights)
+        //for centered spacing *adjusted to window size*
 
-        const weight_spacing = (width-(weight_width*(num_of_weights-1))) / (num_of_weights + 1);
-
-        const calc_weight_x = (iteration) => {
-            return (iteration * weight_spacing + (iteration-1) * weight_width)
+        const p_factor_spacing = (width-(p_factor_width*(num_of_p_factors))) / (num_of_p_factors + 1);
+        const calc_p_factor_x = (iteration) => {
+            return ((iteration+1) * p_factor_spacing + (iteration) * p_factor_width)
         }
+
+
+        /*
+        // for spacing that stays constant throughout zoom
+        const p_factor_total_length = num_of_p_factors * p_factor_width + (num_of_p_factors-1) * p_factor_width
+        const p_factor_starting_x = window.innerWidth - window.innerWidth/2 - (p_factor_total_length - window.innerWidth) / 2
+
+        console.log(window.innerWidth)
+
+        const p_factor_spacing = (p_factor_width * 0.5);
+        const calc_p_factor_x = (iteration) => {
+            return (p_factor_starting_x + iteration * p_factor_spacing + iteration * p_factor_width)
+        }
+         */
+
 
         let weights = []
 
@@ -206,33 +235,33 @@ function TreeDisplay(props) {
         for (let i = 0; i < weights.length; i++) {
             // Add the node to the screen
             svg.append("rect")
-                .attr("width", weight_width)
-                .attr("height", weight_height)
+                .attr("width", p_factor_width)
+                .attr("height", p_factor_height)
                 .attr("rx", 2)
-                .attr("x", calc_weight_x(i))
-                .attr("y", 300)
+                .attr("x", calc_p_factor_x(i))
+                .attr("y", p_factor_y)
                 .style("fill", "#ace3b5")
                 .style("stroke-width", "2px")
                 .style("stroke", "black")
 
-            // ------------------------
-            // Adding the weight text
-            // ------------------------
-            // Add the weight's name
+            // ------------------------------
+            // Adding the product factor text
+            // ------------------------------
+            // Add the product factor's name
             svg.append("text").text(weights[i][0])
-                .attr("font-size","5px")
+                .attr("font-size","8px")
                 .attr("font-weight","bold")
-                .attr("x", calc_weight_x(i) + weight_width * 0.5)
-                .attr("y", 300 + weight_height * 0.4)
+                .attr("x", calc_p_factor_x(i) + p_factor_width * 0.5)
+                .attr("y", p_factor_y + p_factor_height * 0.4)
                 .attr("fill", "black")
                 .attr("dominant-baseline","middle")
                 .attr("text-anchor","middle");
 
-            // Add the weight's value
+            // Add the product factor's value
             svg.append("text").text(weights[i][1].toFixed(8))
-                .attr("font-size","6px")
-                .attr("x", calc_weight_x(i) + weight_width * 0.5)
-                .attr("y", 300 + weight_height * 0.6)
+                .attr("font-size","8px")
+                .attr("x", calc_p_factor_x(i) + p_factor_width * 0.5)
+                .attr("y", p_factor_y + p_factor_height * 0.6)
                 .attr("fill", "black")
                 .attr("dominant-baseline","middle")
                 .attr("text-anchor","middle");
