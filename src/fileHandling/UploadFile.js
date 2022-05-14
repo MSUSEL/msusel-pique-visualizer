@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import TreeDisplay from "../components/tree/TreeDisplay";
+import "./UploadFile.css"
 
 export function UploadFile() {
     const [file, setFile] = useState("");
@@ -19,13 +20,13 @@ export function UploadFile() {
     };
 
     return (
-        <>
-            { file ? <h4 align={"center"}>Visualization of {fileName}</h4> : <h4 align={"center"}>Upload PIQUE json file to visualize the results.</h4>}
+        <div id={"unselectableText"}>
+            { file ? <h4 align={"center"} unselectable={"on"}>Visualization of {fileName}</h4> : <h4 align={"center"} unselectable={"on"}>Upload PIQUE json file to visualize the results.</h4>}
 
             {file ? null : <input type="file" onChange={handleChange} />}
 
             {file ? <TreeDisplay fileData={fileJSON}/> : null}
 
-        </>
+        </div>
     );
 }

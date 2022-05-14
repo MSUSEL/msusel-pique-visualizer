@@ -1,9 +1,13 @@
 .tree_canvas {
-    margin: 0px;
+    margin: 0;
 }
 
 .unselectableText {
-    pointer-events: none;
+    user-select: none;
+}
+
+.colText {
+    font-size: 5px;
 }
 
 #canvas {

@@ -1,8 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import * as d3 from "d3";
+import * as rd3 from "react-d3-library"
 import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
+import {selectAll} from "d3";
 
 
 function TreeDisplay(props) {
@@ -10,15 +12,19 @@ function TreeDisplay(props) {
     let window_height = window.innerHeight;
     let window_width = window.innerWidth;
 
-    const [childrenVisibility,setChildrenVisibility] = useState(true);
+    const [qaChildrenOpacity,setQAChildrenOpacity] = useState({
+        "Availability" : 0.05,
+        "Authenticity" : 0.05,
+        "Authorization" : 0.05,
+        "Confidentiality" : 0.05,
+        "Non-repudiation" : 0.05,
+        "Integrity" : 0.05
+    })
+
     const [width,setWidth] = useState(window_width);
     const [height,setHeight] = useState(window_height);
     const [x,setX] = useState(0);
     const [y,setY] = useState(0)
-    // Used in measuring the zoom level
-    const [zoomLevel,setZoomLevel] = useState(0);
-
-    console.log("zoom level is ",zoomLevel);
 
     // Setting the dimensions of each node
     const node_width = 120;
@@ -109,23 +115,29 @@ function TreeDisplay(props) {
         const zoomIn = () => {
             setWidth(width => 9*width/10);
             setHeight(height => 9*height/10);
-            setZoomLevel(zoomLevel => zoomLevel+1)
         }
         const zoomOut = () => {
             setWidth(width => 10 * width/9);
             setHeight(height => 10 * height/9);
-            setZoomLevel(zoomLevel => zoomLevel-1)
         }
+
 
         const handleKeyPress = (e) => {
-            if (e.key === "a") setX(x => x-40)
-            else if (e.key === "d") setX(x => x+40)
-            else if (e.key === "w") setY(y => y-40)
-            else if (e.key === "s") setY(y => y+40)
+            if (e.key === "a") setX(x => x-40);
+            else if (e.key === "d") setX(x => x+40);
+            else if (e.key === "w") setY(y => y-40);
+            else if (e.key === "s") setY(y => y+40);
 
         }
+
+        const handleDrag =  (e) => {
+            console.log(e)
+        }
+
         // Put all keyboard events in here because the body element recognizes them, not the svg element
-        d3.select("body").on("keydown",handleKeyPress)
+        d3.select("body").on("keydown",handleKeyPress);
+
+
 
         // ---------------------------
         // Start making the entire svg  *****************
@@ -136,12 +148,15 @@ function TreeDisplay(props) {
             .append("svg")
             .attr("viewBox",`${x} ${y} ${width} ${height}`)
             .on("mousewheel",zoom)
+            .attr("draggable","false")
+            .on("dragstart",handleDrag)
+            .on("dragend",handleDrag);
 
         // Draw the links first, so they are at the "bottom" of the drawing
 
         // Drawing edges between TQI and quality aspects
         for (let item = 1; item < treeNodes.length; item++) {
-            treeNodes[0].children.push(treeNodes[item].json_data.name);
+            treeNodes[0].children.push(treeNodes[item].name);
             const link = d3.linkHorizontal()({
                 // Changes source/target so that the edge weight text is on top of the path line.
                 source: (treeNodes[0].node_center_x < treeNodes[item].node_center_x ? [treeNodes[0].node_center_x,treeNodes[0].node_center_y] : [treeNodes[item].node_center_x,treeNodes[item].y + 2]),
@@ -150,7 +165,7 @@ function TreeDisplay(props) {
 
             // Append the link to the svg element
             svg.append('path')
-                .attr("id",function () {return "tqi_qa_edge" + item})
+                .attr("id",function () {return "tqi_" + treeNodes[item].name +"_edge" + item})
                 .attr('d', link)
                 .attr("stroke-width","2px")
                 .attr('stroke', 'black')
@@ -163,12 +178,12 @@ function TreeDisplay(props) {
                 .append("textPath")
                     .attr("startOffset",`${(treeNodes[0].node_center_x < treeNodes[item].node_center_x ? 50 : 30)}%`)
                     .attr("font-size","8px")
-                    .attr("xlink:href",function () {return "#tqi_qa_edge" + item})
+                    .attr("xlink:href",function () {return "#tqi_" + treeNodes[item].name + "_edge" + item})
                     .text(Object.values(treeNodes[0].json_data.weights)[item-1].toFixed(6))
         }
 
+        // Draw the links between quality aspects and product factors
         for (let aspect = 1; aspect < treeNodes.length; aspect++) {
-            // Draw the links between quality aspects and product factors
             for (let factor = 0; factor < p_factors.length; factor++) {
                 const link = d3.linkHorizontal()({
                     // Changes source/target so that the edge weight text is on top of the path line.
@@ -179,27 +194,51 @@ function TreeDisplay(props) {
                 // Append the link to the svg element
                 svg.append('path')
                     .attr("id", function () {
-                        return "qa_pf_edge" + aspect * (factor + 1)
+                        return treeNodes[aspect].name +"_edge" + factor
                     })
                     .attr('d', link)
                     .attr("stroke-width", "2px")
                     .attr('stroke', 'black')
-                    .attr("opacity","0.05")
+                    .attr("opacity",`${qaChildrenOpacity[treeNodes[aspect].name]}`)
                     .attr('fill', 'none');
+
+                svg.append("text")
+                    .attr("text-orientation","upright")
+                    .attr("dy","-3")
+                    .attr("font-weight","bold")
+                    .attr("opacity",`${qaChildrenOpacity[treeNodes[aspect].name] - 0.05}`)
+                    .append("textPath")
+                    .attr("startOffset",`${(treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? 50 : 35)}%`)
+                    .attr("font-size","8px")
+                    .attr("xlink:href",function () {return "#" + treeNodes[aspect].name + "_edge" + factor})
+                    .text(treeNodes[aspect].json_data.weights[p_factors[factor].name].toFixed(6))
             }
         }
 
         // how to rotate text - first argument is degrees rotated, second is x, third is y
         //.attr("transform",`rotate(180,${treeNodes[item].x + node_width * 0.5},${treeNodes[item].y + node_height * 0.4})`)
 
-        const handleChildrenToggle = () => {
-            setChildrenVisibility(childrenVisibility => !childrenVisibility);
+
+        // Handles when you click on a quality aspect node.
+        const handleQAEdgesToggle = (e) => {
+            const qa_name = e.path[0].id;
+
+            let qaChildrenOpacityCopy = qaChildrenOpacity;
+
+            if (qaChildrenOpacityCopy[qa_name] === 0.05) qaChildrenOpacityCopy[qa_name] = 0.8;
+            else qaChildrenOpacityCopy[qa_name] = 0.05;
+            // Copy the "updated" properties into the qa children opacity state.
+            setQAChildrenOpacity({...qaChildrenOpacityCopy})
+
+
         }
+
         // Creating the quality factor nodes and adding the text.
         for (let item = 0; item < treeNodes.length; item++) {
 
             // Add the node to the screen
             svg.append("rect")
+                .attr("id",treeNodes[item].name)
                 .attr("width", treeNodes[item].width)
                 .attr("height", treeNodes[item].height)
                 .attr("rx", 2)
@@ -208,13 +247,13 @@ function TreeDisplay(props) {
                 .style("fill",NodeRiskColor(treeNodes[item].json_data.value))
                 .style("stroke-width", "2px")
                 .style("stroke", "black")
-                .on("click",handleChildrenToggle)
+                .on("click",handleQAEdgesToggle)
 
             // ------------------------
             // Adding the quality factor text
             // ------------------------
             // Add the node's name
-            svg.append("text").text(treeNodes[item].json_data.name)
+            svg.append("text").text(treeNodes[item].name)
                 .attr("font-size","10px")
                 .attr("font-weight","bold")
                 .attr("x", treeNodes[item].x + node_width * 0.5)
@@ -240,6 +279,7 @@ function TreeDisplay(props) {
         for (let i = 0; i < p_factors.length; i++) {
             // Add the node to the screen
             svg.append("rect")
+                .attr("id","p_factor" + p_factors[i].name)
                 .attr("width", p_factors[i].width)
                 .attr("height", p_factors[i].height)
                 .attr("rx", 2)
@@ -253,7 +293,7 @@ function TreeDisplay(props) {
             // Adding the product factor text
             // ------------------------------
             // Add the product factor's name
-            svg.append("text").text(p_factors[i].json_data.name)
+            svg.append("text").text(p_factors[i].name)
                 .attr("font-size","9px")
                 .attr("font-weight","bold")
                 .attr("x", p_factors[i].x + p_factor_width * 0.5)
@@ -272,7 +312,16 @@ function TreeDisplay(props) {
                 .attr("text-anchor","middle");
         }
 
+        // Can style all text here
+        d3.selectAll("text")
+            .attr("class","unselectableText")
+
+
     }
+
+    // Measures and diagnostics are essentially the same things in terms of the names
+    console.log(Object.entries(props.fileData.measures).length)
+    console.log(Object.entries(props.fileData.diagnostics).length)
 
     return (
         <div className={"tree_canvas"} id={"canvas"} ref={tree_canvas}></div>
