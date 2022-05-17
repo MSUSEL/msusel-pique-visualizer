@@ -1,28 +1,33 @@
 import React, {useEffect, useRef, useState} from "react";
 import * as d3 from "d3";
-import * as rd3 from "react-d3-library"
 import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
-import {selectAll} from "d3";
 
 
-function TreeDisplay(props) {
+export default function TreeDisplay(props) {
 
     let window_height = window.innerHeight;
     let window_width = window.innerWidth;
 
-    const [qaChildrenOpacity,setQAChildrenOpacity] = useState({
-        "Availability" : 0.05,
-        "Authenticity" : 0.05,
-        "Authorization" : 0.05,
-        "Confidentiality" : 0.05,
-        "Non-repudiation" : 0.05,
-        "Integrity" : 0.05
+    const [qaChildrenEdgeVisibility,setQAChildrenEdgeVisibility] = useState(() =>{
+        let default_obj = {}
+        for (let qa in props.fileData.factors.quality_aspects) {
+        default_obj[qa] = false
+        }
+        return default_obj
+    })
+
+    const [pfChildrenVisiblity,setPFChildrenVisibility] = useState(() => {
+        let default_obj = {}
+        for (let pf in props.fileData.factors.product_factors) {
+            default_obj[pf] = false;
+        }
+        return default_obj
     })
 
     const [width,setWidth] = useState(window_width);
-    const [height,setHeight] = useState(window_height);
+    const [height,setHeight] = useState(window_height * 0.8);
     const [x,setX] = useState(0);
     const [y,setY] = useState(0)
 
@@ -117,8 +122,8 @@ function TreeDisplay(props) {
             setHeight(height => 9*height/10);
         }
         const zoomOut = () => {
-            setWidth(width => 10 * width/9);
-            setHeight(height => 10 * height/9);
+            setWidth(width => 10*width/9);
+            setHeight(height => 10*height/9);
         }
 
 
@@ -165,7 +170,7 @@ function TreeDisplay(props) {
 
             // Append the link to the svg element
             svg.append('path')
-                .attr("id",function () {return "tqi_" + treeNodes[item].name +"_edge" + item})
+                .attr("id","tqi_" + treeNodes[item].name +"_edge" + item)
                 .attr('d', link)
                 .attr("stroke-width","2px")
                 .attr('stroke', 'black')
@@ -178,7 +183,7 @@ function TreeDisplay(props) {
                 .append("textPath")
                     .attr("startOffset",`${(treeNodes[0].node_center_x < treeNodes[item].node_center_x ? 50 : 30)}%`)
                     .attr("font-size","8px")
-                    .attr("xlink:href",function () {return "#tqi_" + treeNodes[item].name + "_edge" + item})
+                    .attr("xlink:href","#tqi_" + treeNodes[item].name + "_edge" + item)
                     .text(Object.values(treeNodes[0].json_data.weights)[item-1].toFixed(6))
         }
 
@@ -193,25 +198,38 @@ function TreeDisplay(props) {
 
                 // Append the link to the svg element
                 svg.append('path')
-                    .attr("id", function () {
-                        return treeNodes[aspect].name +"_edge" + factor
-                    })
+                    .attr("id", treeNodes[aspect].name +"_edge" + factor)
                     .attr('d', link)
                     .attr("stroke-width", "2px")
                     .attr('stroke', 'black')
-                    .attr("opacity",`${qaChildrenOpacity[treeNodes[aspect].name]}`)
-                    .attr('fill', 'none');
+                    .attr("opacity",`${qaChildrenEdgeVisibility[treeNodes[aspect].name] ? 1 : 0.05}`)
+                    .attr('fill', 'none')
 
-                svg.append("text")
-                    .attr("text-orientation","upright")
-                    .attr("dy","-3")
-                    .attr("font-weight","bold")
-                    .attr("opacity",`${qaChildrenOpacity[treeNodes[aspect].name] - 0.05}`)
-                    .append("textPath")
-                    .attr("startOffset",`${(treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? 50 : 35)}%`)
-                    .attr("font-size","8px")
-                    .attr("xlink:href",function () {return "#" + treeNodes[aspect].name + "_edge" + factor})
-                    .text(treeNodes[aspect].json_data.weights[p_factors[factor].name].toFixed(6))
+
+                /*
+                How to do path transitions (work in progress)
+                .attr("stroke-dasharray", `${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()} ${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()}`)
+                    .attr("stroke-dashoffset", `${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()}`)
+                    .transition()
+                        .duration(5000)
+                        .attr("ease","ease-out")
+                        .attr("stroke-dashoffset",0)
+                 */
+
+
+                //let len = document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()
+                if (qaChildrenEdgeVisibility[treeNodes[aspect].name]) {
+                    svg.append("text")
+                        .attr("text-orientation", "upright")
+                        .attr("dy", "-3")
+                        .attr("font-weight", "bold")
+                        //.attr("opacity", `${qaChildrenOpacity[treeNodes[aspect].name] - 0.05}`)
+                        .append("textPath")
+                        .attr("startOffset", `${(treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? 50 : 35)}%`)
+                        .attr("font-size", "8px")
+                        .attr("xlink:href", "#" + treeNodes[aspect].name + "_edge" + factor)
+                        .text(treeNodes[aspect].json_data.weights[p_factors[factor].name].toFixed(6))
+                }
             }
         }
 
@@ -221,14 +239,19 @@ function TreeDisplay(props) {
 
         // Handles when you click on a quality aspect node.
         const handleQAEdgesToggle = (e) => {
+
             const qa_name = e.path[0].id;
 
-            let qaChildrenOpacityCopy = qaChildrenOpacity;
+            let qaChildrenEdgeVisibilityCopy = qaChildrenEdgeVisibility;
 
-            if (qaChildrenOpacityCopy[qa_name] === 0.05) qaChildrenOpacityCopy[qa_name] = 0.8;
-            else qaChildrenOpacityCopy[qa_name] = 0.05;
+            // Toggle off any visible edges from other quality aspects
+            for (let prop in qaChildrenEdgeVisibilityCopy) {
+                if (prop !== qa_name) qaChildrenEdgeVisibilityCopy[prop] = false;
+            }
+
+            qaChildrenEdgeVisibilityCopy[qa_name] = qaChildrenEdgeVisibilityCopy[qa_name] === false;
             // Copy the "updated" properties into the qa children opacity state.
-            setQAChildrenOpacity({...qaChildrenOpacityCopy})
+            setQAChildrenEdgeVisibility({...qaChildrenEdgeVisibilityCopy})
 
 
         }
@@ -272,6 +295,111 @@ function TreeDisplay(props) {
                 .attr("text-anchor","middle");
         }
 
+        const findProductFactor = (name) => {
+            for (let pf in p_factors) {
+                if (p_factors[pf].name === name) return p_factors[pf];
+            }
+        }
+
+        const handlePFEdgesToggle = (e) => {
+            const pf_node = findProductFactor(e.path[0].id.split("^")[1]);
+
+            let pfChildrenVisibilityCopy = pfChildrenVisiblity;
+
+            // Toggle off any visible edges from other product factors
+            for (let prop in pfChildrenVisibilityCopy) {
+                if (prop !== pf_node.name) pfChildrenVisibilityCopy[prop] = false;
+            }
+
+            pfChildrenVisibilityCopy[pf_node.name] = pfChildrenVisibilityCopy[pf_node.name] === false;
+            setPFChildrenVisibility({...pfChildrenVisibilityCopy})
+
+        }
+
+
+        // Creates the pf children.
+
+        for (let pf = 0; pf < p_factors.length; pf++) {
+
+
+            // If we have clicked the product factor, draw its children. Otherwise, don't draw the children.
+            // This boosts performance a little.
+            if (pfChildrenVisiblity[p_factors[pf].name]) {
+                const num_of_measures = Object.entries(p_factors[pf].json_data.weights).length;
+                const measure_spacing = node_width * 0.5;
+                const total_measure_length = num_of_measures * node_width + (num_of_measures-1) * measure_spacing;
+
+                const start_x = p_factors[pf].node_center_x - total_measure_length/2;
+
+                let iter = 0;
+                for (let measure_name in p_factors[pf].json_data.weights) {
+
+                    let x_cor = start_x + (iter * (node_width + measure_spacing))
+                    let mid_x = x_cor + node_width*0.5
+                    let y_cor = p_factor_y + p_factor_height + 80
+
+                    const link = d3.linkHorizontal()({
+                        // Changes source/target so that the edge weight text is on top of the path line.
+                        source: (p_factors[pf].node_center_x < mid_x ? [p_factors[pf].node_center_x, p_factors[pf].node_center_y] : [mid_x, y_cor + 2]),
+                        target: (p_factors[pf].node_center_x < mid_x ? [mid_x, y_cor + 2] : [p_factors[pf].node_center_x, p_factors[pf].node_center_y])    // add a couple pixels so link is under node
+                    });
+
+                    // Drawing the link between product factor and measure
+                    svg.append("path")
+                        .attr("id", p_factors[pf].name +"_edge" + iter)
+                        .attr('d', link)
+                        .attr("stroke-width", "2px")
+                        .attr('stroke', 'black')
+                        .attr('fill', 'none');
+
+                    svg.append("text")
+                        .attr("text-orientation", "upright")
+                        .attr("dy", "-3")
+                        .attr("font-weight", "bold")
+                        .append("textPath")
+                        .attr("startOffset", `${(p_factors[pf].node_center_x < mid_x ? 50 : (p_factors[pf].node_center_x > mid_x) ? 35 : 25)}%`)
+                        .attr("font-size", "8px")
+                        .attr("xlink:href", "#" + p_factors[pf].name +"_edge" + iter)
+                        .text(p_factors[pf].json_data.weights[measure_name].toFixed(6));
+
+                    // ---------------------------------------------------
+
+                    // Draw the measures nodes for the product factor and their names & values.
+                    svg.append("rect")
+                        .attr("width", node_width)
+                        .attr("height", node_height)
+                        .attr("rx", 2)
+                        .attr("x", x_cor)
+                        .attr("y", y_cor)
+                        .style("fill", NodeRiskColor(props.fileData.measures[measure_name].value))
+                        .style("stroke-width", "1px")
+                        .style("stroke", "black")
+
+
+                    svg.append("text").text(props.fileData.measures[measure_name].name)
+                        .attr("font-size", "9px")
+                        .attr("font-weight", "bold")
+                        .attr("x", x_cor + node_width * 0.5)
+                        .attr("y", y_cor + node_height * 0.4)
+                        .attr("fill", "black")
+                        .attr("dominant-baseline", "middle")
+                        .attr("text-anchor", "middle");
+
+                    // Add the node's value
+                    svg.append("text").text(props.fileData.measures[measure_name].value.toFixed(8))
+                        .attr("font-size", "11px")
+                        .attr("x", x_cor + node_width * 0.5)
+                        .attr("y", y_cor + node_height * 0.6)
+                        .attr("fill", "black")
+                        .attr("dominant-baseline", "middle")
+                        .attr("text-anchor", "middle");
+
+                    iter++;
+                }
+            }
+        }
+
+
         // -----------------------------------------
         // Creating the product factor nodes
         // -----------------------------------------
@@ -279,7 +407,7 @@ function TreeDisplay(props) {
         for (let i = 0; i < p_factors.length; i++) {
             // Add the node to the screen
             svg.append("rect")
-                .attr("id","p_factor" + p_factors[i].name)
+                .attr("id","p_factor^" + p_factors[i].name)
                 .attr("width", p_factors[i].width)
                 .attr("height", p_factors[i].height)
                 .attr("rx", 2)
@@ -288,6 +416,7 @@ function TreeDisplay(props) {
                 .style("fill", NodeRiskColor(p_factors[i].json_data.value))
                 .style("stroke-width", "1px")
                 .style("stroke", "black")
+                .on("click",handlePFEdgesToggle)
 
             // ------------------------------
             // Adding the product factor text
@@ -317,17 +446,67 @@ function TreeDisplay(props) {
             .attr("class","unselectableText")
 
 
+        //d3.select("svg").selectAll("*")
+
+        /*
+        const mov = (e) => {
+            console.log(e)
+            console.log(e.screenX, e.screenY)
+            console.log("moving!")
+
+            const diff_x = e.screenX-x1;
+            const diff_y = e.screenY-y1;
+
+            setX(x => x - diff_x)
+            setY(y => y - diff_y)
+        }
+
+         */
+
+        let x1;
+        let y1;
+        let x2;
+        let y2;
+        const handleSVGMouseDown = (e) => {
+            x1 = e.screenX;
+            y1 = e.screenY;
+            //d3.select("svg")
+                //.on("mousemove",mov)
+        }
+
+        const handleSVGMouseUp = (e) => {
+            x2 = e.screenX;
+            y2 = e.screenY;
+            d3.select("svg")
+                .on("mousemove",null)
+
+            handleMouseDrag()
+        }
+        // A very rough drag is now working
+        const handleMouseDrag = () => {
+            if (!((Math.abs(x2-x1) < 25) && (Math.abs(y2-y1) < 25))) {
+                const diff_x = x2-x1;
+                const diff_y = y2-y1;
+
+                setX(x => x - diff_x);
+                setY(y => y - diff_y);
+            }
+        }
+
+        d3.select("svg")
+            .on("mousedown",handleSVGMouseDown)
+            .on("mouseup",handleSVGMouseUp)
+
+
+
     }
 
     // Measures and diagnostics are essentially the same things in terms of the names
-    console.log(Object.entries(props.fileData.measures).length)
-    console.log(Object.entries(props.fileData.diagnostics).length)
+    //console.log(Object.entries(props.fileData.measures).length)
+    //console.log(Object.entries(props.fileData.diagnostics).length)
 
     return (
         <div className={"tree_canvas"} id={"canvas"} ref={tree_canvas}></div>
     )
 
 }
-
-
-export default TreeDisplay;

@@ -1,3 +1,7 @@
-#unselectableText {
-    user-select: none;
+#fileChooser {
+    display: block;
+    margin: auto;
+    padding-top: 20px;
+    text-align: center;
+    text-align-last: center;
 }
