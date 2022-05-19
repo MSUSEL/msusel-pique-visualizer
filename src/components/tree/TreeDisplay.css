@@ -6,10 +6,6 @@
     user-select: none;
 }
 
-.colText {
-    font-size: 5px;
-}
-
 #canvas {
     background-color: beige;
     border-top: black solid 3px;

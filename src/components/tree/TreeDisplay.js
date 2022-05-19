@@ -27,9 +27,17 @@ export default function TreeDisplay(props) {
     })
 
     const [width,setWidth] = useState(window_width);
-    const [height,setHeight] = useState(window_height * 0.8);
+    const [height,setHeight] = useState(window_height * 0.75);
     const [x,setX] = useState(0);
-    const [y,setY] = useState(0)
+    const [y,setY] = useState(0);
+
+    const [dragStartCoordinates,setStartDragCoordinates] = useState({
+        x : null,
+        y : null
+    })
+    const [dragging,setDragging] = useState(false);
+
+    const [wantToDrag,setWantToDrag] = useState(false);
 
     // Setting the dimensions of each node
     const node_width = 120;
@@ -126,22 +134,8 @@ export default function TreeDisplay(props) {
             setHeight(height => 10*height/9);
         }
 
-
-        const handleKeyPress = (e) => {
-            if (e.key === "a") setX(x => x-40);
-            else if (e.key === "d") setX(x => x+40);
-            else if (e.key === "w") setY(y => y-40);
-            else if (e.key === "s") setY(y => y+40);
-
-        }
-
-        const handleDrag =  (e) => {
-            console.log(e)
-        }
-
         // Put all keyboard events in here because the body element recognizes them, not the svg element
-        d3.select("body").on("keydown",handleKeyPress);
-
+        //d3.select("body").on("keydown",handleKeyPress);
 
 
         // ---------------------------
@@ -153,9 +147,50 @@ export default function TreeDisplay(props) {
             .append("svg")
             .attr("viewBox",`${x} ${y} ${width} ${height}`)
             .on("mousewheel",zoom)
-            .attr("draggable","false")
-            .on("dragstart",handleDrag)
-            .on("dragend",handleDrag);
+
+
+        const dragMove = (e) => {
+            const diff_x = e.screenX-dragStartCoordinates.x;
+            const diff_y = e.screenY-dragStartCoordinates.y;
+
+            let dragStartCorsCopy = dragStartCoordinates;
+            dragStartCorsCopy.x = e.screenX;
+            dragStartCorsCopy.y = e.screenY;
+
+            setStartDragCoordinates({...dragStartCorsCopy})
+
+            setX(x => x - diff_x)
+            setY(y => y - diff_y)
+        }
+
+        if (dragging) {
+            d3.select("svg")
+                .on("mousemove",dragMove)
+        }
+
+        const handleSVGMouseDown = (e) => {
+
+            e.preventDefault()
+
+            let dragStartCorsCopy = dragStartCoordinates;
+
+            dragStartCorsCopy.x = e.screenX;
+            dragStartCorsCopy.y = e.screenY;
+
+            setStartDragCoordinates({...dragStartCorsCopy})
+            setDragging(true);
+        }
+
+        const handleSVGMouseUp = () => {
+            setDragging(false);
+        }
+
+        if (wantToDrag) {
+            d3.select("svg")
+                .on("mousedown", handleSVGMouseDown)
+                .on("mouseup", handleSVGMouseUp)
+        }
+
 
         // Draw the links first, so they are at the "bottom" of the drawing
 
@@ -445,58 +480,20 @@ export default function TreeDisplay(props) {
         d3.selectAll("text")
             .attr("class","unselectableText")
 
+        const handleNodeMouseEnter = () => {
+            setWantToDrag(false)
+        }
+
+        const handleNodeMouseLeave = () => {
+            setWantToDrag(true)
+        }
+
+        d3.selectAll("rect")
+            .on("mouseenter",handleNodeMouseEnter)
+            .on("mouseleave",handleNodeMouseLeave)
+
 
         //d3.select("svg").selectAll("*")
-
-        /*
-        const mov = (e) => {
-            console.log(e)
-            console.log(e.screenX, e.screenY)
-            console.log("moving!")
-
-            const diff_x = e.screenX-x1;
-            const diff_y = e.screenY-y1;
-
-            setX(x => x - diff_x)
-            setY(y => y - diff_y)
-        }
-
-         */
-
-        let x1;
-        let y1;
-        let x2;
-        let y2;
-        const handleSVGMouseDown = (e) => {
-            x1 = e.screenX;
-            y1 = e.screenY;
-            //d3.select("svg")
-                //.on("mousemove",mov)
-        }
-
-        const handleSVGMouseUp = (e) => {
-            x2 = e.screenX;
-            y2 = e.screenY;
-            d3.select("svg")
-                .on("mousemove",null)
-
-            handleMouseDrag()
-        }
-        // A very rough drag is now working
-        const handleMouseDrag = () => {
-            if (!((Math.abs(x2-x1) < 25) && (Math.abs(y2-y1) < 25))) {
-                const diff_x = x2-x1;
-                const diff_y = y2-y1;
-
-                setX(x => x - diff_x);
-                setY(y => y - diff_y);
-            }
-        }
-
-        d3.select("svg")
-            .on("mousedown",handleSVGMouseDown)
-            .on("mouseup",handleSVGMouseUp)
-
 
 
     }
