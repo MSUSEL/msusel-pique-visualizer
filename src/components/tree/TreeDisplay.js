@@ -428,7 +428,97 @@ export default function TreeDisplay(props) {
 
                     // ---------------------------------------------------
 
-                    // Draw the measures nodes for the product factor and their names & values.
+                    /**
+                     * Draw the diagnostics for a measure.
+                     */
+
+                    if (measureChildrenVisibility[measure_name]) {
+
+                        let measure_weights = [];
+
+                        for (let diagnostic in props.fileData.measures[measure_name].weights) {
+                            measure_weights.push(diagnostic)
+                        }
+
+                        const num_of_weights = Object.entries(props.fileData.measures[measure_name].weights).length;
+                        const diag_spacing = node_width * 0.5;
+                        const total_diag_length = num_of_weights * node_width + (num_of_weights-1) * diag_spacing;
+                        const start_x = x_cor - total_diag_length/2 + node_width/2;
+                        const diag_y = y_cor + node_height * 2;
+
+                        const measure_center_x = x_cor + node_width/2;
+                        const measure_center_y = y_cor + node_height/2;
+
+                        const calc_diag_x = (iter) => {
+                            return start_x + iter * (node_width + diag_spacing)
+                        }
+
+                        let i = 0;
+                        for (let diagnostic in measure_weights) {
+
+                            const diagnostic_name = measure_weights[diagnostic]
+
+                            const link = d3.linkHorizontal()({
+                                // Changes source/target so that the edge weight text is on top of the path line.
+                                source: (measure_center_x < (calc_diag_x(i)+node_width/2) ? [measure_center_x, measure_center_y] : [(calc_diag_x(i)+node_width/2), diag_y + 2]),
+                                target: (measure_center_x < (calc_diag_x(i)+node_width/2) ? [(calc_diag_x(i)+node_width/2), diag_y + 2] : [measure_center_x, measure_center_y])    // add a couple pixels so link is under node
+                            });
+
+                            // Drawing the link between measure and diagnostic
+                            svg.append("path")
+                                .attr("id", measure_name +"_edge" + iter)
+                                .attr('d', link)
+                                .attr("stroke-width", "2px")
+                                .attr('stroke', 'black')
+                                .attr('fill', 'none');
+
+                            svg.append("text")
+                                .attr("text-orientation", "upright")
+                                .attr("dy", "-3")
+                                .attr("font-weight", "bold")
+                                .append("textPath")
+                                .attr("startOffset", "25%")
+                                .attr("font-size", "8px")
+                                .attr("xlink:href", "#" + measure_name +"_edge" + iter)
+                                .text(props.fileData.measures[measure_name].weights[diagnostic_name].toFixed(6));
+
+                            const diag_x = calc_diag_x(i)
+                            svg.append("rect")
+                                .attr("width", node_width)
+                                .attr("height", node_height)
+                                .attr("rx", 2)
+                                .attr("x", diag_x)
+                                .attr("y", diag_y)
+                                .style("fill", NodeRiskColor(props.fileData["diagnostics"][diagnostic_name].value,"diagnostic"))
+                                .style("stroke-width", "1px")
+                                .style("stroke", "black")
+
+                            svg.append("text").text(props.fileData["diagnostics"][diagnostic_name].name)
+                                .attr("font-size", "9px")
+                                .attr("font-weight", "bold")
+                                .attr("x", diag_x + node_width * 0.5)
+                                .attr("y", diag_y + node_height * 0.4)
+                                .attr("fill", "black")
+                                .attr("dominant-baseline", "middle")
+                                .attr("text-anchor", "middle");
+
+                            // Add the node's value
+                            svg.append("text").text(props.fileData["diagnostics"][diagnostic_name].value.toFixed(8))
+                                .attr("font-size", "11px")
+                                .attr("x", diag_x + node_width * 0.5)
+                                .attr("y", diag_y + node_height * 0.6)
+                                .attr("fill", "black")
+                                .attr("dominant-baseline", "middle")
+                                .attr("text-anchor", "middle");
+
+                            i++;
+                        }
+                    }
+
+                    /**
+                     * Draw the measure nodes for the associated product factor.
+                     */
+
                     svg.append("rect")
                         .attr("id",props.fileData.measures[measure_name].name)
                         .attr("width", node_width)
@@ -461,62 +551,6 @@ export default function TreeDisplay(props) {
                         .attr("text-anchor", "middle");
 
                     iter++;
-
-                    if (measureChildrenVisibility[measure_name]) {
-
-                        let measure_weights = [];
-
-                        for (let diagnostic in props.fileData.measures[measure_name].weights) {
-                            measure_weights.push(diagnostic)
-                        }
-
-                        const num_of_weights = Object.entries(props.fileData.measures[measure_name].weights).length;
-                        const diag_spacing = node_width * 0.5;
-                        const total_diag_length = num_of_weights * node_width + (num_of_weights-1) * diag_spacing;
-                        const start_x = x_cor - total_diag_length/2 + node_width/2;
-                        const diag_y = y_cor + node_height * 2;
-
-                        const calc_diag_x = (iter) => {
-                            return start_x + iter * (node_width + diag_spacing)
-                        }
-
-                        let i = 0;
-                        for (let diagnostic in measure_weights) {
-
-                            const diagnostic_name = measure_weights[diagnostic]
-
-                            const diag_x = calc_diag_x(i)
-                            svg.append("rect")
-                                .attr("width", node_width)
-                                .attr("height", node_height)
-                                .attr("rx", 2)
-                                .attr("x", diag_x)
-                                .attr("y", diag_y)
-                                .style("fill", NodeRiskColor(props.fileData["diagnostics"][diagnostic_name].value))
-                                .style("stroke-width", "1px")
-                                .style("stroke", "black")
-
-                            svg.append("text").text(props.fileData["diagnostics"][diagnostic_name].name)
-                                .attr("font-size", "9px")
-                                .attr("font-weight", "bold")
-                                .attr("x", diag_x + node_width * 0.5)
-                                .attr("y", diag_y + node_height * 0.4)
-                                .attr("fill", "black")
-                                .attr("dominant-baseline", "middle")
-                                .attr("text-anchor", "middle");
-
-                            // Add the node's value
-                            svg.append("text").text(props.fileData["diagnostics"][diagnostic_name].value.toFixed(8))
-                                .attr("font-size", "11px")
-                                .attr("x", diag_x + node_width * 0.5)
-                                .attr("y", diag_y + node_height * 0.6)
-                                .attr("fill", "black")
-                                .attr("dominant-baseline", "middle")
-                                .attr("text-anchor", "middle");
-
-                            i++;
-                        }
-                    }
                 }
             }
         }

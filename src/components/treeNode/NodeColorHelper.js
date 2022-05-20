@@ -24,20 +24,34 @@ const Low = {
     color: '#009a66'
 }
 
-export default function NodeRiskColor(score) {
+export default function NodeRiskColor(score,scale="normal") {
     const value = parseFloat(score);
-    if (value <= 0.2){
-        return Severe.color
-    } else if (value <= 0.4){
-        return High.color
-    }else if (value <= 0.6) {
-        return Elevated.color
-    }else if (value <= 0.8) {
-        return Guarded.color
-    }else if (value <= 1.0) {
-        return Low.color
+    if (scale === "normal") {
+        if (value <= 0.2) {
+            return Severe.color
+        } else if (value <= 0.4) {
+            return High.color
+        } else if (value <= 0.6) {
+            return Elevated.color
+        } else if (value <= 0.8) {
+            return Guarded.color
+        } else if (value <= 1.0) {
+            return Low.color
+        } else {
+            return "grey"
+        }
     }
-    else{
-        return "grey"
+    else if (scale === "diagnostic") {
+        if (value <= 0.2) {
+            return Low.color
+        } else if (value <= 0.5) {
+            return Guarded.color
+        } else if (value <= 0.8) {
+            return Elevated.color
+        } else if (value <= 1.5) {
+            return High.color
+        } else {
+            return Severe.color
+        }
     }
 }
