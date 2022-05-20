@@ -11,3 +11,7 @@
     border-top: black solid 3px;
 }
 
+#reset_buttons {
+    display: block;
+    margin: 10px auto auto;
+}

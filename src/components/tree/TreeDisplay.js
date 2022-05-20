@@ -18,12 +18,20 @@ export default function TreeDisplay(props) {
         return default_obj
     })
 
-    const [pfChildrenVisiblity,setPFChildrenVisibility] = useState(() => {
+    const [pfChildrenVisibility,setPFChildrenVisibility] = useState(() => {
         let default_obj = {}
         for (let pf in props.fileData.factors.product_factors) {
             default_obj[pf] = false;
         }
         return default_obj
+    })
+
+    const [measureChildrenVisibility,setMeasureChildrenVisibility] = useState(() => {
+        let default_obj = {}
+        for (let measure in props.fileData.measures) {
+            default_obj[measure] = false;
+        }
+        return default_obj;
     })
 
     const [width,setWidth] = useState(window_width);
@@ -147,6 +155,7 @@ export default function TreeDisplay(props) {
             .append("svg")
             .attr("viewBox",`${x} ${y} ${width} ${height}`)
             .on("mousewheel",zoom)
+            .on("dblclick",null)
 
 
         const dragMove = (e) => {
@@ -188,13 +197,18 @@ export default function TreeDisplay(props) {
         if (wantToDrag) {
             d3.select("svg")
                 .on("mousedown", handleSVGMouseDown)
-                .on("mouseup", handleSVGMouseUp)
         }
+
+        d3.select("svg")
+            .on("mouseup", handleSVGMouseUp)
 
 
         // Draw the links first, so they are at the "bottom" of the drawing
 
-        // Drawing edges between TQI and quality aspects
+        /**
+         * Drawing the edges between the TQI node and the quality factor nodes.
+         */
+
         for (let item = 1; item < treeNodes.length; item++) {
             treeNodes[0].children.push(treeNodes[item].name);
             const link = d3.linkHorizontal()({
@@ -222,7 +236,10 @@ export default function TreeDisplay(props) {
                     .text(Object.values(treeNodes[0].json_data.weights)[item-1].toFixed(6))
         }
 
-        // Draw the links between quality aspects and product factors
+        /**
+         * Drawing the edges between the quality factor nodes and the product factor nodes.
+         */
+
         for (let aspect = 1; aspect < treeNodes.length; aspect++) {
             for (let factor = 0; factor < p_factors.length; factor++) {
                 const link = d3.linkHorizontal()({
@@ -291,7 +308,10 @@ export default function TreeDisplay(props) {
 
         }
 
-        // Creating the quality factor nodes and adding the text.
+        /**
+         * Creating the quality factor nodes in the tree display.
+         */
+
         for (let item = 0; item < treeNodes.length; item++) {
 
             // Add the node to the screen
@@ -339,7 +359,7 @@ export default function TreeDisplay(props) {
         const handlePFEdgesToggle = (e) => {
             const pf_node = findProductFactor(e.path[0].id.split("^")[1]);
 
-            let pfChildrenVisibilityCopy = pfChildrenVisiblity;
+            let pfChildrenVisibilityCopy = pfChildrenVisibility;
 
             // Toggle off any visible edges from other product factors
             for (let prop in pfChildrenVisibilityCopy) {
@@ -352,14 +372,23 @@ export default function TreeDisplay(props) {
         }
 
 
-        // Creates the pf children.
+        const handleMeasureEdgesToggle = (e) => {
+
+            let measureChildrenVisibilityCopy = measureChildrenVisibility;
+            measureChildrenVisibilityCopy[e.path[0].id] = true;
+            setMeasureChildrenVisibility({...measureChildrenVisibilityCopy});
+        }
+
+        /**
+         * Creating the measure nodes in the tree display.
+         */
 
         for (let pf = 0; pf < p_factors.length; pf++) {
 
 
             // If we have clicked the product factor, draw its children. Otherwise, don't draw the children.
             // This boosts performance a little.
-            if (pfChildrenVisiblity[p_factors[pf].name]) {
+            if (pfChildrenVisibility[p_factors[pf].name]) {
                 const num_of_measures = Object.entries(p_factors[pf].json_data.weights).length;
                 const measure_spacing = node_width * 0.5;
                 const total_measure_length = num_of_measures * node_width + (num_of_measures-1) * measure_spacing;
@@ -401,6 +430,7 @@ export default function TreeDisplay(props) {
 
                     // Draw the measures nodes for the product factor and their names & values.
                     svg.append("rect")
+                        .attr("id",props.fileData.measures[measure_name].name)
                         .attr("width", node_width)
                         .attr("height", node_height)
                         .attr("rx", 2)
@@ -409,6 +439,7 @@ export default function TreeDisplay(props) {
                         .style("fill", NodeRiskColor(props.fileData.measures[measure_name].value))
                         .style("stroke-width", "1px")
                         .style("stroke", "black")
+                        .on("click",handleMeasureEdgesToggle)
 
 
                     svg.append("text").text(props.fileData.measures[measure_name].name)
@@ -430,14 +461,70 @@ export default function TreeDisplay(props) {
                         .attr("text-anchor", "middle");
 
                     iter++;
+
+                    if (measureChildrenVisibility[measure_name]) {
+
+                        let measure_weights = [];
+
+                        for (let diagnostic in props.fileData.measures[measure_name].weights) {
+                            measure_weights.push(diagnostic)
+                        }
+
+                        const num_of_weights = Object.entries(props.fileData.measures[measure_name].weights).length;
+                        const diag_spacing = node_width * 0.5;
+                        const total_diag_length = num_of_weights * node_width + (num_of_weights-1) * diag_spacing;
+                        const start_x = x_cor - total_diag_length/2 + node_width/2;
+                        const diag_y = y_cor + node_height * 2;
+
+                        const calc_diag_x = (iter) => {
+                            return start_x + iter * (node_width + diag_spacing)
+                        }
+
+                        let i = 0;
+                        for (let diagnostic in measure_weights) {
+
+                            const diagnostic_name = measure_weights[diagnostic]
+
+                            const diag_x = calc_diag_x(i)
+                            svg.append("rect")
+                                .attr("width", node_width)
+                                .attr("height", node_height)
+                                .attr("rx", 2)
+                                .attr("x", diag_x)
+                                .attr("y", diag_y)
+                                .style("fill", NodeRiskColor(props.fileData["diagnostics"][diagnostic_name].value))
+                                .style("stroke-width", "1px")
+                                .style("stroke", "black")
+
+                            svg.append("text").text(props.fileData["diagnostics"][diagnostic_name].name)
+                                .attr("font-size", "9px")
+                                .attr("font-weight", "bold")
+                                .attr("x", diag_x + node_width * 0.5)
+                                .attr("y", diag_y + node_height * 0.4)
+                                .attr("fill", "black")
+                                .attr("dominant-baseline", "middle")
+                                .attr("text-anchor", "middle");
+
+                            // Add the node's value
+                            svg.append("text").text(props.fileData["diagnostics"][diagnostic_name].value.toFixed(8))
+                                .attr("font-size", "11px")
+                                .attr("x", diag_x + node_width * 0.5)
+                                .attr("y", diag_y + node_height * 0.6)
+                                .attr("fill", "black")
+                                .attr("dominant-baseline", "middle")
+                                .attr("text-anchor", "middle");
+
+                            i++;
+                        }
+                    }
                 }
             }
         }
 
 
-        // -----------------------------------------
-        // Creating the product factor nodes
-        // -----------------------------------------
+        /**
+         * Creating the product factor nodes in the tree display.
+         */
 
         for (let i = 0; i < p_factors.length; i++) {
             // Add the node to the screen
@@ -480,6 +567,8 @@ export default function TreeDisplay(props) {
         d3.selectAll("text")
             .attr("class","unselectableText")
 
+
+        // Attempt at helping drag feature. Needs some bug fixing though.
         const handleNodeMouseEnter = () => {
             setWantToDrag(false)
         }
@@ -493,17 +582,19 @@ export default function TreeDisplay(props) {
             .on("mouseleave",handleNodeMouseLeave)
 
 
-        //d3.select("svg").selectAll("*")
-
-
     }
 
-    // Measures and diagnostics are essentially the same things in terms of the names
-    //console.log(Object.entries(props.fileData.measures).length)
-    //console.log(Object.entries(props.fileData.diagnostics).length)
+    const resetView = () => {
+        setWidth(window_width);
+        setHeight(window_height * 0.75);
+        setX(0);
+        setY(0);
+    }
 
     return (
+        <>
         <div className={"tree_canvas"} id={"canvas"} ref={tree_canvas}></div>
+            <button id={"reset_buttons"} onClick={resetView}>Reset Tree View</button>
+        </>
     )
-
 }
