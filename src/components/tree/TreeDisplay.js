@@ -35,9 +35,12 @@ export default function TreeDisplay(props) {
     })
 
     const [width,setWidth] = useState(window_width);
-    const [height,setHeight] = useState(window_height * 0.75);
+    const [height,setHeight] = useState(window_height * 0.75);   // Original code before flexbox
+    //const [height,setHeight] = useState(window_height);   // Code with flexbox
     const [x,setX] = useState(0);
     const [y,setY] = useState(0);
+
+    const [nodeDescriptionVisibility,setNodeDescriptionVisibility] = useState(false);
 
     const [dragStartCoordinates,setStartDragCoordinates] = useState({
         x : null,
@@ -375,7 +378,7 @@ export default function TreeDisplay(props) {
         const handleMeasureEdgesToggle = (e) => {
 
             let measureChildrenVisibilityCopy = measureChildrenVisibility;
-            measureChildrenVisibilityCopy[e.path[0].id] = true;
+            measureChildrenVisibilityCopy[e.path[0].id] = !measureChildrenVisibilityCopy[e.path[0].id];
             setMeasureChildrenVisibility({...measureChildrenVisibilityCopy});
         }
 
@@ -620,14 +623,18 @@ export default function TreeDisplay(props) {
 
     const resetView = () => {
         setWidth(window_width);
-        setHeight(window_height * 0.75);
+        setHeight(window_height * 0.75);  // Original code before flexbox
+        //setHeight(window_height);   // Code with flexbox
         setX(0);
         setY(0);
     }
 
     return (
         <>
-        <div className={"tree_canvas"} id={"canvas"} ref={tree_canvas}></div>
+            <div id={"canvas_container"}>
+                <div className={"tree_canvas"} id={"canvas"} ref={tree_canvas}></div>
+                {nodeDescriptionVisibility ? <div id={"canvas_node_descriptions"}></div> : null}
+            </div>
             <button id={"reset_buttons"} onClick={resetView}>Reset Tree View</button>
         </>
     )

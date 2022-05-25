@@ -9,9 +9,22 @@
 #canvas {
     background-color: beige;
     border-top: black solid 3px;
+    border-bottom: black solid 3px;
+    flex: 1;
+}
+
+#canvas_node_descriptions {
+    background-color: lightcyan;
+    border: black solid 3px;
+    width: 25vw;
 }
 
 #reset_buttons {
     display: block;
     margin: 10px auto auto;
+}
+
+#canvas_container {
+    display: flex;
+    margin: 0;
 }
