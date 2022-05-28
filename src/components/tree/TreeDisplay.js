@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
+import NodeDescriptionPanel from "./NodeDescriptionPanel";
 
 
 export default function TreeDisplay(props) {
@@ -40,7 +41,7 @@ export default function TreeDisplay(props) {
     const [x,setX] = useState(0);
     const [y,setY] = useState(0);
 
-    const [nodeDescriptionVisibility,setNodeDescriptionVisibility] = useState(false);
+    const [nodesForPanelBoxes,setNodesForPanelBoxes] = useState([]);
 
     const [dragStartCoordinates,setStartDragCoordinates] = useState({
         x : null,
@@ -144,10 +145,6 @@ export default function TreeDisplay(props) {
             setWidth(width => 10*width/9);
             setHeight(height => 10*height/9);
         }
-
-        // Put all keyboard events in here because the body element recognizes them, not the svg element
-        //d3.select("body").on("keydown",handleKeyPress);
-
 
         // ---------------------------
         // Start making the entire svg  *****************
@@ -294,6 +291,15 @@ export default function TreeDisplay(props) {
 
         // Handles when you click on a quality aspect node.
         const handleQAEdgesToggle = (e) => {
+
+            // testing out the side node panel
+            let nfpa = nodesForPanelBoxes;
+            nfpa = [
+                ...nfpa,
+                props.fileData.factors.quality_aspects[e.path[0].id]
+            ]
+            setNodesForPanelBoxes(nfpa)
+            // ------------------------------
 
             const qa_name = e.path[0].id;
 
@@ -629,13 +635,17 @@ export default function TreeDisplay(props) {
         setY(0);
     }
 
+    // ********************************
+    // Create way that the NodeDescriptionPanel component re-renders when the nodesForPanelBoxes prop changes.
+
     return (
         <>
             <div id={"canvas_container"}>
                 <div className={"tree_canvas"} id={"canvas"} ref={tree_canvas}></div>
-                {nodeDescriptionVisibility ? <div id={"canvas_node_descriptions"}></div> : null}
+                {nodesForPanelBoxes > 0 ? <NodeDescriptionPanel nodes={nodesForPanelBoxes}/> : null}
             </div>
-            <button id={"reset_buttons"} onClick={resetView}>Reset Tree View</button>
+
+            <span><button id={"reset_buttons"} onClick={resetView}>Reset Tree View</button></span>
         </>
     )
 }

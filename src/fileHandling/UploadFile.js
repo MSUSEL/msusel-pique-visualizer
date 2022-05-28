@@ -20,7 +20,7 @@ export function UploadFile() {
     };
 
     return (
-        <div id={"unselectableText"}>
+        <div id="unselectableText">
             { file ? <h4 align={"center"} unselectable={"on"}>Visualization of {fileName}</h4> : <h4 align={"center"} unselectable={"on"}>Upload PIQUE json file to visualize the results.</h4>}
 
             {file ? null : <input type="file" id={"fileChooser"} onChange={handleChange} />}
