@@ -1,18 +1,20 @@
 #node_description_panel {
     background-color: lightcyan;
     border: black solid 3px;
-    width: 25vw;
+    width: 35vw;
 }
 
-.nodePanelRectangle {
-    border: red solid 2px;
-}
-
-.node {
+.node-panel {
     height: 20%;
-    font-size: 14px;
+    font-size: 0.8vw;
     background-color: lightgreen;
     border-bottom: black solid 2px;
+}
+
+.node-panel-bottom {
+    height: 20%;
+    font-size: 0.8vw;
+    background-color: lightgreen;
 }
 
 .node-name {

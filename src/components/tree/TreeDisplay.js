@@ -8,9 +8,6 @@ import NodeDescriptionPanel from "./NodeDescriptionPanel";
 
 export default function TreeDisplay(props) {
 
-    let window_height = window.innerHeight;
-    let window_width = window.innerWidth;
-
     const [qaChildrenEdgeVisibility,setQAChildrenEdgeVisibility] = useState(() =>{
         let default_obj = {}
         for (let qa in props.fileData.factors.quality_aspects) {
@@ -35,13 +32,14 @@ export default function TreeDisplay(props) {
         return default_obj;
     })
 
-    const [width,setWidth] = useState(window_width);
-    const [height,setHeight] = useState(window_height * 0.75);   // Original code before flexbox
+    const [nodesForPanelBoxes,setNodesForPanelBoxes] = useState([]);
+
+    const [width,setWidth] = useState(window.innerWidth);
+    // Make height slightly shorter due to SVG element height bug
+    const [height,setHeight] = useState(window.innerHeight * 0.75 * 0.99);   // Original code before flexbox
     //const [height,setHeight] = useState(window_height);   // Code with flexbox
     const [x,setX] = useState(0);
     const [y,setY] = useState(0);
-
-    const [nodesForPanelBoxes,setNodesForPanelBoxes] = useState([]);
 
     const [dragStartCoordinates,setStartDragCoordinates] = useState({
         x : null,
@@ -156,7 +154,7 @@ export default function TreeDisplay(props) {
             .attr("viewBox",`${x} ${y} ${width} ${height}`)
             .on("mousewheel",zoom)
             .on("dblclick",null)
-
+            .style("vertical-align","top")
 
         const dragMove = (e) => {
             const diff_x = e.screenX-dragStartCoordinates.x;
@@ -292,13 +290,23 @@ export default function TreeDisplay(props) {
         // Handles when you click on a quality aspect node.
         const handleQAEdgesToggle = (e) => {
 
+            /*if (nodesForPanelBoxes.length === 0 || nodesForPanelBoxes.map((node) => {
+                if (node.name === e.path[0].id) return false
+                console.log(node.name , "    ", e.path[0].id)
+            })) {
+                console.log("In the if loop because haven't clicked this")
+            }
+            else console.log("clicked on this")*/
+
             // testing out the side node panel
             let nfpa = nodesForPanelBoxes;
-            nfpa = [
-                ...nfpa,
-                props.fileData.factors.quality_aspects[e.path[0].id]
-            ]
-            setNodesForPanelBoxes(nfpa)
+            if (nodesForPanelBoxes.length < 5) {
+                nfpa = [
+                    ...nfpa,
+                    props.fileData.factors.quality_aspects[e.path[0].id]
+                ]
+                setNodesForPanelBoxes(nfpa)
+            }
             // ------------------------------
 
             const qa_name = e.path[0].id;
@@ -318,7 +326,7 @@ export default function TreeDisplay(props) {
         }
 
         /**
-         * Creating the quality factor nodes in the tree display.
+         * Creating the TQI and quality factor nodes in the tree display.
          */
 
         for (let item = 0; item < treeNodes.length; item++) {
@@ -334,7 +342,7 @@ export default function TreeDisplay(props) {
                 .style("fill",NodeRiskColor(treeNodes[item].json_data.value))
                 .style("stroke-width", "2px")
                 .style("stroke", "black")
-                .on("click",handleQAEdgesToggle)
+                .on("click", handleQAEdgesToggle)
 
             // ------------------------
             // Adding the quality factor text
@@ -358,6 +366,9 @@ export default function TreeDisplay(props) {
                 .attr("dominant-baseline","middle")
                 .attr("text-anchor","middle");
         }
+
+        // Turn off click events for TQI node
+        d3.select("rect").attr("id",treeNodes[item].name).on("click",null);
 
         const findProductFactor = (name) => {
             for (let pf in p_factors) {
@@ -620,32 +631,51 @@ export default function TreeDisplay(props) {
             setWantToDrag(true)
         }
 
+        const handleMouseHoveringInBody = () => {
+            setWantToDrag(true)
+        }
+
+        d3.select("body")
+            .on("mouseenter",handleMouseHoveringInBody)
+
         d3.selectAll("rect")
             .on("mouseenter",handleNodeMouseEnter)
             .on("mouseleave",handleNodeMouseLeave)
-
-
     }
 
     const resetView = () => {
-        setWidth(window_width);
-        setHeight(window_height * 0.75);  // Original code before flexbox
+        setWidth(nodesForPanelBoxes.length > 0 ? window.innerWidth * 65 / 100 : window.innerWidth);
+        setHeight(window.innerHeight * 0.75 * 0.99);  // Original code before flexbox
         //setHeight(window_height);   // Code with flexbox
         setX(0);
         setY(0);
     }
 
-    // ********************************
-    // Create way that the NodeDescriptionPanel component re-renders when the nodesForPanelBoxes prop changes.
+    // Adjusts SVG when node description panel opens up
+    useEffect(() => {
+        // When node description pane opens up
+        if (nodesForPanelBoxes.length === 1) {
+            console.log("changing width to different stuff")
+            // Multiply width by reciprocal of the vw of the node description panel
+            setWidth(w => w * 65 / 100)
+        }
+    }, [nodesForPanelBoxes.length])
+
+    window.onresize = () => {
+        setWidth(window.innerWidth * (nodesForPanelBoxes.length > 0 ? 65/100 : 1))
+        setHeight(window.innerHeight * 0.75 * 0.99)
+        console.log("window is resizing")
+    };
 
     return (
         <>
             <div id={"canvas_container"}>
-                <div className={"tree_canvas"} id={"canvas"} ref={tree_canvas}></div>
-                {nodesForPanelBoxes > 0 ? <NodeDescriptionPanel nodes={nodesForPanelBoxes}/> : null}
+                <div id={"tree_canvas"} ref={tree_canvas}></div>
+                {nodesForPanelBoxes.length > 0 ? <NodeDescriptionPanel nodes={nodesForPanelBoxes}/> : null}
             </div>
 
             <span><button id={"reset_buttons"} onClick={resetView}>Reset Tree View</button></span>
         </>
     )
 }
+

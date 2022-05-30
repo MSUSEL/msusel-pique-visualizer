@@ -8,7 +8,6 @@ export default class TreeNode {
         this.x = x;
         this.y = y;
         this.children = [];
-        this.edge_weights = this.json_data.weights;
     }
 
     get node_center_x() {

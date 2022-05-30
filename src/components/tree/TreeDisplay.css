@@ -1,5 +1,6 @@
-.tree_canvas {
+#tree_canvas {
     margin: 0;
+    width: 100%;
 }
 
 .unselectableText {
@@ -11,6 +12,7 @@
     border-top: black solid 3px;
     border-bottom: black solid 3px;
     flex: 1;
+    height: 100%;
 }
 
 button {
@@ -25,5 +27,8 @@ button {
 
 #canvas_container {
     display: flex;
+    height: 75vh;
+    width: 100%;
     margin: 0;
+    padding: 0;
 }
