@@ -290,25 +290,6 @@ export default function TreeDisplay(props) {
         // Handles when you click on a quality aspect node.
         const handleQAEdgesToggle = (e) => {
 
-            /*if (nodesForPanelBoxes.length === 0 || nodesForPanelBoxes.map((node) => {
-                if (node.name === e.path[0].id) return false
-                console.log(node.name , "    ", e.path[0].id)
-            })) {
-                console.log("In the if loop because haven't clicked this")
-            }
-            else console.log("clicked on this")*/
-
-            // testing out the side node panel
-            let nfpa = nodesForPanelBoxes;
-            if (nodesForPanelBoxes.length < 5) {
-                nfpa = [
-                    ...nfpa,
-                    props.fileData.factors.quality_aspects[e.path[0].id]
-                ]
-                setNodesForPanelBoxes(nfpa)
-            }
-            // ------------------------------
-
             const qa_name = e.path[0].id;
 
             let qaChildrenEdgeVisibilityCopy = qaChildrenEdgeVisibility;
@@ -377,6 +358,7 @@ export default function TreeDisplay(props) {
         }
 
         const handlePFEdgesToggle = (e) => {
+
             const pf_node = findProductFactor(e.path[0].id.split("^")[1]);
 
             let pfChildrenVisibilityCopy = pfChildrenVisibility;
@@ -390,7 +372,6 @@ export default function TreeDisplay(props) {
             setPFChildrenVisibility({...pfChildrenVisibilityCopy})
 
         }
-
 
         const handleMeasureEdgesToggle = (e) => {
 
@@ -617,6 +598,35 @@ export default function TreeDisplay(props) {
                 .attr("text-anchor","middle");
         }
 
+        // ------------------- Draw the panelAdd box clickers to each node -----------------------------
+        const nodes = d3.selectAll("rect")._groups[0];
+        const num_of_nodes = nodes.length
+
+        const addNode = (e) => {
+            console.log("clicked ", e)
+        }
+
+        for (let i = 0; i < num_of_nodes; i++) {
+
+            const x = nodes[i].x.animVal.value;
+            const y = nodes[i].y.animVal.value;
+            const width = nodes[i].width.animVal.value;
+            const height = nodes[i].height.animVal.value;
+
+            svg.append("rect")
+                .attr("class", "description_clickers")
+                .attr("width", width / 8)
+                .attr("height", width / 8)
+                .attr("rx", 2)
+                .attr("x", x + 27 * width / 32)
+                .attr("y", y + height / 20)
+                .style("fill", "blue")
+                .style("stroke-width", "1px")
+                .style("stroke", "orange")
+                .on("click",addNode)
+        }
+        // ------------------------------------------------------------------
+
         // Can style all text here
         d3.selectAll("text")
             .attr("class","unselectableText")
@@ -635,12 +645,38 @@ export default function TreeDisplay(props) {
             setWantToDrag(true)
         }
 
+        const handleAddingNodeToDescriptionPanel = (e) => {
+            /*if (nodesForPanelBoxes.length === 0 || nodesForPanelBoxes.map((node) => {
+                if (node.name === e.path[0].id) return false
+                console.log(node.name , "    ", e.path[0].id)
+            })) {
+                console.log("In the if loop because haven't clicked this")
+            }
+            else console.log("clicked on this")*/
+
+            // testing out the side node panel
+            let nfpa = nodesForPanelBoxes;
+            if (nodesForPanelBoxes.length < 5) {
+                nfpa = [
+                    ...nfpa,
+                    props.fileData.factors.quality_aspects[e.path[0].id]
+                ]
+                setNodesForPanelBoxes(nfpa)
+            }
+            // ------------------------------
+        }
+
         d3.select("body")
             .on("mouseenter",handleMouseHoveringInBody)
 
         d3.selectAll("rect")
             .on("mouseenter",handleNodeMouseEnter)
             .on("mouseleave",handleNodeMouseLeave)
+            //.on("dblclick",handleAddingNodeToDescriptionPanel)
+
+
+
+        // --------------------------------------------------------------
     }
 
     const resetView = () => {
@@ -655,16 +691,15 @@ export default function TreeDisplay(props) {
     useEffect(() => {
         // When node description pane opens up
         if (nodesForPanelBoxes.length === 1) {
-            console.log("changing width to different stuff")
             // Multiply width by reciprocal of the vw of the node description panel
             setWidth(w => w * 65 / 100)
         }
     }, [nodesForPanelBoxes.length])
 
+    // Adjust SVG when window is resized.
     window.onresize = () => {
         setWidth(window.innerWidth * (nodesForPanelBoxes.length > 0 ? 65/100 : 1))
         setHeight(window.innerHeight * 0.75 * 0.99)
-        console.log("window is resizing")
     };
 
     return (
