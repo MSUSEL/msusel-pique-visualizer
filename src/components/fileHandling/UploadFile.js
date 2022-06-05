@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import TreeDisplay from "../components/tree/TreeDisplay";
+import TreeDisplay from "../treeDisplay/TreeDisplay";
 import "./UploadFile.css"
 
 export function UploadFile() {

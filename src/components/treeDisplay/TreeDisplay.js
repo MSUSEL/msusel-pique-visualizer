@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
-import NodeDescriptionPanel from "./NodeDescriptionPanel";
+import NodeDescriptionPanel from "../nodeDescriptionPanel/NodeDescriptionPanel";
 
 
 export default function TreeDisplay(props) {
@@ -65,7 +65,7 @@ export default function TreeDisplay(props) {
         let treeNodes = []
 
         // --------------------------
-        // Creating the TQI node in tree nodes
+        // Creating the TQI node in treeDisplay nodes
         // --------------------------
 
         let tqi_;
@@ -77,7 +77,7 @@ export default function TreeDisplay(props) {
         }
 
         // --------------------------
-        // Creating the quality aspects nodes in tree nodes
+        // Creating the quality aspects nodes in treeDisplay nodes
         // --------------------------
 
         const num_of_quality_aspects = Object.keys(props.fileData.factors.quality_aspects).length;
@@ -290,31 +290,32 @@ export default function TreeDisplay(props) {
         // Handles when you click on a quality aspect node.
         const handleQAEdgesToggle = (e) => {
 
-            const qa_name = e.path[0].id;
+            const qa_name = e.path[0].id.split("^")[1];
 
             let qaChildrenEdgeVisibilityCopy = qaChildrenEdgeVisibility;
 
+            // What we will toggle the visibility to for the chosen quality aspect
+            const toggle_to = qaChildrenEdgeVisibilityCopy[qa_name] === false;
+
             // Toggle off any visible edges from other quality aspects
-            for (let prop in qaChildrenEdgeVisibilityCopy) {
-                if (prop !== qa_name) qaChildrenEdgeVisibilityCopy[prop] = false;
+            for (let name in qaChildrenEdgeVisibilityCopy) {
+                qaChildrenEdgeVisibilityCopy[name] = false;
             }
 
-            qaChildrenEdgeVisibilityCopy[qa_name] = qaChildrenEdgeVisibilityCopy[qa_name] === false;
+            qaChildrenEdgeVisibilityCopy[qa_name] = toggle_to;
             // Copy the "updated" properties into the qa children opacity state.
             setQAChildrenEdgeVisibility({...qaChildrenEdgeVisibilityCopy})
-
-
         }
 
         /**
-         * Creating the TQI and quality factor nodes in the tree display.
+         * Creating the TQI and quality factor nodes in the treeDisplay display.
          */
 
         for (let item = 0; item < treeNodes.length; item++) {
 
             // Add the node to the screen
             svg.append("rect")
-                .attr("id",treeNodes[item].name)
+                .attr("id",(item === 0 ? "tqi" : "quality_aspects") + "^" + treeNodes[item].name)
                 .attr("width", treeNodes[item].width)
                 .attr("height", treeNodes[item].height)
                 .attr("rx", 2)
@@ -349,7 +350,7 @@ export default function TreeDisplay(props) {
         }
 
         // Turn off click events for TQI node
-        d3.select("rect").attr("id",treeNodes[item].name).on("click",null);
+        d3.select("rect").attr("id","tqi^"+treeNodes[item].name).on("click",null);
 
         const findProductFactor = (name) => {
             for (let pf in p_factors) {
@@ -375,13 +376,15 @@ export default function TreeDisplay(props) {
 
         const handleMeasureEdgesToggle = (e) => {
 
+            const measure_name = e.path[0].id.split("^")[1]
+
             let measureChildrenVisibilityCopy = measureChildrenVisibility;
-            measureChildrenVisibilityCopy[e.path[0].id] = !measureChildrenVisibilityCopy[e.path[0].id];
+            measureChildrenVisibilityCopy[measure_name] = !measureChildrenVisibilityCopy[measure_name];
             setMeasureChildrenVisibility({...measureChildrenVisibilityCopy});
         }
 
         /**
-         * Creating the measure nodes in the tree display.
+         * Creating the measure nodes in the treeDisplay display.
          */
 
         for (let pf = 0; pf < p_factors.length; pf++) {
@@ -485,6 +488,7 @@ export default function TreeDisplay(props) {
 
                             const diag_x = calc_diag_x(i)
                             svg.append("rect")
+                                .attr("id","diagnostics^"+props.fileData["diagnostics"][diagnostic_name].name)
                                 .attr("width", node_width)
                                 .attr("height", node_height)
                                 .attr("rx", 2)
@@ -521,7 +525,7 @@ export default function TreeDisplay(props) {
                      */
 
                     svg.append("rect")
-                        .attr("id",props.fileData.measures[measure_name].name)
+                        .attr("id","measures^"+props.fileData.measures[measure_name].name)
                         .attr("width", node_width)
                         .attr("height", node_height)
                         .attr("rx", 2)
@@ -558,13 +562,13 @@ export default function TreeDisplay(props) {
 
 
         /**
-         * Creating the product factor nodes in the tree display.
+         * Creating the product factor nodes in the treeDisplay display.
          */
 
         for (let i = 0; i < p_factors.length; i++) {
             // Add the node to the screen
             svg.append("rect")
-                .attr("id","p_factor^" + p_factors[i].name)
+                .attr("id","product_factors^" + p_factors[i].name)
                 .attr("width", p_factors[i].width)
                 .attr("height", p_factors[i].height)
                 .attr("rx", 2)
@@ -598,13 +602,33 @@ export default function TreeDisplay(props) {
                 .attr("text-anchor","middle");
         }
 
+        const handleClickingNodeForDescriptionPanel = (e) => {
+            /*if (nodesForPanelBoxes.length === 0 || nodesForPanelBoxes.map((node) => {
+                if (node.name === e.path[0].id) return false
+                console.log(node.name , "    ", e.path[0].id)
+            })) {
+                console.log("In the if loop because haven't clicked this")
+            }
+            else console.log("clicked on this")*/
+
+            // testing out the side node panel
+            /*
+            let nfpa = nodesForPanelBoxes;
+            if (nodesForPanelBoxes.length < 5) {
+                nfpa = [
+                    ...nfpa,
+                    props.fileData.factors.quality_aspects[e.path[0].id]
+                ]
+                setNodesForPanelBoxes(nfpa)
+            }
+             */
+            // ------------------------------
+            console.log(e.path[0].id)
+        }
+
         // ------------------- Draw the panelAdd box clickers to each node -----------------------------
         const nodes = d3.selectAll("rect")._groups[0];
         const num_of_nodes = nodes.length
-
-        const addNode = (e) => {
-            console.log("clicked ", e)
-        }
 
         for (let i = 0; i < num_of_nodes; i++) {
 
@@ -614,7 +638,7 @@ export default function TreeDisplay(props) {
             const height = nodes[i].height.animVal.value;
 
             svg.append("rect")
-                .attr("class", "description_clickers")
+                .attr("id","description_clicker^" + nodes[i].id)
                 .attr("width", width / 8)
                 .attr("height", width / 8)
                 .attr("rx", 2)
@@ -622,8 +646,8 @@ export default function TreeDisplay(props) {
                 .attr("y", y + height / 20)
                 .style("fill", "blue")
                 .style("stroke-width", "1px")
-                .style("stroke", "orange")
-                .on("click",addNode)
+                .style("stroke", "purple")
+                .on("click",handleClickingNodeForDescriptionPanel)
         }
         // ------------------------------------------------------------------
 
@@ -645,27 +669,6 @@ export default function TreeDisplay(props) {
             setWantToDrag(true)
         }
 
-        const handleAddingNodeToDescriptionPanel = (e) => {
-            /*if (nodesForPanelBoxes.length === 0 || nodesForPanelBoxes.map((node) => {
-                if (node.name === e.path[0].id) return false
-                console.log(node.name , "    ", e.path[0].id)
-            })) {
-                console.log("In the if loop because haven't clicked this")
-            }
-            else console.log("clicked on this")*/
-
-            // testing out the side node panel
-            let nfpa = nodesForPanelBoxes;
-            if (nodesForPanelBoxes.length < 5) {
-                nfpa = [
-                    ...nfpa,
-                    props.fileData.factors.quality_aspects[e.path[0].id]
-                ]
-                setNodesForPanelBoxes(nfpa)
-            }
-            // ------------------------------
-        }
-
         d3.select("body")
             .on("mouseenter",handleMouseHoveringInBody)
 
@@ -679,12 +682,16 @@ export default function TreeDisplay(props) {
         // --------------------------------------------------------------
     }
 
-    const resetView = () => {
+    const resetTreeView = () => {
         setWidth(nodesForPanelBoxes.length > 0 ? window.innerWidth * 65 / 100 : window.innerWidth);
         setHeight(window.innerHeight * 0.75 * 0.99);  // Original code before flexbox
         //setHeight(window_height);   // Code with flexbox
         setX(0);
         setY(0);
+    }
+
+    const resetTreeDisplay = () => {
+        // Reset all children visibility to false, as if you're opening up display for first time.
     }
 
     // Adjusts SVG when node description panel opens up
@@ -709,7 +716,10 @@ export default function TreeDisplay(props) {
                 {nodesForPanelBoxes.length > 0 ? <NodeDescriptionPanel nodes={nodesForPanelBoxes}/> : null}
             </div>
 
-            <span><button id={"reset_buttons"} onClick={resetView}>Reset Tree View</button></span>
+            <span id={"reset_tree_buttons_span"}>
+                <button className={"reset_buttons"} onClick={resetTreeView}>Reset Tree View</button>
+                <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree Display</button>
+            </span>
         </>
     )
 }

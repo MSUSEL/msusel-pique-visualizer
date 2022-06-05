@@ -1,7 +1,7 @@
 import React from "react";
-import "./fileHandling/UploadFile";
+import "./components/fileHandling/UploadFile";
 import {TopHeader} from "./components/top_header/TopHeader";
-import {UploadFile} from "./fileHandling/UploadFile";
+import {UploadFile} from "./components/fileHandling/UploadFile";
 
 
 function App() {

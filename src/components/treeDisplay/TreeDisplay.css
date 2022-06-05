@@ -20,8 +20,12 @@ button {
     margin: 10px auto auto;
 }
 
-#reset_buttons {
-    display: block;
+#reset_buttons_tree_span {
+
+}
+
+.reset_buttons {
+    display: inline-block;
     margin: 10px auto auto;
 }
 
@@ -31,8 +35,4 @@ button {
     width: 100%;
     margin: 0;
     padding: 0;
-}
-
-.description_clickers {
-
 }
