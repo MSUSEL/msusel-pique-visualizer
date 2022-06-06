@@ -4,7 +4,7 @@ import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
 import NodeDescriptionPanel from "../nodeDescriptionPanel/NodeDescriptionPanel";
-import {findPIQUENode} from "./TreeDisplayDescriptionClickerHelper";
+import {findPIQUENode} from "./TreeDisplayHelpers";
 
 
 export default function TreeDisplay(props) {
@@ -346,6 +346,8 @@ export default function TreeDisplay(props) {
             .attr("dominant-baseline","middle")
             .attr("text-anchor","middle");
 
+        // Adding the quality factor nodes
+
         for (let item = 1; item < treeNodes.length; item++) {
 
             // Add the node to the screen
@@ -383,8 +385,6 @@ export default function TreeDisplay(props) {
                 .attr("dominant-baseline","middle")
                 .attr("text-anchor","middle");
         }
-
-        if (item === 0) console.log(treeNodes[item].name)
 
         const findProductFactor = (name) => {
             for (let pf in p_factors) {
@@ -637,35 +637,27 @@ export default function TreeDisplay(props) {
         }
 
         const handleClickingNodeForDescriptionPanel = (e) => {
-            /*if (nodesForPanelBoxes.length === 0 || nodesForPanelBoxes.map((node) => {
-                if (node.name === e.path[0].id) return false
-                console.log(node.name , "    ", e.path[0].id)
-            })) {
-                console.log("In the if loop because haven't clicked this")
-            }
-            else console.log("clicked on this")*/
-
-            // testing out the side node panel
-
             let nfpa = nodesForPanelBoxes;
 
             const clicked_id_name = e.path[0].id.split("^")[2];
 
             if (nodesForPanelBoxes.filter(n => n["name"] === clicked_id_name).length > 0) {
                 nfpa = nfpa.filter((e => e.name !== clicked_id_name))
-                setNodesForPanelBoxes(nfpa)
             }
             else if (nodesForPanelBoxes.length < 5) {
                 nfpa = [
                     ...nfpa,
                     findPIQUENode(props.fileData,e.path[0].id)
                 ]
-                setNodesForPanelBoxes(nfpa)
             }
             else {
                 alert("Max amount of descriptions in side panel (5).\n" +
                     "Remove nodes from side panel to add more.")
             }
+
+            nfpa.sort((a,b) => (a.name > b.name ? 1 : -1))
+            setNodesForPanelBoxes(nfpa)
+
 
             // ------------------------------
         }
