@@ -4,6 +4,7 @@ import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
 import NodeDescriptionPanel from "../nodeDescriptionPanel/NodeDescriptionPanel";
+import {findPIQUENode} from "./TreeDisplayDescriptionClickerHelper";
 
 
 export default function TreeDisplay(props) {
@@ -311,11 +312,45 @@ export default function TreeDisplay(props) {
          * Creating the TQI and quality factor nodes in the treeDisplay display.
          */
 
-        for (let item = 0; item < treeNodes.length; item++) {
+        // Add the node to the screen
+        svg.append("rect")
+            .attr("id","tqi^" + treeNodes[0].name)
+            .attr("width", treeNodes[0].width)
+            .attr("height", treeNodes[0].height)
+            .attr("rx", 2)
+            .attr("x", treeNodes[0].x)
+            .attr("y", treeNodes[0].y)
+            .style("fill",NodeRiskColor(treeNodes[0].json_data.value))
+            .style("stroke-width", "2px")
+            .style("stroke", "black")
+
+        // ------------------------
+        // Adding the tqi text
+        // ------------------------
+        // Add the node's name
+        svg.append("text").text(treeNodes[0].name)
+            .attr("font-size","10px")
+            .attr("font-weight","bold")
+            .attr("x", treeNodes[0].x + node_width * 0.5)
+            .attr("y", treeNodes[0].y + node_height * 0.4)
+            .attr("fill", "black")
+            .attr("dominant-baseline","middle")
+            .attr("text-anchor","middle");
+
+        // Add the node's value
+        svg.append("text").text(treeNodes[0].json_data.value.toFixed(8))
+            .attr("font-size","12px")
+            .attr("x", treeNodes[0].x + node_width * 0.5)
+            .attr("y", treeNodes[0].y + node_height * 0.6)
+            .attr("fill", "black")
+            .attr("dominant-baseline","middle")
+            .attr("text-anchor","middle");
+
+        for (let item = 1; item < treeNodes.length; item++) {
 
             // Add the node to the screen
             svg.append("rect")
-                .attr("id",(item === 0 ? "tqi" : "quality_aspects") + "^" + treeNodes[item].name)
+                .attr("id","quality_aspects^" + treeNodes[item].name)
                 .attr("width", treeNodes[item].width)
                 .attr("height", treeNodes[item].height)
                 .attr("rx", 2)
@@ -349,8 +384,7 @@ export default function TreeDisplay(props) {
                 .attr("text-anchor","middle");
         }
 
-        // Turn off click events for TQI node
-        d3.select("rect").attr("id","tqi^"+treeNodes[item].name).on("click",null);
+        if (item === 0) console.log(treeNodes[item].name)
 
         const findProductFactor = (name) => {
             for (let pf in p_factors) {
@@ -612,18 +646,28 @@ export default function TreeDisplay(props) {
             else console.log("clicked on this")*/
 
             // testing out the side node panel
-            /*
+
             let nfpa = nodesForPanelBoxes;
-            if (nodesForPanelBoxes.length < 5) {
+
+            const clicked_id_name = e.path[0].id.split("^")[2];
+
+            if (nodesForPanelBoxes.filter(n => n["name"] === clicked_id_name).length > 0) {
+                nfpa = nfpa.filter((e => e.name !== clicked_id_name))
+                setNodesForPanelBoxes(nfpa)
+            }
+            else if (nodesForPanelBoxes.length < 5) {
                 nfpa = [
                     ...nfpa,
-                    props.fileData.factors.quality_aspects[e.path[0].id]
+                    findPIQUENode(props.fileData,e.path[0].id)
                 ]
                 setNodesForPanelBoxes(nfpa)
             }
-             */
+            else {
+                alert("Max amount of descriptions in side panel (5).\n" +
+                    "Remove nodes from side panel to add more.")
+            }
+
             // ------------------------------
-            console.log(e.path[0].id)
         }
 
         // ------------------- Draw the panelAdd box clickers to each node -----------------------------
@@ -692,21 +736,47 @@ export default function TreeDisplay(props) {
 
     const resetTreeDisplay = () => {
         // Reset all children visibility to false, as if you're opening up display for first time.
+        setQAChildrenEdgeVisibility(() => {
+            let obj = qaChildrenEdgeVisibility;
+            for (let qa in obj) {
+                obj[qa] = false;
+            }
+            return obj;
+        });
+        setPFChildrenVisibility(() => {
+            let obj = qaChildrenEdgeVisibility;
+            for (let pf in obj) {
+                obj[pf] = false;
+            }
+            return obj;
+        });
+        setMeasureChildrenVisibility(() => {
+            let obj = qaChildrenEdgeVisibility;
+            for (let m in obj) {
+                obj[m] = false;
+            }
+            return obj;
+        });
+    }
+
+    const clearSidePanel = () => {
+        setNodesForPanelBoxes([]);
     }
 
     // Adjusts SVG when node description panel opens up
     useEffect(() => {
-        // When node description pane opens up
-        if (nodesForPanelBoxes.length === 1) {
-            // Multiply width by reciprocal of the vw of the node description panel
-            setWidth(w => w * 65 / 100)
-        }
+        // When node description pane opens up or closes
+        if (nodesForPanelBoxes.length === 1 || nodesForPanelBoxes.length === 0) adjustSVGForWindowResize();
     }, [nodesForPanelBoxes.length])
 
     // Adjust SVG when window is resized.
-    window.onresize = () => {
+    const adjustSVGForWindowResize = () => {
         setWidth(window.innerWidth * (nodesForPanelBoxes.length > 0 ? 65/100 : 1))
         setHeight(window.innerHeight * 0.75 * 0.99)
+    }
+
+    window.onresize = () => {
+        adjustSVGForWindowResize()
     };
 
     return (
@@ -716,10 +786,11 @@ export default function TreeDisplay(props) {
                 {nodesForPanelBoxes.length > 0 ? <NodeDescriptionPanel nodes={nodesForPanelBoxes}/> : null}
             </div>
 
-            <span id={"reset_tree_buttons_span"}>
+            <div id={"reset_tree_buttons_div"}>
                 <button className={"reset_buttons"} onClick={resetTreeView}>Reset Tree View</button>
                 <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree Display</button>
-            </span>
+                {nodesForPanelBoxes.length > 0 ? <button className={"reset_buttons"} onClick={clearSidePanel}>Clear Side Panel</button> : null}
+            </div>
         </>
     )
 }

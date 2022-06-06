@@ -15,18 +15,20 @@
     height: 100%;
 }
 
-button {
-    display: block;
-    margin: 10px auto auto;
-}
-
-#reset_buttons_tree_span {
-
+#reset_tree_buttons_div {
+    text-align: center;
+    margin: 15px auto auto;
 }
 
 .reset_buttons {
     display: inline-block;
-    margin: 10px auto auto;
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.reset_buttons:hover {
+    background-color: lightgrey;
 }
 
 #canvas_container {

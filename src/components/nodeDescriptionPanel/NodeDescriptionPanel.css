@@ -11,14 +11,15 @@
     border-bottom: black solid 2px;
 }
 
-.node-panel-bottom {
+.node-bottom-panel {
     height: 20%;
     font-size: 0.8vw;
     background-color: lightgreen;
 }
 
 .node-name {
-    border-bottom: black solid 1px;
+    border-bottom: black dashed 1px;
+    font-size: 1vw;
     text-align: center;
     font-weight: bold;
 }

@@ -12,7 +12,7 @@ export default function NodeDescriptionPanel(props) {
 
     function makeNodePanelRectangles() {
         return (nodes.map( (node,i = node.hashCode()) => (
-                <div className={`${nodes.length !== 5 ? "node-panel" : node.name === nodes[4].name ? "node-panel-bottom" : "node-panel"}`} key={i}>
+                <div className={`${nodes.length !== 5 ? "node-panel" : node.name === nodes[4].name ? "node-bottom-panel" : "node-panel"}`} key={i}>
                     <div className="node-name">{node.name}</div>
                     <div>{node.value}</div>
                     <div>{node.description}</div>
