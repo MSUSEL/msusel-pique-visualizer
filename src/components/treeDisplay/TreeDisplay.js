@@ -4,7 +4,7 @@ import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
 import NodeDescriptionPanel from "../nodeDescriptionPanel/NodeDescriptionPanel";
-import {findPIQUENode} from "./TreeDisplayHelpers";
+import {determineDescriptionClickerColor, findPIQUENode} from "./TreeDisplayHelpers";
 
 
 export default function TreeDisplay(props) {
@@ -664,7 +664,7 @@ export default function TreeDisplay(props) {
 
         // ------------------- Draw the panelAdd box clickers to each node -----------------------------
         const nodes = d3.selectAll("rect")._groups[0];
-        const num_of_nodes = nodes.length
+        const num_of_nodes = nodes.length;
 
         for (let i = 0; i < num_of_nodes; i++) {
 
@@ -680,7 +680,7 @@ export default function TreeDisplay(props) {
                 .attr("rx", 2)
                 .attr("x", x + 27 * width / 32)
                 .attr("y", y + height / 20)
-                .style("fill", "blue")
+                .style("fill", determineDescriptionClickerColor(nodesForPanelBoxes,nodes[i].id))
                 .style("stroke-width", "1px")
                 .style("stroke", "purple")
                 .on("click",handleClickingNodeForDescriptionPanel)

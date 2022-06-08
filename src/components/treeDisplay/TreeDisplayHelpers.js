@@ -2,7 +2,7 @@
  * Return the correct node from the PIQUE .json output file.
  *
  * @param fileData PIQUE .json output file.
- * @param clicked_ID the ID of the clicked description clicker box.
+ * @param clicked_ID ID of the clicked description clicker box.
  */
 export function findPIQUENode(fileData,clicked_ID) {
     const split_clicked_ID = clicked_ID.split("^");
@@ -19,4 +19,23 @@ export function findPIQUENode(fileData,clicked_ID) {
         return fileData[node_type][node_name]
     }
 
+}
+
+/**
+ * Determines the color of the description clicker (the box in the top right corner of each node)
+ * Shouldn't be a costly algorithm since there are a max 100+ description clickers on screen, and
+ * the side panel can only hold <= 5 nodes... so max ~500 comparisons
+ *
+ * @param nodesForPanelBoxes the nodes in the side panel
+ * @param selected_id ID of description clicker box that was clicked
+ */
+export function determineDescriptionClickerColor(nodesForPanelBoxes,selected_id) {
+    const panel_names = nodesForPanelBoxes.map(
+        node => node.name
+    )
+
+    const id_name = selected_id.split("^")[1];
+
+    if (panel_names.includes(id_name)) return "red"
+    else return "blue"
 }

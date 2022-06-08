@@ -1,5 +1,6 @@
 import "./NodeDescriptionPanel.css"
 import {useEffect, useState} from "react";
+import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
 
 export default function NodeDescriptionPanel(props) {
 
@@ -13,9 +14,7 @@ export default function NodeDescriptionPanel(props) {
     function makeNodePanelRectangles() {
         return (nodes.map( (node,i = node.hashCode()) => (
                 <div className={`${nodes.length !== 5 ? "node-panel" : node.name === nodes[4].name ? "node-bottom-panel" : "node-panel"}`} key={i}>
-                    <div className="node-name">{node.name}</div>
-                    <div>{node.value}</div>
-                    <div>{node.description}</div>
+                    {determineNodeInfo(node)}
                 </div>
                 )
             )
