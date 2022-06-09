@@ -20,6 +20,7 @@
 .node-name {
     border-bottom: black dashed 1px;
     font-size: 1vw;
-    text-align: center;
     font-weight: bold;
+    text-align: center;
 }
+
