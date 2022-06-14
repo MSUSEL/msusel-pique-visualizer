@@ -11,9 +11,15 @@ export default function NodeDescriptionPanel(props) {
         setNodes(props.nodes)
     },[props.nodes])
 
+    function determinePanelHeight() {
+        const height = 100/nodes.length;
+        if (height > 34) return 33.33;
+        return height;
+    }
+
     function makeNodePanelRectangles() {
         return (nodes.map( (node,i = node.hashCode()) => (
-                <div className={`${nodes.length !== 5 ? "node-panel" : node.name === nodes[4].name ? "node-bottom-panel" : "node-panel"}`} key={i}>
+                <div className={`${i === nodes.length-1 ? (nodes.length > 2 ? "node-bottom-panel" : "node-panel") : "node-panel"}`} style={{height : `${determinePanelHeight()}%`}} key={i}>
                     {determineNodeInfo(node)}
                 </div>
                 )

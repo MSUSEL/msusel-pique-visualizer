@@ -10,12 +10,18 @@ export function determineNodeInfo(node) {
     return (
         <>
             <div className="node-name">{node.name}</div>
-            <div><b>Node Type: </b>{node_type}</div>
-            <div><b>Value: </b>{node.value.toFixed(5)}</div>
-            {node.description !== "" ? <div><b>Description: </b>{node.description}</div> : null}
-            {node_type === "Measure" ? <div><b>Thresholds: </b>[{getThresholds(node)}]</div> : null}
-            {node_type === "Diagnostic" ? <div><b>Tool:</b>{node.toolName}</div> : null}
+            <div className="node-info">
+                <div><b>Node Type: </b>{node_type}</div>
+                <div><b>Value: </b>{node.value.toFixed(5)}</div>
+                {node.description !== "" ? <div><b>Description: </b>{node.description}</div> : null}
+                {node_type === "Measure" ? <div><b>Thresholds: </b>[{getThresholds(node)}]</div> : null}
+                {node_type === "Diagnostic" ? <div><b>Tool: </b>{node.toolName}</div> : null}
+                <div><b>Evaluation Strategy: </b>{node.eval_strategy}</div>
+                <div><b>Normalizer: </b>{node.normalizer}</div>
+                <div><b>Utility Function: </b>{node.utility_function}</div>
+            </div>
         </>
+
     )
 }
 

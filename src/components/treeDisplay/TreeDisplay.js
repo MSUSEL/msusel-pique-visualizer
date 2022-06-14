@@ -4,7 +4,7 @@ import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
 import NodeDescriptionPanel from "../nodeDescriptionPanel/NodeDescriptionPanel";
-import {determineDescriptionClickerColor, findPIQUENode} from "./TreeDisplayHelpers";
+import {determineDescriptionClickerBorder, determineDescriptionClickerColor, findPIQUENode} from "./TreeDisplayHelpers";
 
 
 export default function TreeDisplay(props) {
@@ -398,12 +398,15 @@ export default function TreeDisplay(props) {
 
             let pfChildrenVisibilityCopy = pfChildrenVisibility;
 
+            // What we will toggle the visibility to for the chosen quality aspect
+            const toggle_to = !pfChildrenVisibilityCopy[pf_node.name];
+
             // Toggle off any visible edges from other product factors
             for (let prop in pfChildrenVisibilityCopy) {
-                if (prop !== pf_node.name) pfChildrenVisibilityCopy[prop] = false;
+                pfChildrenVisibilityCopy[prop] = false;
             }
 
-            pfChildrenVisibilityCopy[pf_node.name] = pfChildrenVisibilityCopy[pf_node.name] === false;
+            pfChildrenVisibilityCopy[pf_node.name] = toggle_to;
             setPFChildrenVisibility({...pfChildrenVisibilityCopy})
 
         }
@@ -682,7 +685,7 @@ export default function TreeDisplay(props) {
                 .attr("y", y + height / 20)
                 .style("fill", determineDescriptionClickerColor(nodesForPanelBoxes,nodes[i].id))
                 .style("stroke-width", "1px")
-                .style("stroke", "purple")
+                .style("stroke", determineDescriptionClickerBorder(nodesForPanelBoxes,nodes[i].id))
                 .on("click",handleClickingNodeForDescriptionPanel)
         }
         // ------------------------------------------------------------------

@@ -36,6 +36,17 @@ export function determineDescriptionClickerColor(nodesForPanelBoxes,selected_id)
 
     const id_name = selected_id.split("^")[1];
 
-    if (panel_names.includes(id_name)) return "red"
-    else return "blue"
+    if (panel_names.includes(id_name)) return "#F02113"
+    else return "#13F06E"
+}
+
+export function determineDescriptionClickerBorder(nodesForPanelBoxes,selected_id) {
+    const panel_names = nodesForPanelBoxes.map(
+        node => node.name
+    )
+
+    const id_name = selected_id.split("^")[1];
+
+    if (panel_names.includes(id_name)) return "#A3261D"
+    else return "#22BD37"
 }

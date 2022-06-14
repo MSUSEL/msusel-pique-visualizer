@@ -5,14 +5,12 @@
 }
 
 .node-panel {
-    height: 20%;
     font-size: 0.8vw;
     background-color: lightgreen;
     border-bottom: black solid 2px;
 }
 
 .node-bottom-panel {
-    height: 20%;
     font-size: 0.8vw;
     background-color: lightgreen;
 }
@@ -21,6 +19,14 @@
     border-bottom: black dashed 1px;
     font-size: 1vw;
     font-weight: bold;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25%;
+}
+
+.node-info {
+    overflow-y: auto;
+    height: 75%;
 }
 
