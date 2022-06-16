@@ -1,3 +1,4 @@
-#unselectableText {
+#PIQUE_name {
     user-select: none;
+    text-align: center;
 }
