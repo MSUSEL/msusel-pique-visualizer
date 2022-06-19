@@ -21,7 +21,7 @@ export function UploadFile() {
 
     return (
         <div className="unselectableText">
-            {file ? <h4 align={"center"} unselectable={"on"}>{fileJSON.name}</h4> : <h4 align={"center"} unselectable={"on"}>Upload PIQUE json file to visualize the results.</h4>}
+            {file ? <h4 id={"filename"}>{fileJSON.name}</h4> : <h4 align={"center"} unselectable={"on"}>Upload PIQUE json file to visualize the results.</h4>}
             {file ? null : <input type="file" id={"fileChooser"} onChange={handleChange} />}
             {file ? <TreeDisplay fileData={fileJSON}/> : null}
         </div>

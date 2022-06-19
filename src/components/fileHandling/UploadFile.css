@@ -5,3 +5,11 @@
     text-align: center;
     text-align-last: center;
 }
+
+#filename {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    height: 5vh;
+}
