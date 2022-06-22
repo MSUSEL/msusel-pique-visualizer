@@ -51,6 +51,27 @@ export default function TreeDisplay(props) {
         return pfParentEdges;
     })
 
+    const [pfParentClicked,setPFParentClicked] = useState(null);
+
+    const [measureWithParentsShowing,setMeasureWithParentsShowing] = useState(null);
+    const [measureWithParentsShowingCoordinates,setMeasureWithParentsShowingCoordinates] = useState([])
+    const [measuresWithMultipleParents] = useState(() => {
+        let measures = {};
+        for (let measure in props.fileData.measures) {
+            measures[measure] = 0;
+        }
+        for (let pf in props.fileData.factors.product_factors) {
+            for (let weight in props.fileData.factors.product_factors[pf].weights) {
+                measures[weight]++;
+            }
+        }
+        let multipleParentMeasures = {}
+        for (let measure in measures) {
+            if (measures[measure] > 1) multipleParentMeasures[measure] = true;
+        }
+        return {...multipleParentMeasures}
+    })
+
     const [nodesForPanelBoxes,setNodesForPanelBoxes] = useState([]);
 
     const [width,setWidth] = useState(window.innerWidth);
@@ -447,6 +468,40 @@ export default function TreeDisplay(props) {
          * Creating the measure nodes in the treeDisplay display.
          */
 
+        // Create measure parent links if applicable
+        if (measureWithParentsShowing !== null) {
+
+            const mid_x = measureWithParentsShowingCoordinates[0] + node_width/2;
+            const y_cor = measureWithParentsShowingCoordinates[1];
+
+            // Find product factors that use the measure as a weight
+            let parents = [];
+
+            for (let pf in props.fileData.factors.product_factors) {
+                for (let weight in props.fileData.factors.product_factors[pf].weights) {
+                    if (weight === measureWithParentsShowing) parents.push(pf)
+                }
+            }
+
+            // need to filter for only product factors that use the measure as a weight
+            for (let pf in p_factors) {
+
+                if (parents.includes(p_factors[pf].name)) {
+                    const link = d3.linkHorizontal()({
+                        source: ([p_factors[pf].node_center_x, p_factors[pf].node_center_y]),
+                        target: ([mid_x, y_cor + 2])
+                    });
+
+                    // Drawing the link between measure and product factor parents
+                    svg.append("path")
+                        .attr('d', link)
+                        .attr("stroke-width", "2px")
+                        .attr('stroke', 'black')
+                        .attr('fill', 'none');
+                }
+            }
+        }
+
         for (let pf = 0; pf < p_factors.length; pf++) {
 
 
@@ -693,14 +748,40 @@ export default function TreeDisplay(props) {
             const clicked_id_name = e.path[0].id.split("^")[2];
 
             let pf = pfWithParentsShowing;
+
+            if (pfParentClicked === null) setPFParentClicked(clicked_id_name);
+            else {
+                if (pfParentClicked !== clicked_id_name) {
+                    for (let qa in pf) {
+                        pf[qa][pfParentClicked] = false;
+                    }
+                    setPFParentClicked(clicked_id_name);
+                }
+                else setPFParentClicked(null);
+            }
+
             for (let qa in pf) {
                 pf[qa][clicked_id_name] = !pf[qa][clicked_id_name];
             }
             setPFWithParentsShowing({...pf})
-
         }
 
         const handleClickingMParentClicker = (e) => {
+            console.log(e.path[0].id)
+
+            const clicked_id_name = e.path[0].id.split("^")[2];
+
+            if (measureWithParentsShowing === clicked_id_name) {
+                setMeasureWithParentsShowing(null);
+                setMeasureWithParentsShowingCoordinates([]);
+            }
+            else {
+                setMeasureWithParentsShowing(clicked_id_name)
+                const measure = [...d3.selectAll("rect")._groups[0]].filter((node) => node.id.split("^")[1] === clicked_id_name);
+                setMeasureWithParentsShowingCoordinates([parseFloat(measure[0].attributes.x.value),parseFloat(measure[0].attributes.y.value)])
+            }
+
+
 
         }
 
@@ -732,7 +813,7 @@ export default function TreeDisplay(props) {
                 .on("click",handleClickingNodeForDescriptionPanel)
 
             const node_type = nodes[i].id.split("^")[0];
-            if (node_type === "product_factors" || node_type === "measures") {
+            if (node_type === "product_factors" || (node_type === "measures" && measuresWithMultipleParents.hasOwnProperty(nodes[i].id.split("^")[1]))) {
                 svg.append("rect")
                     .attr("id", "parents_clicker^" + nodes[i].id)
                     .attr("width", width / 8)
@@ -740,9 +821,9 @@ export default function TreeDisplay(props) {
                     .attr("rx", 10)
                     .attr("x", x + width / 32)
                     .attr("y", y + height / 20)
-                    .style("fill", determineParentClickerColor(pfWithParentsShowing, nodes[i].id))
+                    .style("fill", determineParentClickerColor(node_type === "product_factors" ? pfParentClicked : measureWithParentsShowing, nodes[i].id))
                     .style("stroke-width", "1px")
-                    .style("stroke", determineParentClickerBorder(pfWithParentsShowing, nodes[i].id))
+                    .style("stroke", determineParentClickerBorder(node_type === "product_factors" ? pfParentClicked : measureWithParentsShowing, nodes[i].id))
                     .on("click", node_type === "product_factors" ? handleClickingPFParentClicker : handleClickingMParentClicker)
             }
 
@@ -813,16 +894,19 @@ export default function TreeDisplay(props) {
 
         setPFWithParentsShowing(() => {
             let pfParentEdges = {};
-
             for (let qa in props.fileData.factors.quality_aspects) {
-            pfParentEdges[qa] = {};
-            for (let pf in props.fileData.factors.product_factors) {
-                pfParentEdges[qa][pf] = false;
+                pfParentEdges[qa] = {};
+                for (let pf in props.fileData.factors.product_factors) {
+                    pfParentEdges[qa][pf] = false;
+                }
             }
-        }
-
-        return pfParentEdges;
+            return pfParentEdges;
         });
+
+        setPFParentClicked(null);
+
+        setMeasureWithParentsShowing(null);
+        setMeasureWithParentsShowingCoordinates([]);
     }
 
     const clearSidePanel = () => {
@@ -834,6 +918,11 @@ export default function TreeDisplay(props) {
         // When node description pane opens up or closes
         if (nodesForPanelBoxes.length === 1 || nodesForPanelBoxes.length === 0) adjustSVGForWindowResize();
     }, [nodesForPanelBoxes.length])
+
+    useEffect(() => {
+        setMeasureWithParentsShowing(null);
+        setMeasureWithParentsShowingCoordinates([]);
+    }, [pfChildrenVisibility])
 
     // Adjust SVG when window is resized.
     const adjustSVGForWindowResize = () => {

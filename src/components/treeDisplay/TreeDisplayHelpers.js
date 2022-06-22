@@ -51,20 +51,16 @@ export function determineDescriptionClickerBorder(nodesForPanelBoxes,selected_id
     else return "#22BD37"
 }
 
-export function determineParentClickerColor(nodesWithParentsShowing,selected_id) {
+export function determineParentClickerColor(nodeWithParentShowing,selected_id) {
     const id_name = selected_id.split("^")[1];
 
-    return "#13F06E"
-    /*
-    if (panel_names.includes(id_name)) return "#F02113"
-    else return "#13F06E"*/
+    if (nodeWithParentShowing === id_name) return "#F02113"
+    else return "#13F06E"
 }
 
-export function determineParentClickerBorder(nodesWithParentsShowing,selected_id) {
+export function determineParentClickerBorder(nodeWithParentShowing,selected_id) {
     const id_name = selected_id.split("^")[1];
 
-    return "#22BD37"
-    /*
-    if (nodesWithParentsShowing.includes(id_name)) return "#A3261D"
-    else return "#22BD37"*/
+    if (nodeWithParentShowing === id_name) return "#A3261D"
+    else return "#22BD37"
 }
