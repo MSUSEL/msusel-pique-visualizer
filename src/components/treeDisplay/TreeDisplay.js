@@ -4,7 +4,12 @@ import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
 import NodeDescriptionPanel from "../nodeDescriptionPanel/NodeDescriptionPanel";
-import {determineDescriptionClickerBorder, determineDescriptionClickerColor, findPIQUENode} from "./TreeDisplayHelpers";
+import {
+    determineDescriptionClickerBorder,
+    determineDescriptionClickerColor, determineParentClickerBorder,
+    determineParentClickerColor,
+    findPIQUENode
+} from "./TreeDisplayHelpers";
 
 
 export default function TreeDisplay(props) {
@@ -31,6 +36,19 @@ export default function TreeDisplay(props) {
             default_obj[measure] = false;
         }
         return default_obj;
+    })
+
+    const [pfWithParentsShowing,setPFWithParentsShowing] = useState(() => {
+        let pfParentEdges = {};
+
+        for (let qa in props.fileData.factors.quality_aspects) {
+            pfParentEdges[qa] = {};
+            for (let pf in props.fileData.factors.product_factors) {
+                pfParentEdges[qa][pf] = false;
+            }
+        }
+
+        return pfParentEdges;
     })
 
     const [nodesForPanelBoxes,setNodesForPanelBoxes] = useState([]);
@@ -253,9 +271,14 @@ export default function TreeDisplay(props) {
                     .attr('d', link)
                     .attr("stroke-width", "2px")
                     .attr('stroke', 'black')
-                    .attr("opacity",`${qaChildrenEdgeVisibility[treeNodes[aspect].name] ? 1 : 0.05}`)
+                    .attr("opacity",`${qaChildrenEdgeVisibility[treeNodes[aspect].name] || pfWithParentsShowing[treeNodes[aspect].name][p_factors[factor].name] ? 1 : 0.05}`)
                     .attr('fill', 'none')
 
+                // Need to find a way to make this way faster!!
+                /*
+                if (p_factors[factor].name === parentsShowing["product_factors"]) {
+                    d3.select("#" + treeNodes[aspect].name + "_edge" + factor).attr("opacity",1)
+                }*/
 
                 /*
                 How to do path transitions (work in progress)
@@ -661,11 +684,31 @@ export default function TreeDisplay(props) {
             nfpa.sort((a,b) => (a.name > b.name ? 1 : -1))
             setNodesForPanelBoxes(nfpa)
 
-
             // ------------------------------
         }
 
-        // ------------------- Draw the panelAdd box clickers to each node -----------------------------
+        const handleClickingPFParentClicker = (e) => {
+            console.log(e.path[0].id)
+
+            const clicked_id_name = e.path[0].id.split("^")[2];
+
+            let pf = pfWithParentsShowing;
+            for (let qa in pf) {
+                pf[qa][clicked_id_name] = !pf[qa][clicked_id_name];
+            }
+            setPFWithParentsShowing({...pf})
+
+        }
+
+        const handleClickingMParentClicker = (e) => {
+
+        }
+
+        /**
+         * Making the clicker boxes in the top corners of each node where, when clicked,
+         * will either add the node's information to the side panel in the display or
+         * show node's edges to its parents.
+         */
         const nodes = d3.selectAll("rect")._groups[0];
         const num_of_nodes = nodes.length;
 
@@ -687,6 +730,22 @@ export default function TreeDisplay(props) {
                 .style("stroke-width", "1px")
                 .style("stroke", determineDescriptionClickerBorder(nodesForPanelBoxes,nodes[i].id))
                 .on("click",handleClickingNodeForDescriptionPanel)
+
+            const node_type = nodes[i].id.split("^")[0];
+            if (node_type === "product_factors" || node_type === "measures") {
+                svg.append("rect")
+                    .attr("id", "parents_clicker^" + nodes[i].id)
+                    .attr("width", width / 8)
+                    .attr("height", width / 8)
+                    .attr("rx", 10)
+                    .attr("x", x + width / 32)
+                    .attr("y", y + height / 20)
+                    .style("fill", determineParentClickerColor(pfWithParentsShowing, nodes[i].id))
+                    .style("stroke-width", "1px")
+                    .style("stroke", determineParentClickerBorder(pfWithParentsShowing, nodes[i].id))
+                    .on("click", node_type === "product_factors" ? handleClickingPFParentClicker : handleClickingMParentClicker)
+            }
+
         }
         // ------------------------------------------------------------------
 
@@ -695,7 +754,9 @@ export default function TreeDisplay(props) {
             .attr("class","unselectableText")
 
 
-        // Attempt at helping drag feature. Needs some bug fixing though.
+        /**
+         * Helper functions for the drag feature of the display.
+         */
         const handleNodeMouseEnter = () => {
             setWantToDrag(false)
         }
@@ -714,9 +775,6 @@ export default function TreeDisplay(props) {
         d3.selectAll("rect")
             .on("mouseenter",handleNodeMouseEnter)
             .on("mouseleave",handleNodeMouseLeave)
-            //.on("dblclick",handleAddingNodeToDescriptionPanel)
-
-
 
         // --------------------------------------------------------------
     }
@@ -751,6 +809,19 @@ export default function TreeDisplay(props) {
                 obj[m] = false;
             }
             return obj;
+        });
+
+        setPFWithParentsShowing(() => {
+            let pfParentEdges = {};
+
+            for (let qa in props.fileData.factors.quality_aspects) {
+            pfParentEdges[qa] = {};
+            for (let pf in props.fileData.factors.product_factors) {
+                pfParentEdges[qa][pf] = false;
+            }
+        }
+
+        return pfParentEdges;
         });
     }
 
