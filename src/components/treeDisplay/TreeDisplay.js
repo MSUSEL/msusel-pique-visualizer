@@ -295,12 +295,6 @@ export default function TreeDisplay(props) {
                     .attr("opacity",`${qaChildrenEdgeVisibility[treeNodes[aspect].name] || pfWithParentsShowing[treeNodes[aspect].name][p_factors[factor].name] ? 1 : 0.05}`)
                     .attr('fill', 'none')
 
-                // Need to find a way to make this way faster!!
-                /*
-                if (p_factors[factor].name === parentsShowing["product_factors"]) {
-                    d3.select("#" + treeNodes[aspect].name + "_edge" + factor).attr("opacity",1)
-                }*/
-
                 /*
                 How to do path transitions (work in progress)
                 .attr("stroke-dasharray", `${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()} ${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()}`)
@@ -311,9 +305,7 @@ export default function TreeDisplay(props) {
                         .attr("stroke-dashoffset",0)
                  */
 
-
-                //let len = document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()
-                if (qaChildrenEdgeVisibility[treeNodes[aspect].name]) {
+                if (qaChildrenEdgeVisibility[treeNodes[aspect].name] || pfWithParentsShowing[treeNodes[aspect].name][p_factors[factor].name]) {
                     svg.append("text")
                         .attr("text-orientation", "upright")
                         .attr("dy", "-3")
@@ -471,8 +463,8 @@ export default function TreeDisplay(props) {
         // Create measure parent links if applicable
         if (measureWithParentsShowing !== null) {
 
-            const mid_x = measureWithParentsShowingCoordinates[0] + node_width/2;
-            const y_cor = measureWithParentsShowingCoordinates[1];
+            const measure_mid_x = measureWithParentsShowingCoordinates[0] + node_width/2;
+            const measure_y_cor = measureWithParentsShowingCoordinates[1];
 
             // Find product factors that use the measure as a weight
             let parents = [];
@@ -486,18 +478,31 @@ export default function TreeDisplay(props) {
             // need to filter for only product factors that use the measure as a weight
             for (let pf in p_factors) {
 
-                if (parents.includes(p_factors[pf].name)) {
+                if (parents.includes(p_factors[pf].name) && !pfChildrenVisibility[p_factors[pf].name]) {
                     const link = d3.linkHorizontal()({
-                        source: ([p_factors[pf].node_center_x, p_factors[pf].node_center_y]),
-                        target: ([mid_x, y_cor + 2])
+                        source: (p_factors[pf].node_center_x < measure_mid_x ? [p_factors[pf].node_center_x, p_factors[pf].node_center_y] : [measure_mid_x, measure_y_cor + 2]),
+                        target: (p_factors[pf].node_center_x < measure_mid_x ? [measure_mid_x, measure_y_cor + 2] : [p_factors[pf].node_center_x, p_factors[pf].node_center_y])
                     });
+
+                    console.log(measureWithParentsShowing)
 
                     // Drawing the link between measure and product factor parents
                     svg.append("path")
+                        .attr("id", measureWithParentsShowing +"_parentEdge" + p_factors[pf].name)
                         .attr('d', link)
                         .attr("stroke-width", "2px")
                         .attr('stroke', 'black')
                         .attr('fill', 'none');
+
+                    svg.append("text")
+                        .attr("text-orientation", "upright")
+                        .attr("dy", "-3")
+                        .attr("font-weight", "bold")
+                        .append("textPath")
+                        .attr("startOffset", `${(p_factors[pf].node_center_x < measure_mid_x ? 60 : (p_factors[pf].node_center_x > measure_mid_x) ? 30 : 25)}%`)
+                        .attr("font-size", "8px")
+                        .attr("xlink:href", "#" + measureWithParentsShowing +"_parentEdge" + p_factors[pf].name)
+                        .text(p_factors[pf].json_data.weights[measureWithParentsShowing].toFixed(6));
                 }
             }
         }
@@ -923,6 +928,13 @@ export default function TreeDisplay(props) {
         setMeasureWithParentsShowing(null);
         setMeasureWithParentsShowingCoordinates([]);
     }, [pfChildrenVisibility])
+
+    useEffect(() => {
+        if (measureWithParentsShowing) {
+            const measure = [...d3.selectAll("rect")._groups[0]].filter((node) => node.id.split("^")[1] === measureWithParentsShowing);
+            setMeasureWithParentsShowingCoordinates([parseFloat(measure[0].attributes.x.value),parseFloat(measure[0].attributes.y.value)])
+        }
+    },[width,height])
 
     // Adjust SVG when window is resized.
     const adjustSVGForWindowResize = () => {
