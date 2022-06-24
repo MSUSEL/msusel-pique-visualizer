@@ -72,6 +72,48 @@ export default function TreeDisplay(props) {
         return {...multipleParentMeasures}
     })
 
+    const [qaImpacts] = useState(() => {
+        let qa_impacts = {}
+        for (let weight in props.fileData.factors.tqi[Object.keys(props.fileData.factors.tqi)[0]].weights) {
+            qa_impacts[weight] = props.fileData.factors.tqi[Object.keys(props.fileData.factors.tqi)[0]].weights[weight] * (1 - props.fileData.factors.quality_aspects[weight].value)
+        }
+        console.log(qa_impacts)
+        return qa_impacts
+    })
+
+    const [pfImpacts] = useState(() => {
+        let pf_impacts = {}
+        for (let pf in props.fileData.factors.product_factors) {
+            pf_impacts[pf] = 0;
+        }
+        for (let qa in props.fileData.factors.quality_aspects) {
+            for (let weight in props.fileData.factors.quality_aspects[qa].weights) {
+                pf_impacts[weight] += (props.fileData.factors.quality_aspects[qa].weights[weight] * (1 - props.fileData.factors.product_factors[weight].value)) / (1 - props.fileData.factors.quality_aspects[qa].value) * qaImpacts[qa]
+            }
+        }
+        console.log(pf_impacts)
+        return pf_impacts
+    })
+
+    const [measureImpacts] = useState(() => {
+        let m_impacts = {}
+        for (let measure in props.fileData.measures) {
+            m_impacts[measure] = 0;
+        }
+        for (let pf in props.fileData.factors.product_factors) {
+            for (let weight in props.fileData.factors.product_factors[pf].weights) {
+                m_impacts[weight] += (props.fileData.factors.product_factors[pf].weights[weight] * (1 - props.fileData.measures[weight].value)) / (1 - props.fileData.factors.product_factors[pf].value) * pfImpacts[pf];
+            }
+        }
+
+        // Hopefully get rid of this in future
+        for (let m in m_impacts) {
+            if (isNaN(m_impacts[m])) m_impacts[m] = 0;
+        }
+
+        return m_impacts
+    })
+
     const [nodesForPanelBoxes,setNodesForPanelBoxes] = useState([]);
 
     const [width,setWidth] = useState(window.innerWidth);
@@ -108,11 +150,10 @@ export default function TreeDisplay(props) {
         // Creating the TQI node in treeDisplay nodes
         // --------------------------
 
-        let tqi_;
         const tqi_node_x = width/2 - node_width/2;
         const tqi_node_y = 15;
 
-        for (tqi_ in props.fileData.factors.tqi) {
+        for (let tqi_ in props.fileData.factors.tqi) {
             treeNodes.push(new TreeNode(props.fileData.factors.tqi[tqi_],node_width,node_height,tqi_node_x,tqi_node_y))
         }
 
