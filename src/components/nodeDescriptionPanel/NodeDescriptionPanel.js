@@ -20,7 +20,7 @@ export default function NodeDescriptionPanel(props) {
     function makeNodePanelRectangles() {
         return (nodes.map( (node,i = node.hashCode()) => (
                 <div className={`${i === nodes.length-1 ? (nodes.length > 2 ? "node-bottom-panel" : "node-panel") : "node-panel"}`} style={{height : `${determinePanelHeight()}%`}} key={i}>
-                    {determineNodeInfo(node)}
+                    {determineNodeInfo(node,props.impacts)}
                 </div>
                 )
             )

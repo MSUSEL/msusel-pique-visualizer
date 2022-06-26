@@ -74,10 +74,18 @@ export default function TreeDisplay(props) {
 
     const [qaImpacts] = useState(() => {
         let qa_impacts = {}
+        let qa_impacts_array = []
         for (let weight in props.fileData.factors.tqi[Object.keys(props.fileData.factors.tqi)[0]].weights) {
-            qa_impacts[weight] = props.fileData.factors.tqi[Object.keys(props.fileData.factors.tqi)[0]].weights[weight] * (1 - props.fileData.factors.quality_aspects[weight].value)
+            qa_impacts_array.push([weight, props.fileData.factors.tqi[Object.keys(props.fileData.factors.tqi)[0]].weights[weight] * (1 - props.fileData.factors.quality_aspects[weight].value)])
         }
-        console.log(qa_impacts)
+        qa_impacts_array.sort((qa1,qa2) => qa2[1] - qa1[1])
+
+        for (let item = 0; item < qa_impacts_array.length; item++) {
+            qa_impacts[qa_impacts_array[item][0]] = {
+                "rank" : item + 1,
+                "value" : qa_impacts_array[item][1]
+            }
+        }
         return qa_impacts
     })
 
@@ -88,10 +96,20 @@ export default function TreeDisplay(props) {
         }
         for (let qa in props.fileData.factors.quality_aspects) {
             for (let weight in props.fileData.factors.quality_aspects[qa].weights) {
-                pf_impacts[weight] += (props.fileData.factors.quality_aspects[qa].weights[weight] * (1 - props.fileData.factors.product_factors[weight].value)) / (1 - props.fileData.factors.quality_aspects[qa].value) * qaImpacts[qa]
+                pf_impacts[weight] += (props.fileData.factors.quality_aspects[qa].weights[weight] * (1 - props.fileData.factors.product_factors[weight].value)) / (1 - props.fileData.factors.quality_aspects[qa].value) * qaImpacts[qa].value
             }
         }
-        console.log(pf_impacts)
+        let pf_impacts_array = []
+        for (let pf in pf_impacts) {
+            pf_impacts_array.push([pf,pf_impacts[pf]])
+        }
+        pf_impacts_array.sort((pf1,pf2) => pf2[1] - pf1[1])
+        for (let item = 0; item < pf_impacts_array.length; item++) {
+            pf_impacts[pf_impacts_array[item][0]] = {
+                "rank" : item + 1,
+                "value" : pf_impacts_array[item][1]
+            }
+        }
         return pf_impacts
     })
 
@@ -102,17 +120,34 @@ export default function TreeDisplay(props) {
         }
         for (let pf in props.fileData.factors.product_factors) {
             for (let weight in props.fileData.factors.product_factors[pf].weights) {
-                m_impacts[weight] += (props.fileData.factors.product_factors[pf].weights[weight] * (1 - props.fileData.measures[weight].value)) / (1 - props.fileData.factors.product_factors[pf].value) * pfImpacts[pf];
+                m_impacts[weight] += (props.fileData.factors.product_factors[pf].weights[weight] * (1 - props.fileData.measures[weight].value)) / (1 - props.fileData.factors.product_factors[pf].value) * pfImpacts[pf].value;
             }
         }
-
         // Hopefully get rid of this in future
         for (let m in m_impacts) {
             if (isNaN(m_impacts[m])) m_impacts[m] = 0;
         }
-
+        let m_impacts_array = []
+        for (let m in m_impacts) {
+            m_impacts_array.push([m,m_impacts[m]])
+        }
+        m_impacts_array.sort((m1,m2) => m2[1] - m1[1])
+        for (let item = 0; item < m_impacts_array.length; item++) {
+            m_impacts[m_impacts_array[item][0]] = {
+                "rank" : item + 1,
+                "value" : m_impacts_array[item][1]
+            }
+        }
         return m_impacts
     })
+
+    const [impacts] = useState(
+        {
+            "Quality Aspect" : qaImpacts,
+            "Product Factor" : pfImpacts,
+            "Measure" : measureImpacts
+        }
+    )
 
     const [nodesForPanelBoxes,setNodesForPanelBoxes] = useState([]);
 
@@ -991,7 +1026,7 @@ export default function TreeDisplay(props) {
         <>
             <div id={"canvas_container"}>
                 <div id={"tree_canvas"} ref={tree_canvas}></div>
-                {nodesForPanelBoxes.length > 0 ? <NodeDescriptionPanel nodes={nodesForPanelBoxes}/> : null}
+                {nodesForPanelBoxes.length > 0 ? <NodeDescriptionPanel nodes={nodesForPanelBoxes} impacts={impacts}/> : null}
             </div>
 
             <div id={"reset_tree_buttons_div"}>
