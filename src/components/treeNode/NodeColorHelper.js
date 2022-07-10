@@ -2,7 +2,6 @@
     "Paraphrased" code from Xuying's PIQUE-lite for the color code - thanks Xuying!
  */
 
-
 const Severe = {
     name: 'Severe',
     color: '#cb0032'

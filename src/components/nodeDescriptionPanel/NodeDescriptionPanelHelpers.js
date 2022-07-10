@@ -63,6 +63,5 @@ export function determineNodeInfo(node,impacts) {
                 {getQualityImpactScore()}
             </div>
         </>
-
     )
 }

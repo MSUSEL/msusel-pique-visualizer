@@ -16,7 +16,6 @@ export function UploadFile() {
             setFile(e.target.result);
             setFileJSON(JSON.parse(e.target.result))
         };
-
     };
 
     return (

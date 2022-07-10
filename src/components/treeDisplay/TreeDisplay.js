@@ -11,7 +11,6 @@ import {
     findPIQUENode
 } from "./TreeDisplayHelpers";
 
-
 export default function TreeDisplay(props) {
 
     const [qaChildrenEdgeVisibility,setQAChildrenEdgeVisibility] = useState(() =>{
@@ -47,7 +46,6 @@ export default function TreeDisplay(props) {
                 pfParentEdges[qa][pf] = false;
             }
         }
-
         return pfParentEdges;
     })
 
@@ -123,9 +121,9 @@ export default function TreeDisplay(props) {
                 m_impacts[weight] += (props.fileData.factors.product_factors[pf].weights[weight] * (1 - props.fileData.measures[weight].value)) / (1 - props.fileData.factors.product_factors[pf].value) * pfImpacts[pf].value;
             }
         }
-        // Hopefully get rid of this in future
+
         for (let m in m_impacts) {
-            if (isNaN(m_impacts[m])) m_impacts[m] = 0;
+            if (isNaN(m_impacts[m])) m_impacts[m] = 0; // Hopefully get rid of this in future
         }
         let m_impacts_array = []
         for (let m in m_impacts) {
@@ -153,8 +151,7 @@ export default function TreeDisplay(props) {
 
     const [width,setWidth] = useState(window.innerWidth);
     // Make height slightly shorter due to SVG element height bug
-    const [height,setHeight] = useState(window.innerHeight * 0.75 * 0.99);   // Original code before flexbox
-    //const [height,setHeight] = useState(window_height);   // Code with flexbox
+    const [height,setHeight] = useState(window.innerHeight * 0.75 * 0.99);
     const [x,setX] = useState(0);
     const [y,setY] = useState(0);
 
@@ -181,9 +178,9 @@ export default function TreeDisplay(props) {
         // Tree nodes array only contains TQI and quality aspects nodes... maybe change later for clarity?
         let treeNodes = []
 
-        // --------------------------
-        // Creating the TQI node in treeDisplay nodes
-        // --------------------------
+        /**
+         * Creating the TQI node and putting its information into treeNodes array
+         */
 
         const tqi_node_x = width/2 - node_width/2;
         const tqi_node_y = 15;
@@ -192,9 +189,9 @@ export default function TreeDisplay(props) {
             treeNodes.push(new TreeNode(props.fileData.factors.tqi[tqi_],node_width,node_height,tqi_node_x,tqi_node_y))
         }
 
-        // --------------------------
-        // Creating the quality aspects nodes in treeDisplay nodes
-        // --------------------------
+        /**
+         * Creating the quality aspect nodes and putting their information into treeNodes array.
+         */
 
         const num_of_quality_aspects = Object.keys(props.fileData.factors.quality_aspects).length;
         const quality_aspect_spacing = node_width * 1.5;
@@ -211,9 +208,10 @@ export default function TreeDisplay(props) {
             treeNodes.push(new TreeNode(props.fileData.factors.quality_aspects[aspect],node_width,node_height,calc_quality_aspect_x(item++),160));
         }
 
-        // --------------------------
-        // Creating the p_factors list of product factors
-        // --------------------------
+        /**
+         * Creating the array of product factor node information and putting it into p_factors array.
+         * @type {number}
+         */
 
         const p_factor_size_scale = 1;
 
@@ -239,14 +237,16 @@ export default function TreeDisplay(props) {
             p_factors.push(new TreeNode(props.fileData.factors.product_factors[p_factor],p_factor_width,p_factor_height,calc_p_factor_x(p_factor_num++),p_factor_y))
         }
 
-        // ****** Important piece ********************
-        // Removes duplicate svg canvas (for some weird reason there is a duplicate svg every rerender without this line)
+        /**
+         * Important piece
+         * This removes the svg canvas before creating the new one, because without this
+         * the svg's will continue to stack onto each other.
+         */
         d3.select(tree_canvas.current).selectAll("svg").remove();
 
-        // ----------------------------------------------
-        // Creating the zoom features with the mousewheel
-        // ----------------------------------------------
-
+        /**
+         * Creating the zoom features for the tree display.
+         */
         const zoom = (e) => {
             if (e.deltaY < 0) zoomIn()
             else zoomOut()
@@ -260,18 +260,20 @@ export default function TreeDisplay(props) {
             setHeight(height => 10*height/9);
         }
 
-        // ---------------------------
-        // Start making the entire svg  *****************
-        // ---------------------------
+        /**
+         * Begin creating the entire svg.
+         */
 
         const svg = d3.select(tree_canvas.current)
             .attr("id","canvas")
             .append("svg")
             .attr("viewBox",`${x} ${y} ${width} ${height}`)
             .on("mousewheel",zoom)
-            .on("dblclick",null)
             .style("vertical-align","top")
 
+        /**
+         * Methods that handle the dragging feature of the display.
+         */
         const dragMove = (e) => {
             const diff_x = e.screenX-dragStartCoordinates.x;
             const diff_y = e.screenY-dragStartCoordinates.y;
@@ -317,12 +319,14 @@ export default function TreeDisplay(props) {
             .on("mouseup", handleSVGMouseUp)
 
 
-        // Draw the links first, so they are at the "bottom" of the drawing
+         /** -----------------------------------------------------------------------
+         * Begin drawing the edges of the svg so that they are on the
+         * "bottom" of the display and the nodes are placed over the edges.
+         * -----------------------------------------------------------------------*/
 
         /**
          * Drawing the edges between the TQI node and the quality factor nodes.
          */
-
         for (let item = 1; item < treeNodes.length; item++) {
             treeNodes[0].children.push(treeNodes[item].name);
             const link = d3.linkHorizontal()({
@@ -331,7 +335,6 @@ export default function TreeDisplay(props) {
                 target: (treeNodes[0].node_center_x < treeNodes[item].node_center_x ? [treeNodes[item].node_center_x,treeNodes[item].y + 2] : [treeNodes[0].node_center_x,treeNodes[0].node_center_y])    // add a couple pixels so link is under node
             });
 
-            // Append the link to the svg element
             svg.append('path')
                 .attr("id","tqi_" + treeNodes[item].name +"_edge" + item)
                 .attr('d', link)
@@ -353,16 +356,13 @@ export default function TreeDisplay(props) {
         /**
          * Drawing the edges between the quality factor nodes and the product factor nodes.
          */
-
         for (let aspect = 1; aspect < treeNodes.length; aspect++) {
             for (let factor = 0; factor < p_factors.length; factor++) {
                 const link = d3.linkHorizontal()({
-                    // Changes source/target so that the edge weight text is on top of the path line.
                     source: (treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? [treeNodes[aspect].node_center_x, treeNodes[aspect].node_center_y] : [p_factors[factor].node_center_x, p_factors[factor].y + 2]),
                     target: (treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? [p_factors[factor].node_center_x, p_factors[factor].y + 2] : [treeNodes[aspect].node_center_x, treeNodes[aspect].node_center_y])    // add a couple pixels so link is under node
                 });
 
-                // Append the link to the svg element
                 svg.append('path')
                     .attr("id", treeNodes[aspect].name +"_edge" + factor)
                     .attr('d', link)
@@ -371,22 +371,11 @@ export default function TreeDisplay(props) {
                     .attr("opacity",`${qaChildrenEdgeVisibility[treeNodes[aspect].name] || pfWithParentsShowing[treeNodes[aspect].name][p_factors[factor].name] ? 1 : 0.05}`)
                     .attr('fill', 'none')
 
-                /*
-                How to do path transitions (work in progress)
-                .attr("stroke-dasharray", `${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()} ${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()}`)
-                    .attr("stroke-dashoffset", `${document.getElementById(treeNodes[aspect].name +"_edge" + factor).getTotalLength()}`)
-                    .transition()
-                        .duration(5000)
-                        .attr("ease","ease-out")
-                        .attr("stroke-dashoffset",0)
-                 */
-
                 if (qaChildrenEdgeVisibility[treeNodes[aspect].name] || pfWithParentsShowing[treeNodes[aspect].name][p_factors[factor].name]) {
                     svg.append("text")
                         .attr("text-orientation", "upright")
                         .attr("dy", "-3")
                         .attr("font-weight", "bold")
-                        //.attr("opacity", `${qaChildrenOpacity[treeNodes[aspect].name] - 0.05}`)
                         .append("textPath")
                         .attr("startOffset", `${(treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? 50 : 35)}%`)
                         .attr("font-size", "8px")
@@ -396,35 +385,28 @@ export default function TreeDisplay(props) {
             }
         }
 
-        // how to rotate text - first argument is degrees rotated, second is x, third is y
-        //.attr("transform",`rotate(180,${treeNodes[item].x + node_width * 0.5},${treeNodes[item].y + node_height * 0.4})`)
-
-
-        // Handles when you click on a quality aspect node.
+        /**
+         * Handle clicking a quality aspect node
+         */
         const handleQAEdgesToggle = (e) => {
 
             const qa_name = e.path[0].id.split("^")[1];
 
             let qaChildrenEdgeVisibilityCopy = qaChildrenEdgeVisibility;
 
-            // What we will toggle the visibility to for the chosen quality aspect
             const toggle_to = qaChildrenEdgeVisibilityCopy[qa_name] === false;
-
-            // Toggle off any visible edges from other quality aspects
             for (let name in qaChildrenEdgeVisibilityCopy) {
                 qaChildrenEdgeVisibilityCopy[name] = false;
             }
-
             qaChildrenEdgeVisibilityCopy[qa_name] = toggle_to;
-            // Copy the "updated" properties into the qa children opacity state.
+
             setQAChildrenEdgeVisibility({...qaChildrenEdgeVisibilityCopy})
         }
 
         /**
          * Creating the TQI and quality factor nodes in the treeDisplay display.
          */
-
-        // Add the node to the screen
+        // TQI node
         svg.append("rect")
             .attr("id","tqi^" + treeNodes[0].name)
             .attr("width", treeNodes[0].width)
@@ -436,10 +418,6 @@ export default function TreeDisplay(props) {
             .style("stroke-width", "2px")
             .style("stroke", "black")
 
-        // ------------------------
-        // Adding the tqi text
-        // ------------------------
-        // Add the node's name
         svg.append("text").text(treeNodes[0].name)
             .attr("font-size","10px")
             .attr("font-weight","bold")
@@ -449,7 +427,6 @@ export default function TreeDisplay(props) {
             .attr("dominant-baseline","middle")
             .attr("text-anchor","middle");
 
-        // Add the node's value
         svg.append("text").text(treeNodes[0].json_data.value.toFixed(8))
             .attr("font-size","12px")
             .attr("x", treeNodes[0].x + node_width * 0.5)
@@ -458,11 +435,8 @@ export default function TreeDisplay(props) {
             .attr("dominant-baseline","middle")
             .attr("text-anchor","middle");
 
-        // Adding the quality factor nodes
-
+        // Quality aspect nodes
         for (let item = 1; item < treeNodes.length; item++) {
-
-            // Add the node to the screen
             svg.append("rect")
                 .attr("id","quality_aspects^" + treeNodes[item].name)
                 .attr("width", treeNodes[item].width)
@@ -475,10 +449,6 @@ export default function TreeDisplay(props) {
                 .style("stroke", "black")
                 .on("click", handleQAEdgesToggle)
 
-            // ------------------------
-            // Adding the quality factor text
-            // ------------------------
-            // Add the node's name
             svg.append("text").text(treeNodes[item].name)
                 .attr("font-size","10px")
                 .attr("font-weight","bold")
@@ -488,7 +458,6 @@ export default function TreeDisplay(props) {
                 .attr("dominant-baseline","middle")
                 .attr("text-anchor","middle");
 
-            // Add the node's value
             svg.append("text").text(treeNodes[item].json_data.value.toFixed(8))
                 .attr("font-size","12px")
                 .attr("x", treeNodes[item].x + node_width * 0.5)
@@ -503,22 +472,18 @@ export default function TreeDisplay(props) {
                 if (p_factors[pf].name === name) return p_factors[pf];
             }
         }
-
         const handlePFEdgesToggle = (e) => {
 
             const pf_node = findProductFactor(e.path[0].id.split("^")[1]);
 
             let pfChildrenVisibilityCopy = pfChildrenVisibility;
 
-            // What we will toggle the visibility to for the chosen quality aspect
             const toggle_to = !pfChildrenVisibilityCopy[pf_node.name];
-
-            // Toggle off any visible edges from other product factors
             for (let prop in pfChildrenVisibilityCopy) {
                 pfChildrenVisibilityCopy[prop] = false;
             }
-
             pfChildrenVisibilityCopy[pf_node.name] = toggle_to;
+
             setPFChildrenVisibility({...pfChildrenVisibilityCopy})
 
         }
@@ -546,12 +511,12 @@ export default function TreeDisplay(props) {
             let parents = [];
 
             for (let pf in props.fileData.factors.product_factors) {
-                for (let weight in props.fileData.factors.product_factors[pf].weights) {
+                for (let weight in props.fileData.factors.product_factors[pf].weights) {   // Make another state object to optimize this.
                     if (weight === measureWithParentsShowing) parents.push(pf)
                 }
             }
 
-            // need to filter for only product factors that use the measure as a weight
+            // Need to filter for only product factors that use the measure as a weight
             for (let pf in p_factors) {
 
                 if (parents.includes(p_factors[pf].name) && !pfChildrenVisibility[p_factors[pf].name]) {
@@ -559,8 +524,6 @@ export default function TreeDisplay(props) {
                         source: (p_factors[pf].node_center_x < measure_mid_x ? [p_factors[pf].node_center_x, p_factors[pf].node_center_y] : [measure_mid_x, measure_y_cor + 2]),
                         target: (p_factors[pf].node_center_x < measure_mid_x ? [measure_mid_x, measure_y_cor + 2] : [p_factors[pf].node_center_x, p_factors[pf].node_center_y])
                     });
-
-                    console.log(measureWithParentsShowing)
 
                     // Drawing the link between measure and product factor parents
                     svg.append("path")
@@ -584,10 +547,6 @@ export default function TreeDisplay(props) {
         }
 
         for (let pf = 0; pf < p_factors.length; pf++) {
-
-
-            // If we have clicked the product factor, draw its children. Otherwise, don't draw the children.
-            // This boosts performance a little.
             if (pfChildrenVisibility[p_factors[pf].name]) {
                 const num_of_measures = Object.entries(p_factors[pf].json_data.weights).length;
                 const measure_spacing = node_width * 0.5;
@@ -603,7 +562,6 @@ export default function TreeDisplay(props) {
                     let y_cor = p_factor_y + p_factor_height + 80
 
                     const link = d3.linkHorizontal()({
-                        // Changes source/target so that the edge weight text is on top of the path line.
                         source: (p_factors[pf].node_center_x < mid_x ? [p_factors[pf].node_center_x, p_factors[pf].node_center_y] : [mid_x, y_cor + 2]),
                         target: (p_factors[pf].node_center_x < mid_x ? [mid_x, y_cor + 2] : [p_factors[pf].node_center_x, p_factors[pf].node_center_y])    // add a couple pixels so link is under node
                     });
@@ -627,11 +585,9 @@ export default function TreeDisplay(props) {
                         .text(p_factors[pf].json_data.weights[measure_name].toFixed(6));
 
                     // ---------------------------------------------------
-
                     /**
                      * Draw the diagnostics for a measure.
                      */
-
                     if (measureChildrenVisibility[measure_name]) {
 
                         let measure_weights = [];
@@ -659,7 +615,6 @@ export default function TreeDisplay(props) {
                             const diagnostic_name = measure_weights[diagnostic]
 
                             const link = d3.linkHorizontal()({
-                                // Changes source/target so that the edge weight text is on top of the path line.
                                 source: (measure_center_x < (calc_diag_x(i)+node_width/2) ? [measure_center_x, measure_center_y] : [(calc_diag_x(i)+node_width/2), diag_y + 2]),
                                 target: (measure_center_x < (calc_diag_x(i)+node_width/2) ? [(calc_diag_x(i)+node_width/2), diag_y + 2] : [measure_center_x, measure_center_y])    // add a couple pixels so link is under node
                             });
@@ -703,7 +658,6 @@ export default function TreeDisplay(props) {
                                 .attr("dominant-baseline", "middle")
                                 .attr("text-anchor", "middle");
 
-                            // Add the node's value
                             svg.append("text").text(props.fileData["diagnostics"][diagnostic_name].value.toFixed(8))
                                 .attr("font-size", "11px")
                                 .attr("x", diag_x + node_width * 0.5)
@@ -719,7 +673,6 @@ export default function TreeDisplay(props) {
                     /**
                      * Draw the measure nodes for the associated product factor.
                      */
-
                     svg.append("rect")
                         .attr("id","measures^"+props.fileData.measures[measure_name].name)
                         .attr("width", node_width)
@@ -732,7 +685,6 @@ export default function TreeDisplay(props) {
                         .style("stroke", "black")
                         .on("click",handleMeasureEdgesToggle)
 
-
                     svg.append("text").text(props.fileData.measures[measure_name].name)
                         .attr("font-size", "9px")
                         .attr("font-weight", "bold")
@@ -742,7 +694,6 @@ export default function TreeDisplay(props) {
                         .attr("dominant-baseline", "middle")
                         .attr("text-anchor", "middle");
 
-                    // Add the node's value
                     svg.append("text").text(props.fileData.measures[measure_name].value.toFixed(8))
                         .attr("font-size", "11px")
                         .attr("x", x_cor + node_width * 0.5)
@@ -760,9 +711,7 @@ export default function TreeDisplay(props) {
         /**
          * Creating the product factor nodes in the treeDisplay display.
          */
-
         for (let i = 0; i < p_factors.length; i++) {
-            // Add the node to the screen
             svg.append("rect")
                 .attr("id","product_factors^" + p_factors[i].name)
                 .attr("width", p_factors[i].width)
@@ -775,10 +724,6 @@ export default function TreeDisplay(props) {
                 .style("stroke", "black")
                 .on("click",handlePFEdgesToggle)
 
-            // ------------------------------
-            // Adding the product factor text
-            // ------------------------------
-            // Add the product factor's name
             svg.append("text").text(p_factors[i].name)
                 .attr("font-size","9px")
                 .attr("font-weight","bold")
@@ -788,7 +733,6 @@ export default function TreeDisplay(props) {
                 .attr("dominant-baseline","middle")
                 .attr("text-anchor","middle");
 
-            // Add the product factor's value
             svg.append("text").text(p_factors[i].json_data.value.toFixed(8))
                 .attr("font-size","11px")
                 .attr("x", p_factors[i].x + p_factor_width * 0.5)
@@ -819,8 +763,6 @@ export default function TreeDisplay(props) {
 
             nfpa.sort((a,b) => (a.name > b.name ? 1 : -1))
             setNodesForPanelBoxes(nfpa)
-
-            // ------------------------------
         }
 
         const handleClickingPFParentClicker = (e) => {
@@ -861,9 +803,6 @@ export default function TreeDisplay(props) {
                 const measure = [...d3.selectAll("rect")._groups[0]].filter((node) => node.id.split("^")[1] === clicked_id_name);
                 setMeasureWithParentsShowingCoordinates([parseFloat(measure[0].attributes.x.value),parseFloat(measure[0].attributes.y.value)])
             }
-
-
-
         }
 
         /**
@@ -907,14 +846,7 @@ export default function TreeDisplay(props) {
                     .style("stroke", determineParentClickerBorder(node_type === "product_factors" ? pfParentClicked : measureWithParentsShowing, nodes[i].id))
                     .on("click", node_type === "product_factors" ? handleClickingPFParentClicker : handleClickingMParentClicker)
             }
-
         }
-        // ------------------------------------------------------------------
-
-        // Can style all text here
-        d3.selectAll("text")
-            .attr("class","unselectableText")
-
 
         /**
          * Helper functions for the drag feature of the display.
@@ -937,10 +869,9 @@ export default function TreeDisplay(props) {
         d3.selectAll("rect")
             .on("mouseenter",handleNodeMouseEnter)
             .on("mouseleave",handleNodeMouseLeave)
-
-        // --------------------------------------------------------------
     }
 
+    // Reset tree display to x,y,width,height when initially opening it.
     const resetTreeView = () => {
         setWidth(nodesForPanelBoxes.length > 0 ? window.innerWidth * 65 / 100 : window.innerWidth);
         setHeight(window.innerHeight * 0.75 * 0.99);  // Original code before flexbox
@@ -949,8 +880,8 @@ export default function TreeDisplay(props) {
         setY(0);
     }
 
+    // Reset any children visible, edges showing, etc.
     const resetTreeDisplay = () => {
-        // Reset all children visibility to false, as if you're opening up display for first time.
         setQAChildrenEdgeVisibility(() => {
             let obj = qaChildrenEdgeVisibility;
             for (let qa in obj) {
@@ -994,9 +925,8 @@ export default function TreeDisplay(props) {
         setNodesForPanelBoxes([]);
     }
 
-    // Adjusts SVG when node description panel opens up
+    // Adjusts SVG when node description panel opens up or closes
     useEffect(() => {
-        // When node description pane opens up or closes
         if (nodesForPanelBoxes.length === 1 || nodesForPanelBoxes.length === 0) adjustSVGForWindowResize();
     }, [nodesForPanelBoxes.length])
 

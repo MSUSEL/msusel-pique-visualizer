@@ -18,7 +18,6 @@ export function findPIQUENode(fileData,clicked_ID) {
     else if (jsonDepthDecider === 0) {
         return fileData[node_type][node_name]
     }
-
 }
 
 /**
