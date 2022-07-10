@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# PIQUE Visualizer
+A React app used to visualize PIQUE results. In a hierachical tree display, the quality scores from\
+PIQUE results are much easier to understand than trying to parse through complicated json files.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Using the Visualizer
 
-## Available Scripts
+### File Upload
+PIQUE Visualizer accepts the compact json version of PIQUE results. These compact outputs are created by running\
+original PIQUE results through an algorithm that reduces parent-child relationship redundancy, and significantly\
+reduces the size of the json file while preserving the results.
 
-In the project directory, you can run:
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/file_upload.png" width="60%">
+
+---
+
+### Initial Display
+Upon submitting the compact output of PIQUE, its results will be displayed on the screen. The results\
+are displayed in a hierarchical tree structure that shows how the software quality score was created.
+
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/initial_display.png" width="60%">
+
+---
+
+### Viewing Children
+Clicking on an applicable node (rectangle), its children and their respective edges will display on\
+the screen. If these children are not already visible, they will be put into view. The edge weights will\
+be shown along the edge.
+
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/show_children.PNG" width="60%">
+
+---
+
+### Viewing Parents
+Clicking on the circle in the top left corner of a node will display its edges to the node's parents.\
+The edge weights will be shown along the edge.
+
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/show_parents.png" width="60%">
+
+---
+
+### Information Panel
+Clicking on the square in the top right corner of a node will display more information about the node in\
+a side panel. Depending on what type of node it is will determine which information is shown, however almost\
+all nodes will show a quality impact score showing how much they are bringing the total quality score down.
+
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/show_side_panel.png" width="60%">
+
+# Setup
+Clone this repository to your local machine. You will also need node and npm installed on your computer.\
+With the repository in your working directory, use the following commands:
+
+### `npm install`
+This will install all of the packages necessary for the visualizer. *Only need to use this command **one time***
 
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the visualizer and opens it in your browser.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
