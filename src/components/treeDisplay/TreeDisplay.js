@@ -219,7 +219,7 @@ export default function TreeDisplay(props) {
         const p_factor_height = node_height * p_factor_size_scale;
         const p_factor_y = 450;
 
-        const num_of_p_factors = Object.keys(props.fileData.factors.quality_aspects.Availability.weights).length
+        const num_of_p_factors = Object.keys(props.fileData.factors.quality_aspects[Object.keys(props.fileData.factors.quality_aspects)[0]].weights).length
 
         const p_factor_spacing = (p_factor_width * 0.5);
 
