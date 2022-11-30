@@ -1,4 +1,18 @@
 import "./NodeDescriptionPanel.css"
+import dogTrial from './dogTrial.png';
+
+function dog(){
+    console.log(dogTrial);
+    return(
+        <div className="App">
+               <img src={dogTrial} alt="DogTrial" height={20} width={20} />
+        </div>
+    );
+}
+
+export default dog;
+
+
 
 export function determineNodeInfo(node,impacts) {
 
@@ -48,6 +62,7 @@ export function determineNodeInfo(node,impacts) {
         }
     }
 
+
     return (
         <>
             <div className="node-name">{node.name}</div>
@@ -59,9 +74,13 @@ export function determineNodeInfo(node,impacts) {
                 {node_type === "Diagnostic" ? <div><b>Tool: </b>{node.toolName}</div> : null}
                 <div><b>Evaluation Strategy: </b>{node.eval_strategy}</div>
                 <div><b>Normalizer: </b>{node.normalizer}</div>
-                <div><b>Utility Function: </b>{node.utility_function}</div>
+                <div><b>Utility Function: </b>{node.utility_function} 
+                    &nbsp; <img src={dogTrial} alt="DogTrial" height={20} width={20} />            
+                </div>
                 {getQualityImpactScore()}
+                
             </div>
+            
         </>
     )
 }
