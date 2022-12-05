@@ -1,17 +1,14 @@
 import "./NodeDescriptionPanel.css"
-import dogTrial from './dogTrial.png';
+//import dogTrial from './dogTrial.png';
+import linear from './linearGraph.png';
+import gaussian from './gaussianPlot.png';
 
-function dog(){
-    console.log(dogTrial);
-    return(
-        <div className="App">
-               <img src={dogTrial} alt="DogTrial" height={20} width={20} />
-        </div>
-    );
-}
-
-export default dog;
-
+//function graphImage(){
+    //if (utility_function === 'pique.evaluation.DefaultUtility'){
+//        return (<img src={linear} alt="Linear Graph"/>);
+    //}
+// }
+// export default graphImage;
 
 
 export function determineNodeInfo(node,impacts) {
@@ -62,6 +59,16 @@ export function determineNodeInfo(node,impacts) {
         }
     }
 
+    function graphImage(){
+        if (node.utility_function === 'pique.evaluation.DefaultUtility'){
+            return ( <img src={linear} alt="Linear Graph"/> );
+        } else if (node.utility_function === 'evaluator.BinaryUtility'){
+            return ( <img src={linear} alt="Linear Graph"/> );
+        } else if (node.utility_function === 'pique.evaluation.GaussianUtility'){
+            return ( <img src={gaussian} alt="Gaussian Graph"/> );
+        } 
+     }
+
 
     return (
         <>
@@ -75,8 +82,8 @@ export function determineNodeInfo(node,impacts) {
                 <div><b>Evaluation Strategy: </b>{node.eval_strategy}</div>
                 <div><b>Normalizer: </b>{node.normalizer}</div>
                 <div><b>Utility Function: </b>{node.utility_function} 
-                    &nbsp; <img src={dogTrial} alt="DogTrial" height={20} width={20} />            
-                </div>
+                    &nbsp; {graphImage()}
+                </div>                
                 {getQualityImpactScore()}
                 
             </div>
