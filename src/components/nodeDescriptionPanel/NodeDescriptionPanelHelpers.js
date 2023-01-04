@@ -1,7 +1,8 @@
 import "./NodeDescriptionPanel.css"
 //import dogTrial from './dogTrial.png';
-import linear from './linearGraph.png';
-import gaussian from './gaussianPlot.png';
+import linear from './linearLine.PNG';
+import gaussian from './gaussianLine.PNG';
+import gam from './gamLine.png';
 
 //function graphImage(){
     //if (utility_function === 'pique.evaluation.DefaultUtility'){
@@ -18,8 +19,10 @@ export function determineNodeInfo(node,impacts) {
     function determineNodeType() {
         if (node.name.includes("Measure")) return "Measure";
         else if (node.name.includes("Diagnostic")) return "Diagnostic";
-        else if (node.name.includes("Category")) return "Product Factor"
+        else if (node.name.includes("Category")) return "Product Factor";
+        //make it general 
         else if (node.name === "Binary Security Quality") return "TQI";
+        else if (node.name === "C Vendor Quality Model") return "TQI";
         else return "Quality Aspect";
     }
 
@@ -58,14 +61,19 @@ export function determineNodeInfo(node,impacts) {
             </div>
         }
     }
+    
+    // change the name of the node when it is created as well as the image associated with gam
+    // TO DO: change the height and width to change as the screen size changes
 
     function graphImage(){
         if (node.utility_function === 'pique.evaluation.DefaultUtility'){
-            return ( <img src={linear} alt="Linear Graph"/> );
+            return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
         } else if (node.utility_function === 'evaluator.BinaryUtility'){
-            return ( <img src={linear} alt="Linear Graph"/> );
+            return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
         } else if (node.utility_function === 'pique.evaluation.GaussianUtility'){
-            return ( <img src={gaussian} alt="Gaussian Graph"/> );
+            return ( <img src={gaussian} alt="Gaussian Graph" width={40} height={20}/> );
+        } else if (node.utility_function === 'pique.evaluation.GamUtility'){
+            return ( <img src={gam} alt="Gamutility Graph" width={20} height={20}/> );
         } 
      }
 
