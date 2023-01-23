@@ -28,6 +28,7 @@
         "eval_strategy": "evaluator.WeightedAverageEvaluator",
         "normalizer": "pique.evaluation.DefaultNormalizer",
         "utility_function": "pique.evaluation.DefaultUtility"
+        
       },
       "Category CWE-1210": {
         "name": "Category CWE-1210",

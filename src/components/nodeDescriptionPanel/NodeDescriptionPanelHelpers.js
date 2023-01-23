@@ -1,15 +1,7 @@
 import "./NodeDescriptionPanel.css"
-//import dogTrial from './dogTrial.png';
 import linear from './linearLine.PNG';
 import gaussian from './gaussianLine.PNG';
 import gam from './gamLine.png';
-
-//function graphImage(){
-    //if (utility_function === 'pique.evaluation.DefaultUtility'){
-//        return (<img src={linear} alt="Linear Graph"/>);
-    //}
-// }
-// export default graphImage;
 
 
 export function determineNodeInfo(node,impacts) {
@@ -20,9 +12,9 @@ export function determineNodeInfo(node,impacts) {
         if (node.name.includes("Measure")) return "Measure";
         else if (node.name.includes("Diagnostic")) return "Diagnostic";
         else if (node.name.includes("Category")) return "Product Factor";
-        //make it general 
-        else if (node.name === "Binary Security Quality") return "TQI";
-        else if (node.name === "C Vendor Quality Model") return "TQI";
+        // TO DO: Make the node.name a generalized node for whatever the name might be
+        else if (node.name === "Binary Security Quality" || node.name === "C Vendor Quality Model") return "TQI";
+        //else if (node.name === "C Vendor Quality Model") return "TQI";
         else return "Quality Aspect";
     }
 
@@ -64,10 +56,12 @@ export function determineNodeInfo(node,impacts) {
     
     // change the name of the node when it is created as well as the image associated with gam
     // TO DO: change the height and width to change as the screen size changes
+    // TO DO: Test the changes of adding the class name 
 
     function graphImage(){
         if (node.utility_function === 'pique.evaluation.DefaultUtility'){
-            return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
+            return ( <img src={linear} alt="Linear Graph" className="node-name"/> );
+            //return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
         } else if (node.utility_function === 'evaluator.BinaryUtility'){
             return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
         } else if (node.utility_function === 'pique.evaluation.GaussianUtility'){
