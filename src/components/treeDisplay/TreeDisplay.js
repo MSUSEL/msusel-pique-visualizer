@@ -939,7 +939,7 @@ export default function TreeDisplay(props) {
     // Adjusts SVG when node description panel opens up or close. 
     // TODO: Come back to this and fix this bug - running into missing depencencies
     
-    /*
+    
     useEffect(() => {
         if (nodesForPanelBoxes.length === 1 || nodesForPanelBoxes.length === 0) adjustSVGForWindowResize();             
     }, [nodesForPanelBoxes.length])
@@ -965,7 +965,7 @@ export default function TreeDisplay(props) {
     window.onresize = () => {
         adjustSVGForWindowResize()
     };
-*/
+
     
 
     return (
