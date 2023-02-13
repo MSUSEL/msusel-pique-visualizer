@@ -388,9 +388,18 @@ export default function TreeDisplay(props) {
         /**
          * Handle clicking a quality aspect node
          */
-        const handleQAEdgesToggle = (e) => {
 
+        if(!Event.prototype.hasOwnProperty('path')){
+            Object.defineProperty(Event.prototype, 'path', {
+                get() {return this.composedPath();}
+            });
+        }
+        
+
+        const handleQAEdgesToggle = (e) => {
+        
             const qa_name = e.path[0].id.split("^")[1];
+            
 
             let qaChildrenEdgeVisibilityCopy = qaChildrenEdgeVisibility;
 
@@ -472,9 +481,11 @@ export default function TreeDisplay(props) {
                 if (p_factors[pf].name === name) return p_factors[pf];
             }
         }
+        
         const handlePFEdgesToggle = (e) => {
 
-            const pf_node = findProductFactor(e.path[0].id.split("^")[1]);
+            // Changed const to let
+            let pf_node = findProductFactor(e.path[0].id.split("^")[1]);
 
             let pfChildrenVisibilityCopy = pfChildrenVisibility;
 
@@ -766,7 +777,7 @@ export default function TreeDisplay(props) {
         }
 
         const handleClickingPFParentClicker = (e) => {
-            console.log(e.path[0].id)
+            //console.log(e.path[0].id)
 
             const clicked_id_name = e.path[0].id.split("^")[2];
 
@@ -791,8 +802,8 @@ export default function TreeDisplay(props) {
 
         const handleClickingMParentClicker = (e) => {
             console.log(e.path[0].id)
-
-            const clicked_id_name = e.path[0].id.split("^")[2];
+            //
+            let clicked_id_name = e.path[0].id.split("^")[2];
 
             if (measureWithParentsShowing === clicked_id_name) {
                 setMeasureWithParentsShowing(null);
@@ -925,20 +936,23 @@ export default function TreeDisplay(props) {
         setNodesForPanelBoxes([]);
     }
 
-    // Adjusts SVG when node description panel opens up or closes
+    // Adjusts SVG when node description panel opens up or close. 
+    // TODO: Come back to this and fix this bug - running into missing depencencies
+    
+    /*
     useEffect(() => {
-        if (nodesForPanelBoxes.length === 1 || nodesForPanelBoxes.length === 0) adjustSVGForWindowResize();
+        if (nodesForPanelBoxes.length === 1 || nodesForPanelBoxes.length === 0) adjustSVGForWindowResize();             
     }, [nodesForPanelBoxes.length])
 
     useEffect(() => {
         setMeasureWithParentsShowing(null);
-        setMeasureWithParentsShowingCoordinates([]);
+        setMeasureWithParentsShowingCoordinates([]);       
     }, [pfChildrenVisibility])
 
     useEffect(() => {
         if (measureWithParentsShowing) {
             const measure = [...d3.selectAll("rect")._groups[0]].filter((node) => node.id.split("^")[1] === measureWithParentsShowing);
-            setMeasureWithParentsShowingCoordinates([parseFloat(measure[0].attributes.x.value),parseFloat(measure[0].attributes.y.value)])
+            setMeasureWithParentsShowingCoordinates([parseFloat(measure[0].attributes.x.value),parseFloat(measure[0].attributes.y.value)])    
         }
     },[width,height])
 
@@ -951,6 +965,8 @@ export default function TreeDisplay(props) {
     window.onresize = () => {
         adjustSVGForWindowResize()
     };
+*/
+    
 
     return (
         <>

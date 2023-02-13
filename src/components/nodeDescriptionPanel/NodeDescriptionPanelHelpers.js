@@ -13,7 +13,7 @@ export function determineNodeInfo(node,impacts) {
         else if (node.name.includes("Diagnostic")) return "Diagnostic";
         else if (node.name.includes("Category")) return "Product Factor";
         // TO DO: Make the node.name a generalized node for whatever the name might be
-        else if (node.name === "Binary Security Quality" || node.name === "C Vendor Quality Model") return "TQI";
+        else if (node.name === "Binary Security Quality") return "TQI";
         //else if (node.name === "C Vendor Quality Model") return "TQI";
         else return "Quality Aspect";
     }

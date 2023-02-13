@@ -4,6 +4,8 @@ import "./TopHeader.css"
 
 // pop up window controllers
 // TODO: Change to handle all buttons 
+/* uncomment this after the bug is fixed
+
 document.addEventListener("DOMContentLoaded",() =>{
     const button = document.querySelector(".main-button")
     button.addEventListener("click", handleClick)
@@ -17,7 +19,7 @@ function handleClick(event){
         modal.style.display = "none";
     })
 }
-
+*/
 // class btn controls the pop up for the color changer
 // class modal will allow the user to change which colors they want
 
@@ -26,21 +28,7 @@ function handleClick(event){
 export function TopHeader() {
     return (
         <>          
-            <div class="btn">
-                <button class="main-button" onClick={(event) => handleClick(event)}>Color Changer</button>
-            </div>
-
-            <div class="modal">
-                <div class="modal_content">
-                    <span class="close" >&times;</span>
-                    <h1>Change the colors</h1>
-                    <button class="color-btn">Change Severe Color</button>
-                    <button class="color-btn">Change High Color</button>
-                    <button class="color-btn">Change Elevated Color</button>
-                    <button class="color-btn">Change Gaurded Color</button>
-                    <button class="color-btn">Change Low Color</button>
-                </div>
-            </div>
+            
             
 
             <div className="display-4" id="PIQUE_name">
@@ -59,16 +47,20 @@ export function TopHeader() {
 
 
 
-/*
-<div className="colorChanger">
-<input type="text" id="colorInputText"></input>
-<button onClick={changeColor()}>ChangeColors</button>                           
-</div>
-onClick={"changeColor"}
+/* add this back into the top header function once the bug is fixed
+<div class="btn">
+                <button class="main-button" onClick={(event) => handleClick(event)}>Color Changer</button>
+            </div>
 
-    //function to allow the user to change the color of the nodes
-    function changeColor(){
-        let color = document.getElementById('colorInputText').value;
-        document.body.style.backgroundColor = color;
-    }
+            <div class="modal">
+                <div class="modal_content">
+                    <span class="close" >&times;</span>
+                    <h1>Change the colors</h1>
+                    <button class="color-btn">Change Severe Color</button>
+                    <button class="color-btn">Change High Color</button>
+                    <button class="color-btn">Change Elevated Color</button>
+                    <button class="color-btn">Change Gaurded Color</button>
+                    <button class="color-btn">Change Low Color</button>
+                </div>
+            </div>
  */          
