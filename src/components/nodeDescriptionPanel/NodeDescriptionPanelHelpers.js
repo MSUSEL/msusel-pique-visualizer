@@ -12,9 +12,8 @@ export function determineNodeInfo(node,impacts) {
         if (node.name.includes("Measure")) return "Measure";
         else if (node.name.includes("Diagnostic")) return "Diagnostic";
         else if (node.name.includes("Category")) return "Product Factor";
-        // TO DO: Make the node.name a generalized node for whatever the name might be
-        else if (node.name === "Binary Security Quality") return "TQI";
-        //else if (node.name === "C Vendor Quality Model") return "TQI";
+        else if (node.name) return "TQI";
+        //else if (node.name === "Binary Security Quality" || node.name === "C Vendor Quality Model") return "TQI";
         else return "Quality Aspect";
     }
 
@@ -60,14 +59,14 @@ export function determineNodeInfo(node,impacts) {
 
     function graphImage(){
         if (node.utility_function === 'pique.evaluation.DefaultUtility'){
-            return ( <img src={linear} alt="Linear Graph" className="node-name"/> );
+            return ( <img src={linear} alt="Linear Graph" width={30} height={30} className="node-name"/> );
             //return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
         } else if (node.utility_function === 'evaluator.BinaryUtility'){
-            return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
+            return ( <img src={linear} alt="Linear Graph" width={30} height={30}/> );
         } else if (node.utility_function === 'pique.evaluation.GaussianUtility'){
             return ( <img src={gaussian} alt="Gaussian Graph" width={40} height={20}/> );
         } else if (node.utility_function === 'pique.evaluation.GamUtility'){
-            return ( <img src={gam} alt="Gamutility Graph" width={20} height={20}/> );
+            return ( <img src={gam} alt="Gamutility Graph" width={30} height={30}/> );
         } 
      }
 

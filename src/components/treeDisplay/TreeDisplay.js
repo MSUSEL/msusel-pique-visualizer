@@ -348,7 +348,7 @@ export default function TreeDisplay(props) {
                 .attr("font-weight","bold")
                 .append("textPath")
                     .attr("startOffset",`${(treeNodes[0].node_center_x < treeNodes[item].node_center_x ? 50 : 30)}%`)
-                    .attr("font-size","8px")
+                    .attr("font-size","10px")
                     .attr("xlink:href","#tqi_" + treeNodes[item].name + "_edge" + item)
                     .text(Object.values(treeNodes[0].json_data.weights)[item-1].toFixed(6))
         }
@@ -378,7 +378,7 @@ export default function TreeDisplay(props) {
                         .attr("font-weight", "bold")
                         .append("textPath")
                         .attr("startOffset", `${(treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? 50 : 35)}%`)
-                        .attr("font-size", "8px")
+                        .attr("font-size", "10px")
                         .attr("xlink:href", "#" + treeNodes[aspect].name + "_edge" + factor)
                         .text(treeNodes[aspect].json_data.weights[p_factors[factor].name].toFixed(6))
                 }
@@ -389,6 +389,9 @@ export default function TreeDisplay(props) {
          * Handle clicking a quality aspect node
          */
 
+        //All browsers did an update in Jan 2023 that removed event.path and event.composedPath 
+        //from their nonstandard libraries. The follow lines of code will override that
+        //and allow you to continue to use the path and composedPath libraries
         if(!Event.prototype.hasOwnProperty('path')){
             Object.defineProperty(Event.prototype, 'path', {
                 get() {return this.composedPath();}

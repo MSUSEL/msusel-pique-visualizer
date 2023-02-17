@@ -4,7 +4,7 @@ import "./TopHeader.css"
 
 // pop up window controllers
 // TODO: Change to handle all buttons 
-/* uncomment this after the bug is fixed
+ /*//uncomment this after the bug is fixed
 
 document.addEventListener("DOMContentLoaded",() =>{
     const button = document.querySelector(".main-button")
@@ -18,8 +18,8 @@ function handleClick(event){
     closeBtn.addEventListener("click", () => {
         modal.style.display = "none";
     })
-}
-*/
+}*/
+
 // class btn controls the pop up for the color changer
 // class modal will allow the user to change which colors they want
 
@@ -28,7 +28,6 @@ function handleClick(event){
 export function TopHeader() {
     return (
         <>          
-            
             
 
             <div className="display-4" id="PIQUE_name">
