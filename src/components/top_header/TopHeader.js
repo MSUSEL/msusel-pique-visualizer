@@ -39,7 +39,7 @@ export function TopHeader() {
                     <button class="color-btn">Change Severe Color</button>
                     <button class="color-btn">Change High Color</button>
                     <button class="color-btn">Change Elevated Color</button>
-                    <button class="color-btn">Change Gaurded Color</button>
+                    <button class="color-btn">Change Guarded Color</button>
                     <button class="color-btn">Change Low Color</button>
                 </div>
             </div>
