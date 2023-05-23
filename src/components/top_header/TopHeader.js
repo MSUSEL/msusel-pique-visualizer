@@ -20,6 +20,20 @@ function handleClick(event){
     })
 }
 
+/*document.addEventListener("DOMContentLoaded",() =>{
+    const button = document.querySelector(".main-button")
+    button.addEventListener("click", layout_handleClick)
+})*/
+
+function layout_handleClick(event){
+    const modal = document.querySelector(".modal")
+    const closeBtn = document.querySelector(".close")
+    modal.style.display = "block";
+    closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    })
+}
+
 // class btn controls the pop up for the color changer
 // class modal will allow the user to change which colors they want
 
@@ -30,6 +44,7 @@ export function TopHeader() {
         <>          
             <div class="btn">
                 <button class="main-button" onClick={(event) => handleClick(event)}>Color Changer</button>
+                <button class="button" onClick={(event) => layout_handleClick(event)}>Layout Changer</button>
             </div>
 
             <div class="modal">
@@ -41,6 +56,17 @@ export function TopHeader() {
                     <button class="color-btn">Change Elevated Color</button>
                     <button class="color-btn">Change Guarded Color</button>
                     <button class="color-btn">Change Low Color</button>
+                </div>
+            </div>
+
+            <div class="modal">
+                <div class="modal_content">
+                    <span class="close" >&times;</span>
+                    <h1>Change the layout</h1>
+                    <button class="color-btn">Columns</button>
+                    <button class="color-btn">List</button>
+                    <button class="color-btn">Icons</button>
+                    <button class="color-btn">Gallerys</button>
                 </div>
             </div>
 
