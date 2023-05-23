@@ -10,6 +10,10 @@ import {
     determineParentClickerColor,
     findPIQUENode
 } from "./TreeDisplayHelpers";
+import {sortNestedJson} from "./Sort";
+/* 
+@param fileData PIQUE .json output file.
+*/
 
 export default function TreeDisplay(props) {
 
@@ -885,6 +889,32 @@ export default function TreeDisplay(props) {
             .on("mouseleave",handleNodeMouseLeave)
     }
 
+    // Rest the tree display by sorting nodes in ascending order
+    const ascendingSort = () => {
+        
+        alert("Do you want to sort all nodes from smallest to largest based on their values?")
+        let props=sortNestedJson(props)
+        
+        //dowdloadTestCase(props)
+        var data=JSON.stringify();
+        var blob=new Blob([data], {type: 'text/json; charset=utf-8'});
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "data.json";
+        a.hidden = true;
+        document.body.appendChild(a);
+        a.innerHTML =
+            "someinnerhtml";
+        a.click();
+
+        setWidth(nodesForPanelBoxes.length > 0 ? window.innerWidth * 65 / 100 : window.innerWidth);
+        setHeight(window.innerHeight * 0.75 * 0.99);  // Original code before flexbox
+        //setHeight(window_height);   // Code with flexbox
+        setX(0);
+        setY(0);
+    } 
+
+
     // Reset tree display to x,y,width,height when initially opening it.
     const resetTreeView = () => {
         setWidth(nodesForPanelBoxes.length > 0 ? window.innerWidth * 65 / 100 : window.innerWidth);
@@ -981,6 +1011,8 @@ export default function TreeDisplay(props) {
             <div id={"reset_tree_buttons_div"}>
                 <button className={"reset_buttons"} onClick={resetTreeView}>Reset Tree View</button>
                 <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree Display</button>
+                <button className={"reset_buttons"} onClick={ascendingSort}>ASC Sort</button>
+                
                 {nodesForPanelBoxes.length > 0 ? <button className={"reset_buttons"} onClick={clearSidePanel}>Clear Side Panel</button> : null}
             </div>
         </>
