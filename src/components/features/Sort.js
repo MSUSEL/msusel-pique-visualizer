@@ -3,8 +3,9 @@
  * @param fileData PIQUE .json output file.
  */
 
-export function sortNestedJson(fileData) {
-    
+export default function sortNestedJson(fileData) {
+    const {sortedObj} = fileData;
+    /*
     const sortedKeys = Object.keys(fileData).sort((a, b) => {
         const aValue = fileData[a].value;
         const bValue = fileData[b].value;
@@ -19,6 +20,8 @@ export function sortNestedJson(fileData) {
         for (const key of sortedKeys) {
         sortedObj[key] = sortNestedJson(fileData[key]);
         }
+        alert("done!")
+    */
             
     return sortedObj;
 }

@@ -1,0 +1,52 @@
+#PIQUE_name {
+    user-select: none;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal{
+    display: none;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(5, 5, 5, 0.25);
+}
+
+.modal_content{
+    background-color: white;
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 40%;
+    padding: 20px;
+    border-radius: 5px;
+    border: 2px solid black;
+    
+}
+
+.btn{
+    text-align: center;
+    position: absolute;
+    top: 5%;
+    left: 2%;
+}
+
+button{
+    border-radius: 10px;
+    background-color: lightgray;
+    outline: 5px;
+}
+
+.close{
+    color: black;
+    float: right;
+    cursor: pointer;
+}
+.color-btn{
+    margin: 5px;
+    border: 1px solid black;
+    background-color: beige;
+}

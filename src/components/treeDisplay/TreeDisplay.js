@@ -10,10 +10,9 @@ import {
     determineParentClickerColor,
     findPIQUENode
 } from "./TreeDisplayHelpers";
-import {sortNestedJson} from "./Sort";
-/* 
-@param fileData PIQUE .json output file.
-*/
+/**
+ * @param fileData PIQUE .json output file.
+ */
 
 export default function TreeDisplay(props) {
 
@@ -892,11 +891,10 @@ export default function TreeDisplay(props) {
     // Rest the tree display by sorting nodes in ascending order
     const ascendingSort = () => {
         
-        alert("Do you want to sort all nodes from smallest to largest based on their values?")
-        let props=sortNestedJson(props)
+        alert("Sort all nodes: left = smallest, right = largest")
         
         //dowdloadTestCase(props)
-        var data=JSON.stringify();
+        var data=JSON.stringify(props);
         var blob=new Blob([data], {type: 'text/json; charset=utf-8'});
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -913,6 +911,12 @@ export default function TreeDisplay(props) {
         setX(0);
         setY(0);
     } 
+
+    // Reset tree display by filtering out zero values
+    const filterZero = () => {
+        let jsonTemp = JSON.stringify(props);
+        alert(jsonTemp.length);
+    }
 
 
     // Reset tree display to x,y,width,height when initially opening it.
@@ -1011,11 +1015,12 @@ export default function TreeDisplay(props) {
             <div id={"reset_tree_buttons_div"}>
                 <button className={"reset_buttons"} onClick={resetTreeView}>Reset Tree View</button>
                 <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree Display</button>
-                <button className={"reset_buttons"} onClick={ascendingSort}>ASC Sort</button>
-                
                 {nodesForPanelBoxes.length > 0 ? <button className={"reset_buttons"} onClick={clearSidePanel}>Clear Side Panel</button> : null}
             </div>
         </>
     )
 }
+/* commented out from the return rn
+                <button className={"reset_buttons"} onClick={ascendingSort}>Sort</button>
+                <button className={"reset_buttons"} onClick={filterZero}>Filter</button>*/
 

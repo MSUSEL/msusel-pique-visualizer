@@ -20,10 +20,6 @@ function handleClick(event){
     })
 }
 
-/*document.addEventListener("DOMContentLoaded",() =>{
-    const button = document.querySelector(".main-button")
-    button.addEventListener("click", layout_handleClick)
-})*/
 
 function layout_handleClick(event){
     const modal = document.querySelector(".modal")
@@ -44,7 +40,7 @@ export function TopHeader() {
         <>          
             <div class="btn">
                 <button class="main-button" onClick={(event) => handleClick(event)}>Color Changer</button>
-                <button class="button" onClick={(event) => layout_handleClick(event)}>Layout Changer</button>
+                <button class="main-button" onClick={(event) => layout_handleClick(event)}>Layout Changer</button>
             </div>
 
             <div class="modal">
@@ -79,7 +75,13 @@ export function TopHeader() {
 
 
 
-
+export function Features(){
+    return (
+        <>
+        <div class="main-button" onClick={(event) => handleClick(event)}>Sort</div>
+        </>
+    )
+}
 
 
 

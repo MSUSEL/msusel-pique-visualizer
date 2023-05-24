@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
-import sortNestedJson from "../treeDisplay/Sort";
-import "./UploadFile.css"
+import sortNestedJson from "../features/Sort";
+import "./UploadFile.css";
+import PageTransfer from "./PageTransfer";
 
 export function UploadFile() {
     const [file, setFile] = useState("");
@@ -25,12 +26,15 @@ export function UploadFile() {
         if (fileJSON) setFileWorks(fileCanBeProcessed(fileJSON));
     },[fileJSON])
 
+    // Store the fileJSON value in local storage
+    localStorage.setItem('fileData', JSON.stringify(fileJSON));
+
     return (
         <div className="unselectableText">
             {file && fileWorks ? <h4 id={"filename"}>{fileJSON.name}</h4> : <h4 align={"center"} unselectable={"on"}>Upload PIQUE json file to visualize the results.</h4>}
             {file && fileWorks ? null : <input type="file" id={"fileChooser"} onChange={handleChange} />}
             {file && !fileWorks ? <div align={"center"} style={{"color" : "red"}}>Please upload PIQUE json file</div> : null}
-            {file && fileWorks ? <TreeDisplay fileData={fileJSON}/> : null}
+            {file && fileWorks ? <PageTransfer fileData={fileJSON}/> : null}
         </div>
     );
 }
