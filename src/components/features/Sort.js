@@ -3,7 +3,10 @@
  */
 
 export default function sortNestedJson(fileData) {
+    
     // Convert the JSON object to an array of key-value pairs
+    console.log(typeof(fileData));
+    console.log(fileData.fileData);
     let dataArray_product_factors = Object.entries(fileData.fileData.factors.product_factors);
     let dataArray_quality_aspects = Object.entries(fileData.fileData.factors.quality_aspects);
     let dataArray_measures = Object.entries(fileData.fileData.measures);
@@ -49,7 +52,7 @@ export default function sortNestedJson(fileData) {
     alert("done!")
     
             
-    return (sortedData);
+    return sortedData;
 }
 
  /* initial code
