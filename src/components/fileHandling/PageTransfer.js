@@ -16,7 +16,7 @@ export default function PageTransfer(props) {
 
     const handleASCSort = () => {
         // Sort the fileData and update the sortedData state
-        const sorted = sortASC(fileData);//sortNestedJson(fileData);
+        const sorted = sortASC(filteredData || fileData);//sortNestedJson(fileData);
         setAscSortedData(sorted);
         setDescSortedData(null);
         setFilteredData(null); // Reset filteredData when sorting is applied
@@ -25,7 +25,7 @@ export default function PageTransfer(props) {
 
     const handleDESCSort = () => {
         // Sort the fileData and update the sortedData state
-        const sorted = sortDESC(fileData);//sortNestedJson(fileData);
+        const sorted = sortDESC(filteredData || fileData);//sortNestedJson(fileData);
         setAscSortedData(null);
         setDescSortedData(sorted);
         setFilteredData(null); // Reset filteredData when sorting is applied

@@ -10,7 +10,7 @@ export function sortASC(fileData){
     let sortedFileData = JSON.parse(JSON.stringify(fileData));
     
     let dataArray_product_factors = fileData.factors.product_factors ? Object.values(sortedFileData.factors.product_factors) : [];
-    console.log(dataArray_product_factors);
+    //console.log(dataArray_product_factors);
     let dataArray_quality_aspects = fileData.factors.quality_aspects ? Object.values(sortedFileData.factors.quality_aspects) : [];
     let dataArray_measures = sortedFileData.measures ? Object.values(sortedFileData.measures) : [];
     let dataArray_diagnostics = sortedFileData.diagnostics ? Object.values(sortedFileData.diagnostics) : [];
@@ -40,7 +40,7 @@ export function sortASC(fileData){
     });
     
 
-    alert("done!")
+    console.log("Ascending Sorting Done! Smallest <---> Larest")
     
             
     return sortedFileData;
@@ -85,7 +85,7 @@ export function sortDESC(fileData){
     });
     
 
-    alert("done!")
+    console.log("Descending Sorting Done! Largest <---> Smallest")
     
             
     return sortedFileData;

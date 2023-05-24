@@ -55,7 +55,7 @@ export function filterZero(fileData) {
             }
         });
     }
-
+    console.log("Quick Filtering all zero values out!")
     return (filteredFileData);
 }
 
@@ -128,6 +128,7 @@ export function filterRange(fileData, min, max) {
         });
     }
 
+    console.log("Filtering all values out of the given range!")
     return filteredFileData;
 
 
