@@ -133,8 +133,7 @@ export default function PageTransfer(props) {
                 <button className="filter-btn" onClick={handleZeroFilter}>Quick Filter (Worst 10%)</button>
                 */}
                 <button className="filter-btn" onClick={handleFilterRange}>Range Filter (Min-Max)</button>
-                <button onClick={handleReset}>Reset</button>
-
+                <button onClick={handleReset}>Reset Sorting & Filtering</button>
             </div>
             <div className="legend-container">
                 <div className="legend">
