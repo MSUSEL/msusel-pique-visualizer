@@ -13,3 +13,83 @@
     user-select: none;
     height: 5vh;
 }
+
+.sort-btn{
+    margin: 5px;
+    border: 1px solid black;
+    background-color: beige;
+}
+
+.filter-btn{
+    margin: 5px;
+    border: 1px solid black;
+    background-color: pink;
+}
+
+/* legend container in terms of risk level: color category, risk level name, and scale */
+.legend-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  .legend-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+  
+  .legend-range {
+    font-weight: bold;
+  }
+  
+  .legend-category {
+    font-size: 12px;
+  }
+
+  /* Color coding styles */
+.legend-color-green {
+    background-color: #009a66;
+  }
+  
+  .legend-color-blue {
+    background-color: #3566cd;
+  }
+  
+  .legend-color-yellow {
+    background-color: #fde101;
+  }
+  
+  .legend-color-orange {
+    background-color: #ff6500;
+  }
+  
+  .legend-color-red {
+    background-color: #cb0032;
+  }
+  

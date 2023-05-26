@@ -1013,14 +1013,12 @@ export default function TreeDisplay(props) {
             </div>
 
             <div id={"reset_tree_buttons_div"}>
-                <button className={"reset_buttons"} onClick={resetTreeView}>Reset Tree View</button>
-                <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree Display</button>
+                <button className={"reset_buttons"} onClick={resetTreeView}>Reset Zoom</button>
+                <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree</button>
                 {nodesForPanelBoxes.length > 0 ? <button className={"reset_buttons"} onClick={clearSidePanel}>Clear Side Panel</button> : null}
             </div>
         </>
     )
 }
-/* commented out from the return rn
-                <button className={"reset_buttons"} onClick={ascendingSort}>Sort</button>
-                <button className={"reset_buttons"} onClick={filterZero}>Filter</button>*/
+
 

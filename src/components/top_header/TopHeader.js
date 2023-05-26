@@ -47,9 +47,11 @@ export function TopHeader() {
     return (
         <>
             <div class="btn">
+                {/* Ziyi: comment rn for the 1st demo, will implement this feature later
                 <button className="main-button" onClick={handleColorModalOpen}>
                     Color Changer
                 </button>
+                */}
                 <button className="main-button" onClick={handleLayoutModalOpen}>
                     Layout Changer
                 </button>
