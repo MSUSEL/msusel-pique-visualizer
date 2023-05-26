@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import TreeDisplay from "../treeDisplay/TreeDisplay";
-import sortNestedJson from "../features/Sort";
 import "./UploadFile.css";
 import PageTransfer from "./PageTransfer";
 
