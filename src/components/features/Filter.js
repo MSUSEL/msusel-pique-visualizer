@@ -133,3 +133,62 @@ export function filterRange(fileData, min, max) {
 
 
 }
+
+export function filterByCategory(fileData, selectedCategories) {
+  if (!fileData) {
+    return fileData;  // If fileData is not defined, return original data
+  }
+
+  let filteredFileData = JSON.parse(JSON.stringify(fileData));
+
+  if (filteredFileData.factors && filteredFileData.factors.product_factors) {
+    let productFactors = filteredFileData.factors.product_factors;
+
+    Object.keys(productFactors).forEach(factorKey => {
+      let category = productFactors[factorKey].category;
+
+      if (!selectedCategories.includes(category)) {
+        delete productFactors[factorKey];
+      }
+    });
+  }
+
+  if (filteredFileData.factors && filteredFileData.factors.quality_aspects) {
+    let qualityAspects = filteredFileData.factors.quality_aspects;
+
+    Object.keys(qualityAspects).forEach(qualityKey => {
+      let category = qualityAspects[qualityKey].category;
+
+      if (!selectedCategories.includes(category)) {
+        delete qualityAspects[qualityKey];
+      }
+    });
+  }
+
+  if (filteredFileData.measures) {
+    let measures = filteredFileData.measures;
+
+    Object.keys(measures).forEach(measureKey => {
+      let category = measures[measureKey].category;
+
+      if (!selectedCategories.includes(category)) {
+        delete measures[measureKey];
+      }
+    });
+  }
+
+  if (filteredFileData.diagnostics) {
+    let diagnostics = filteredFileData.diagnostics;
+
+    Object.keys(diagnostics).forEach(diagnosticKey => {
+      let category = diagnostics[diagnosticKey].category;
+
+      if (!selectedCategories.includes(category)) {
+        delete diagnostics[diagnosticKey];
+      }
+    });
+  }
+
+  console.log("Filtering based on selected categories!");
+  return filteredFileData;
+}
