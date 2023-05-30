@@ -1,25 +1,16 @@
-import "./Features.css"
-/**
- * Return the filtered json object
- */
+import "./Features.css";
 
 export function filterZero(fileData) {
     if (!fileData) {
-        return fileData;  // If fileData or factors is not defined, return original data
+        return fileData; // If fileData or factors is not defined, return original data
     }
 
     let filteredFileData = JSON.parse(JSON.stringify(fileData));
 
-    let dataArray_product_factors = filteredFileData.factors.product_factors ? Object.values(filteredFileData.factors.product_factors) : [];
-    console.log(dataArray_product_factors.length);
-    let dataArray_quality_aspects = filteredFileData.factors.quality_aspects ? Object.values(filteredFileData.factors.quality_aspects) : [];
-    let dataArray_measures = filteredFileData.measures ? Object.values(filteredFileData.measures) : [];
-    let dataArray_diagnostics = filteredFileData.diagnostics ? Object.values(filteredFileData.diagnostics) : [];
-
     if (filteredFileData.factors && filteredFileData.factors.product_factors) {
         let productFactors = filteredFileData.factors.product_factors;
 
-        Object.keys(productFactors).forEach(key => {
+        Object.keys(productFactors).forEach((key) => {
             if (productFactors[key].value === 0) {
                 delete productFactors[key];
             }
@@ -29,7 +20,7 @@ export function filterZero(fileData) {
     if (filteredFileData.factors && filteredFileData.factors.quality_aspects) {
         let qualityAspects = filteredFileData.factors.quality_aspects;
 
-        Object.keys(qualityAspects).forEach(key => {
+        Object.keys(qualityAspects).forEach((key) => {
             if (qualityAspects[key].value === 0) {
                 delete qualityAspects[key];
             }
@@ -39,7 +30,7 @@ export function filterZero(fileData) {
     if (filteredFileData.measures) {
         let measures = filteredFileData.measures;
 
-        Object.keys(measures).forEach(key => {
+        Object.keys(measures).forEach((key) => {
             if (measures[key].value === 0) {
                 delete measures[key];
             }
@@ -49,29 +40,16 @@ export function filterZero(fileData) {
     if (filteredFileData.diagnostics) {
         let diagnostics = filteredFileData.diagnostics;
 
-        Object.keys(diagnostics).forEach(key => {
+        Object.keys(diagnostics).forEach((key) => {
             if (diagnostics[key].value === 0) {
                 delete diagnostics[key];
             }
         });
     }
-    console.log("Quick Filtering all zero values out!")
-    return (filteredFileData);
+
+    console.log("Quick Filtering all zero values out!");
+    return filteredFileData;
 }
-
-
-/**
- * Return the filtered json object based on a range
- * @param {Object} fileData - The JSON object to be filtered
- * @param {number} min - The minimum value of the range (inclusive)
- * @param {number} max - The maximum value of the range (inclusive)
- * @returns {Object} - The filtered JSON object
- * Todo: 
- * @param {string} key - The key indicating the property to filter on 
- */
-
-
-
 
 export function filterRange(fileData, min, max) {
     if (!fileData) {
@@ -83,7 +61,7 @@ export function filterRange(fileData, min, max) {
     if (filteredFileData.factors && filteredFileData.factors.product_factors) {
         let productFactors = filteredFileData.factors.product_factors;
 
-        Object.keys(productFactors).forEach(factorKey => {
+        Object.keys(productFactors).forEach((factorKey) => {
             let value = productFactors[factorKey].value;
 
             if (value < min || value > max) {
@@ -95,7 +73,7 @@ export function filterRange(fileData, min, max) {
     if (filteredFileData.factors && filteredFileData.factors.quality_aspects) {
         let qualityAspects = filteredFileData.factors.quality_aspects;
 
-        Object.keys(qualityAspects).forEach(qualityKey => {
+        Object.keys(qualityAspects).forEach((qualityKey) => {
             let value = qualityAspects[qualityKey].value;
 
             if (value < min || value > max) {
@@ -107,7 +85,7 @@ export function filterRange(fileData, min, max) {
     if (filteredFileData.measures) {
         let measures = filteredFileData.measures;
 
-        Object.keys(measures).forEach(measureKey => {
+        Object.keys(measures).forEach((measureKey) => {
             let value = measures[measureKey].value;
 
             if (value < min || value > max) {
@@ -119,7 +97,7 @@ export function filterRange(fileData, min, max) {
     if (filteredFileData.diagnostics) {
         let diagnostics = filteredFileData.diagnostics;
 
-        Object.keys(diagnostics).forEach(diagnosticKey => {
+        Object.keys(diagnostics).forEach((diagnosticKey) => {
             let value = diagnostics[diagnosticKey].value;
 
             if (value < min || value > max) {
@@ -128,67 +106,33 @@ export function filterRange(fileData, min, max) {
         });
     }
 
-    console.log("Filtering all values out of the given range!")
+    console.log("Filtering all values out of the given range!");
     return filteredFileData;
-
-
 }
 
-export function filterByCategory(fileData, selectedCategories) {
-  if (!fileData) {
-    return fileData;  // If fileData is not defined, return original data
-  }
+export function filterByCategory(fileData, selectedCategory) {
+    if (!fileData) {
+        return fileData; // If fileData is not defined, return original data
+    }
 
-  let filteredFileData = JSON.parse(JSON.stringify(fileData));
+    let filteredFileData = JSON.parse(JSON.stringify(fileData));
 
-  if (filteredFileData.factors && filteredFileData.factors.product_factors) {
-    let productFactors = filteredFileData.factors.product_factors;
+    const filterNode = (node, category) => {
+        if (!node) {
+            return false;
+        }
 
-    Object.keys(productFactors).forEach(factorKey => {
-      let category = productFactors[factorKey].category;
+        const nodeCategory = node.category || "";
 
-      if (!selectedCategories.includes(category)) {
-        delete productFactors[factorKey];
-      }
-    });
-  }
+        if (nodeCategory === category || node.children.some((child) => filterNode(child, category))) {
+            return true;
+        }
 
-  if (filteredFileData.factors && filteredFileData.factors.quality_aspects) {
-    let qualityAspects = filteredFileData.factors.quality_aspects;
+        return false;
+    };
 
-    Object.keys(qualityAspects).forEach(qualityKey => {
-      let category = qualityAspects[qualityKey].category;
+    filteredFileData.children = filteredFileData.children.filter((node) => filterNode(node, selectedCategory));
 
-      if (!selectedCategories.includes(category)) {
-        delete qualityAspects[qualityKey];
-      }
-    });
-  }
-
-  if (filteredFileData.measures) {
-    let measures = filteredFileData.measures;
-
-    Object.keys(measures).forEach(measureKey => {
-      let category = measures[measureKey].category;
-
-      if (!selectedCategories.includes(category)) {
-        delete measures[measureKey];
-      }
-    });
-  }
-
-  if (filteredFileData.diagnostics) {
-    let diagnostics = filteredFileData.diagnostics;
-
-    Object.keys(diagnostics).forEach(diagnosticKey => {
-      let category = diagnostics[diagnosticKey].category;
-
-      if (!selectedCategories.includes(category)) {
-        delete diagnostics[diagnosticKey];
-      }
-    });
-  }
-
-  console.log("Filtering based on selected categories!");
-  return filteredFileData;
+    console.log(`Filtering based on the ${selectedCategory} category!`);
+    return filteredFileData;
 }

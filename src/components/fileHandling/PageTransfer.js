@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASC, sortDESC } from "../features/Sort";
-import { filterZero, filterByCategory, filterRange } from "../features/Filter";
+import { filterByCategory, filterRange } from "../features/Filter";
 import "./UploadFile.css";
-import "../treeDisplay/TreeDisplay.css"
+import "../treeDisplay/TreeDisplay.css";
 
 const legendData = [
     { color: "green", range: "0 - 0.2", category: "Low", colorCode: "#009a66" },
@@ -35,6 +35,7 @@ export default function PageTransfer(props) {
     const [sortedData, setSortedData] = useState(null);
     const [filteredData, setFilteredData] = useState(null);
     const [filteredRangeData, setFilteredRangeData] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null); // Updated to store selected category
 
     const renderTreeNode = (node) => {
         const value = node.value || 0; // If value is not available, default to 0
@@ -48,21 +49,6 @@ export default function PageTransfer(props) {
         );
     };
 
-    function renderLegend() {
-        return (
-            <div className="legend">
-                <h3>Legend</h3>
-                {legendData.map((item) => (
-                    <div key={item.color}>
-                        <span className="legend-color" style={{ backgroundColor: item.color }}></span>
-                        <span className="legend-range">{item.range}</span>
-                        <span className="legend-category">{item.category}</span>
-                    </div>
-                ))}
-            </div>
-        );
-    }
-
     const handleSort = (sortType) => {
         let sorted;
         if (sortType === "asc") {
@@ -75,8 +61,19 @@ export default function PageTransfer(props) {
         setFilteredRangeData(null);
     };
 
-    const handleCategoryFilter = () => {
-        const filtered = filterByCategory(fileData);
+    const handleFilterByCategory = (category) => {
+        setSelectedCategory(category); // Store the selected category
+        const filtered = filterByCategory(fileData, category);
+        if (!filtered) {
+            alert(`No nodes found in the ${category} category.`);
+        }
+        setFilteredData(filtered);
+        setSortedData(null);
+        setFilteredRangeData(null);
+    };
+
+    const handleApplyFilter = () => {
+        const filtered = filterByCategory(fileData, selectedCategory);
         setFilteredData(filtered);
         setSortedData(null);
         setFilteredRangeData(null);
@@ -95,12 +92,14 @@ export default function PageTransfer(props) {
         setFilteredRangeData(null);
         setFilteredData(null);
         setSortedData(null);
+        setSelectedCategory(null);
     };
 
     useEffect(() => {
         setSortedData(null);
         setFilteredData(null);
         setFilteredRangeData(null);
+        setSelectedCategory(null);
     }, [fileData]);
 
     return (
@@ -121,8 +120,31 @@ export default function PageTransfer(props) {
                         </div>
                     )}
                 </div>
-                <button className="filter-btn" onClick={handleCategoryFilter}> Filter (Category) </button>
-                <button className="filter-btn" onClick={handleFilterRange}> Filter (Range)</button>
+                <div className="filter-dropdown">
+                    <button className="filter-btn" onClick={handleApplyFilter}> {/* Updated to call handleApplyFilter */}
+                        Filter (Category)
+                    </button>
+                    {selectedCategory && (
+                        <div className="selected-category">
+                            Selected Category: {selectedCategory}
+                        </div>
+                    )}
+                    <div className="filter-options">
+                        {legendData.map((item) => (
+                            <button
+                                key={item.category}
+                                className={`filter-option ${selectedCategory === item.category ? "active" : ""}`}
+                                onClick={() => handleFilterByCategory(item.category)}
+                            >
+                                {item.category}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <button className="filter-btn" onClick={handleFilterRange}>
+                    Filter (Range)
+                </button>
                 <button onClick={handleReset}>Reset Sorting & Filtering</button>
             </div>
             <div className="legend-container">
@@ -130,16 +152,14 @@ export default function PageTransfer(props) {
                     <h3 className="legend-title">Risk Level</h3>
                     {legendData.map((item) => (
                         <div className="legend-item" key={item.color}>
-                            <span className={`legend-color legend-color-${item.color}`} />
+                            <label htmlFor={item.category} className={`legend-color legend-color-${item.color}`} />
                             <span className="legend-range">{item.range}</span>
                             <span className="legend-category">{item.category}</span>
                         </div>
                     ))}
                 </div>
             </div>
-            <TreeDisplay
-                fileData={sortedData || filteredData || filteredRangeData || fileData}
-            />
+            <TreeDisplay fileData={sortedData || filteredData || filteredRangeData || fileData} />
         </div>
     );
 }
