@@ -35,7 +35,8 @@ export default function PageTransfer(props) {
     const [sortedData, setSortedData] = useState(null);
     const [filteredData, setFilteredData] = useState(null);
     const [filteredRangeData, setFilteredRangeData] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState(null); // Updated to store selected category
+    const [selectedCategory, setSelectedCategory] = useState(null); // Updated state
+    const [showFilterOptions, setShowFilterOptions] = useState(false);
 
     const renderTreeNode = (node) => {
         const value = node.value || 0; // If value is not available, default to 0
@@ -62,14 +63,7 @@ export default function PageTransfer(props) {
     };
 
     const handleFilterByCategory = (category) => {
-        setSelectedCategory(category); // Store the selected category
-        const filtered = filterByCategory(fileData, category);
-        if (!filtered) {
-            alert(`No nodes found in the ${category} category.`);
-        }
-        setFilteredData(filtered);
-        setSortedData(null);
-        setFilteredRangeData(null);
+        setSelectedCategory(category); // Update selected category
     };
 
     const handleApplyFilter = () => {
@@ -105,6 +99,7 @@ export default function PageTransfer(props) {
     return (
         <div className="unselectableText">
             <div>
+                {/* Initial version of sort and filter: use buttons
                 <div className="sort-dropdown">
                     <button className="sort-btn" onClick={() => setShowSortOptions(!showSortOptions)}>
                         Sort
@@ -119,26 +114,53 @@ export default function PageTransfer(props) {
                             </button>
                         </div>
                     )}
+                </div>*/}
+
+                {/* Updated version of sort and filter: use dropdown menu and links*/}
+                <div class="dropdown">
+                    <span>Sort</span>
+                    <div class="dropdown-content">
+                        <a href="#" className="dropdown-option" onClick={() => handleSort("asc")}>
+                            Ascending
+                        </a>
+                        <a href="#" className="dropdown-option" onClick={() => handleSort("desc")}>
+                            Descending
+                        </a>
+                    </div>
                 </div>
+
+
                 <div className="filter-dropdown">
-                    <button className="filter-btn" onClick={handleApplyFilter}> {/* Updated to call handleApplyFilter */}
+                    <button className="filter-btn" onClick={() => setShowFilterOptions(!showFilterOptions)}>
                         Filter (Category)
                     </button>
-                    {selectedCategory && (
-                        <div className="selected-category">
-                            Selected Category: {selectedCategory}
+                    {showFilterOptions && (
+                        <div className="filter-options">
+                            {legendData.map((item) => (
+                                <button
+                                    key={item.category}
+                                    className={`filter-option ${selectedCategory === item.category ? "selected" : ""}`}
+                                    onClick={() => handleFilterByCategory(item.category)}
+                                >
+                                    {item.category}
+                                </button>
+                            ))}
+                            {/*<button className="apply-filter-btn" onClick={handleApplyFilter}>
+                                Apply Filter
+                            </button>*/}
                         </div>
                     )}
-                    <div className="filter-options">
-                        {legendData.map((item) => (
-                            <button
-                                key={item.category}
-                                className={`filter-option ${selectedCategory === item.category ? "active" : ""}`}
-                                onClick={() => handleFilterByCategory(item.category)}
-                            >
-                                {item.category}
-                            </button>
-                        ))}
+                </div>
+                <div class="dropdown">
+
+                    <span>Filter (Category)</span>
+                    <div class="dropdown-content">
+                        <button class="filter-option">Low</button>
+                        <button class="filter-option">Guarded</button>
+                        <button class="filter-option">Elevated</button>
+                        <button class="filter-option">High</button>
+                        <button class="filter-option">Severe</button>
+
                     </div>
                 </div>
 
