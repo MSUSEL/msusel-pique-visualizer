@@ -1014,7 +1014,7 @@ export default function TreeDisplay(props) {
 
             <div id={"reset_tree_buttons_div"}>
                 <button className={"reset_buttons"} onClick={resetTreeView}>Reset Zoom</button>
-                <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree</button>
+                <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Nodes & Edges</button>
                 {nodesForPanelBoxes.length > 0 ? <button className={"reset_buttons"} onClick={clearSidePanel}>Clear Side Panel</button> : null}
             </div>
         </>
