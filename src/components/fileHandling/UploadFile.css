@@ -161,7 +161,7 @@
 
 /* Style The Dropdown Button */
 .dropbtn {
-  background-color: #4CAF50;
+  background-color: #6a886b;
   color: white;
   padding: 16px;
   font-size: 16px;
@@ -198,6 +198,12 @@
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {
   background-color: #f1f1f1;
+}
+
+/* Add a visual indicator for the toggled/pressed state */
+.dropdown-content a.selected {
+  background-color: beige;
+  color: #6a886b;
 }
 
 /* Show the dropdown menu on hover */

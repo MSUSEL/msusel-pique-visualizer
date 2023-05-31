@@ -33,6 +33,7 @@ export default function PageTransfer(props) {
     const { fileData } = props;
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [sortedData, setSortedData] = useState(null);
+    const [sortType, setSortType] = useState(null);
     const [filteredData, setFilteredData] = useState(null);
     const [filteredRangeData, setFilteredRangeData] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState(null); // Updated state
@@ -60,6 +61,21 @@ export default function PageTransfer(props) {
         setSortedData(sorted);
         setFilteredData(null);
         setFilteredRangeData(null);
+        setSortType(sortType); // Store the selected sort type
+    };
+
+    // Render the dropdown content with selected class for the toggled/pressed state
+    const renderDropdownContent = () => {
+        return (
+            <div className="dropdown-content">
+                <a className={sortType === "asc" ? "selected" : ""} onClick={() => handleSort("asc")}>
+                    Ascending
+                </a>
+                <a className={sortType === "desc" ? "selected" : ""} onClick={() => handleSort("desc")}>
+                    Descending
+                </a>
+            </div>
+        );
     };
 
     const handleFilterByCategory = (category) => {
@@ -117,16 +133,9 @@ export default function PageTransfer(props) {
                 </div>*/}
 
                 {/* Updated version of sort and filter: use dropdown menu and links*/}
-                <div class="dropdown">
-                    <span>Sort</span>
-                    <div class="dropdown-content">
-                        <a href="#" className="dropdown-option" onClick={() => handleSort("asc")}>
-                            Ascending
-                        </a>
-                        <a href="#" className="dropdown-option" onClick={() => handleSort("desc")}>
-                            Descending
-                        </a>
-                    </div>
+                <div className="dropdown">
+                    <span className="dropbtn">Sort</span>
+                    <div className="dropdown-content">{renderDropdownContent()}</div>
                 </div>
 
 
@@ -134,22 +143,7 @@ export default function PageTransfer(props) {
                     <button className="filter-btn" onClick={() => setShowFilterOptions(!showFilterOptions)}>
                         Filter (Category)
                     </button>
-                    {showFilterOptions && (
-                        <div className="filter-options">
-                            {legendData.map((item) => (
-                                <button
-                                    key={item.category}
-                                    className={`filter-option ${selectedCategory === item.category ? "selected" : ""}`}
-                                    onClick={() => handleFilterByCategory(item.category)}
-                                >
-                                    {item.category}
-                                </button>
-                            ))}
-                            {/*<button className="apply-filter-btn" onClick={handleApplyFilter}>
-                                Apply Filter
-                            </button>*/}
-                        </div>
-                    )}
+
                 </div>
                 <div class="dropdown">
 
