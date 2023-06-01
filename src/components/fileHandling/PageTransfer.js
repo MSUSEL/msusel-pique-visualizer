@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASC, sortDESC } from "../features/Sort";
-import { filterByCategory, filterRange } from "../features/Filter";
+import { filterByCategory, filterParentNodes, filterRange } from "../features/Filter";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 
+// insignificant, minor, moderate, high, and severe
 const legendData = [
-    { color: "green", range: "0 - 0.2", category: "Low", colorCode: "#009a66" },
-    { color: "blue", range: "0.2 - 0.4", category: "Guarded", colorCode: "#3566cd" },
-    { color: "yellow", range: "0.4 - 0.6", category: "Elevated", colorCode: "#fde101" },
+    { color: "green", range: "0 - 0.2", category: "Insignificant", colorCode: "#009a66" },
+    { color: "blue", range: "0.2 - 0.4", category: "Minor", colorCode: "#3566cd" },
+    { color: "yellow", range: "0.4 - 0.6", category: "Moderate", colorCode: "#fde101" },
     { color: "orange", range: "0.6 - 0.8", category: "High", colorCode: "#ff6500" },
     { color: "red", range: "0.8 - 1", category: "Severe", colorCode: "#cb0032" }
 ];
@@ -31,13 +32,20 @@ function getColor(value) {
 
 export default function PageTransfer(props) {
     const { fileData } = props;
-    const [showSortOptions, setShowSortOptions] = useState(false);
+
+    // Sort state
     const [sortedData, setSortedData] = useState(null);
     const [sortType, setSortType] = useState(null);
+
+    // Filter state
     const [filteredData, setFilteredData] = useState(null);
+    const [filteredType, setFilteredType] = useState(null);
+
+    // Filter range state
     const [filteredRangeData, setFilteredRangeData] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState(null); // Updated state
-    const [showFilterOptions, setShowFilterOptions] = useState(false);
+
+    // Reset state
+    const [reset, setReset] = useState(false);
 
     const renderTreeNode = (node) => {
         const value = node.value || 0; // If value is not available, default to 0
@@ -59,110 +67,86 @@ export default function PageTransfer(props) {
             sorted = sortDESC(filteredData || fileData);
         }
         setSortedData(sorted);
-        setFilteredData(null);
-        setFilteredRangeData(null);
         setSortType(sortType); // Store the selected sort type
     };
 
-    // Render the dropdown content with selected class for the toggled/pressed state
-    const renderDropdownContent = () => {
-        return (
-            <div className="dropdown-content">
-                <a className={sortType === "asc" ? "selected" : ""} onClick={() => handleSort("asc")}>
-                    Ascending
-                </a>
-                <a className={sortType === "desc" ? "selected" : ""} onClick={() => handleSort("desc")}>
-                    Descending
-                </a>
-            </div>
-        );
-    };
+    const handleFilterByCategory = (filterType) => {
+        let filtered;
+        if (filterType === "low") {
+            filtered = filterByCategory(fileData, "Low");
+        } else if (filterType === "guarded") {
+            filtered = filterByCategory(fileData, "Guarded");
+        } else if (filterType === "elevated") {
+            filtered = filterByCategory(fileData, "Elevated");
+        } else if (filterType === "high") {
+            filtered = filterByCategory(fileData, "High");
+        } else if (filterType === "severe") {
+            filtered = filterByCategory(fileData, "Severe");
+        }
 
-    const handleFilterByCategory = (category) => {
-        setSelectedCategory(category); // Update selected category
-    };
+        if (filtered) {
+            filtered = filterParentNodes(filtered);
+        }
 
-    const handleApplyFilter = () => {
-        const filtered = filterByCategory(fileData, selectedCategory);
         setFilteredData(filtered);
-        setSortedData(null);
-        setFilteredRangeData(null);
+        setFilteredType(filterType);
     };
 
-    const handleFilterRange = () => {
+
+    const handleFilterByRange = () => {
         const min = parseFloat(prompt("Enter the minimum value:"));
         const max = parseFloat(prompt("Enter the maximum value:"));
         const filtered = filterRange(fileData, min, max);
         setFilteredRangeData(filtered);
-        setFilteredData(null);
-        setSortedData(null);
     };
 
     const handleReset = () => {
-        setFilteredRangeData(null);
-        setFilteredData(null);
         setSortedData(null);
-        setSelectedCategory(null);
+        setFilteredData(null);
+        setFilteredRangeData(null);
+        setReset(true);
     };
 
     useEffect(() => {
         setSortedData(null);
         setFilteredData(null);
         setFilteredRangeData(null);
-        setSelectedCategory(null);
+        setReset(false);
     }, [fileData]);
 
     return (
         <div className="unselectableText">
             <div>
-                {/* Initial version of sort and filter: use buttons
-                <div className="sort-dropdown">
-                    <button className="sort-btn" onClick={() => setShowSortOptions(!showSortOptions)}>
-                        Sort
-                    </button>
-                    {showSortOptions && (
-                        <div className="sort-options">
-                            <button className="sort-option" onClick={() => handleSort("asc")}>
-                                Ascending
-                            </button>
-                            <button className="sort-option" onClick={() => handleSort("desc")}>
-                                Descending
-                            </button>
-                        </div>
-                    )}
-                </div>*/}
-
-                {/* Updated version of sort and filter: use dropdown menu and links*/}
+                {/* Sort Dropdown */}
                 <div className="dropdown">
                     <span className="dropbtn">Sort</span>
-                    <div className="dropdown-content">{renderDropdownContent()}</div>
-                </div>
-
-
-                <div className="filter-dropdown">
-                    <button className="filter-btn" onClick={() => setShowFilterOptions(!showFilterOptions)}>
-                        Filter (Category)
-                    </button>
-
-                </div>
-                <div class="dropdown">
-
-                    <span>Filter (Category)</span>
-                    <div class="dropdown-content">
-                        <button class="filter-option">Low</button>
-                        <button class="filter-option">Guarded</button>
-                        <button class="filter-option">Elevated</button>
-                        <button class="filter-option">High</button>
-                        <button class="filter-option">Severe</button>
-
+                    <div className="dropdown-content">
+                        <a className={sortType === "asc" ? "selected" : ""} onClick={() => handleSort("asc")}>
+                            Ascending
+                        </a>
+                        <a className={sortType === "desc" ? "selected" : ""} onClick={() => handleSort("desc")}>
+                            Descending
+                        </a>
                     </div>
                 </div>
 
-                <button className="filter-btn" onClick={handleFilterRange}>
+                {/* Filter Dropdown: insignificant, minor, moderate, high, and severe */}
+                <div className="dropdown">
+                    <span className="dropbtn">Filter (Category)</span>
+                    <div className="dropdown-content">
+                        <a className={filteredType === "insignificant" ? "selected" : ""} onClick={() => handleFilterByCategory("low")}>
+                            Insignificant
+                        </a>
+                    </div>
+                </div>
+
+                <button className="filter-btn" onClick={handleFilterByRange}>
                     Filter (Range)
                 </button>
                 <button onClick={handleReset}>Reset Sorting & Filtering</button>
             </div>
+
+            {/* Legend Display */}
             <div className="legend-container">
                 <div className="legend">
                     <h3 className="legend-title">Risk Level</h3>
@@ -175,7 +159,7 @@ export default function PageTransfer(props) {
                     ))}
                 </div>
             </div>
-            <TreeDisplay fileData={sortedData || filteredData || filteredRangeData || fileData} />
+            <TreeDisplay fileData={sortedData || filteredData || filteredRangeData || fileData} reset={reset} />
         </div>
     );
 }
