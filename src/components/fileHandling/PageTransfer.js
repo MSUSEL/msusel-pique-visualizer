@@ -73,14 +73,14 @@ export default function PageTransfer(props) {
     const handleFilterByCategory = (filterType) => {
         let filtered;
         if (filterType === "low") {
-            filtered = filterByCategory(fileData, "Low");
+            filtered = filterByCategory(fileData, "Insignificant");
         } else if (filterType === "guarded") {
-            filtered = filterByCategory(fileData, "Guarded");
+            filtered = filterByCategory(fileData, "Minor");
         } else if (filterType === "elevated") {
-            filtered = filterByCategory(fileData, "Elevated");
+            filtered = filterByCategory(fileData, "Moderate");
         } else if (filterType === "high") {
             filtered = filterByCategory(fileData, "High");
-        } else if (filterType === "severe") {
+        } else if (filterType === "Moderate") {
             filtered = filterByCategory(fileData, "Severe");
         }
 
