@@ -1,15 +1,217 @@
 #fileChooser {
-    display: block;
-    margin: auto;
-    padding-top: 20px;
-    text-align: center;
-    text-align-last: center;
+  display: block;
+  margin: auto;
+  padding-top: 20px;
+  text-align: center;
+  text-align-last: center;
 }
 
 #filename {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-    height: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  height: 5vh;
+}
+
+/* Legend container in terms of risk level: color category, risk level name, and scale */
+.legend-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+}
+
+.legend-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.legend-range {
+  font-weight: bold;
+}
+
+.legend-category {
+  font-size: 12px;
+}
+
+/* Color coding styles */
+.legend-color-green {
+  background-color: #009a66;
+}
+
+.legend-color-blue {
+  background-color: #3566cd;
+}
+
+.legend-color-yellow {
+  background-color: #fde101;
+}
+
+.legend-color-orange {
+  background-color: #ff6500;
+}
+
+.legend-color-red {
+  background-color: #cb0032;
+}
+
+/* Sort button group */
+.sort-btn-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.sort-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.sort-btn {
+  margin-right: 10px;
+}
+
+.sort-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.sort-option {
+  margin: 5px;
+  border: 1px solid black;
+  background-color: beige;
+}
+
+/* Filter button group */
+.filter-btn-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.filter-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.filter-btn {
+  margin-right: 10px;
+}
+
+.filter-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.filter-option {
+  margin: 5px;
+}
+
+.filter-option-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.filter-checkbox {
+  margin-right: 5px;
+}
+
+/* Style The Dropdown Button */
+.dropbtn {
+  background-color: #aabdab;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  margin-top: 8px;
+  /* Add some margin from the dropdown button */
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Add a visual indicator for the toggled/pressed state */
+.dropdown-content a.selected {
+  background-color: beige;
+  color: #6a886b;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: beige;
 }

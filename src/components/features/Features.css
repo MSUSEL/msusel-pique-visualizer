@@ -6,9 +6,6 @@
     align-items: center;
 }
 
-/*
-container for the color changer and layout changer
-*/
 .modal{
     display: none;
     position: fixed;
@@ -52,14 +49,4 @@ button{
     margin: 5px;
     border: 1px solid black;
     background-color: beige;
-}
-.layout-btn-doing{
-    margin: 5px;
-    border: 1px solid black;
-    background-color: beige;
-}
-.layout-btn-todo{
-    margin: 5px;
-    border: 1px solid black;
-    background-color: gray;
 }

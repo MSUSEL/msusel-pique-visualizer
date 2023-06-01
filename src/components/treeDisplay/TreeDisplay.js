@@ -10,6 +10,9 @@ import {
     determineParentClickerColor,
     findPIQUENode
 } from "./TreeDisplayHelpers";
+/**
+ * @param fileData PIQUE .json output file.
+ */
 
 export default function TreeDisplay(props) {
 
@@ -885,6 +888,37 @@ export default function TreeDisplay(props) {
             .on("mouseleave",handleNodeMouseLeave)
     }
 
+    // Rest the tree display by sorting nodes in ascending order
+    const ascendingSort = () => {
+        
+        alert("Sort all nodes: left = smallest, right = largest")
+        
+        //dowdloadTestCase(props)
+        var data=JSON.stringify(props);
+        var blob=new Blob([data], {type: 'text/json; charset=utf-8'});
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "data.json";
+        a.hidden = true;
+        document.body.appendChild(a);
+        a.innerHTML =
+            "someinnerhtml";
+        a.click();
+
+        setWidth(nodesForPanelBoxes.length > 0 ? window.innerWidth * 65 / 100 : window.innerWidth);
+        setHeight(window.innerHeight * 0.75 * 0.99);  // Original code before flexbox
+        //setHeight(window_height);   // Code with flexbox
+        setX(0);
+        setY(0);
+    } 
+
+    // Reset tree display by filtering out zero values
+    const filterZero = () => {
+        let jsonTemp = JSON.stringify(props);
+        alert(jsonTemp.length);
+    }
+
+
     // Reset tree display to x,y,width,height when initially opening it.
     const resetTreeView = () => {
         setWidth(nodesForPanelBoxes.length > 0 ? window.innerWidth * 65 / 100 : window.innerWidth);
@@ -979,11 +1013,12 @@ export default function TreeDisplay(props) {
             </div>
 
             <div id={"reset_tree_buttons_div"}>
-                <button className={"reset_buttons"} onClick={resetTreeView}>Reset Tree View</button>
-                <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Tree Display</button>
+                <button className={"reset_buttons"} onClick={resetTreeView}>Reset Zoom</button>
+                <button className={"reset_buttons"} onClick={resetTreeDisplay}>Reset Selection</button>
                 {nodesForPanelBoxes.length > 0 ? <button className={"reset_buttons"} onClick={clearSidePanel}>Clear Side Panel</button> : null}
             </div>
         </>
     )
 }
+
 
