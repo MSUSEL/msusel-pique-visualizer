@@ -99,3 +99,46 @@ export function filterParentNodes(node) {
     return newNode;
 }
 
+// Utility function to filter nodes by category
+export const filterNodesByCategory = (data, category) => {
+    // Extract nodes and edges from the data
+    const { nodes, edges } = data;
+  
+    // Filter nodes based on the selected category
+    const filteredNodes = nodes.filter((node) => {
+      const { value } = node;
+  
+      // Define the risk level boundaries
+      const riskLevels = {
+        Insignificant: [0, 0.2],
+        Minor: [0.2, 0.4],
+        Moderate: [0.4, 0.6],
+        High: [0.6, 0.8],
+        Severe: [0.8, 1],
+      };
+  
+      // Check if the node's value falls within the selected category's range
+      const [min, max] = riskLevels[category];
+      return value >= min && value <= max;
+    });
+  
+    return filteredNodes;
+  };
+  
+  // Utility function to filter edges based on filtered nodes
+  export const filterEdgesByNodes = (data, filteredNodes) => {
+    // Extract edges from the data
+    const { edges } = data;
+  
+    // Get the IDs of the filtered nodes
+    const filteredNodeIds = filteredNodes.map((node) => node.id);
+  
+    // Filter edges based on the filtered nodes
+    const filteredEdges = edges.filter((edge) => {
+      const { source, target } = edge;
+      return filteredNodeIds.includes(source) && filteredNodeIds.includes(target);
+    });
+  
+    return filteredEdges;
+  };
+  

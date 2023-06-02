@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASC, sortDESC } from "../features/Sort";
-import { filterByCategory, filterParentNodes, filterRange } from "../features/Filter";
+import { filterByCategory, filterParentNodes, filterRange, filterNodesByCategory, filterEdgesByNodes } from "../features/Filter";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 
@@ -95,14 +95,27 @@ export default function PageTransfer(props) {
         setFilteredType(filterType);
     };
 
+    const [selectedCategory, setSelectedCategory] = useState(""); // Track the selected risk category
+    const [treeDisplayKey, setTreeDisplayKey] = useState(0);
 
-    /*const handleFilterByRange = () => {
-        const min = parseFloat(prompt("Enter the minimum value:"));
-        const max = parseFloat(prompt("Enter the maximum value:"));
-        const filtered = filterRange(fileData, min, max);
-        setIsFilterRangeOpen(true);
-        setFilteredRangeData(filtered);
-    };*/
+
+    const handleCategoryFilter = (category) => {
+        setSelectedCategory(category);
+
+        const filteredNodes = filterNodesByCategory(fileData, category);
+        const filteredEdges = filterEdgesByNodes(fileData, filteredNodes);
+        const filteredDataset = {
+            nodes: filteredNodes,
+            edges: filteredEdges,
+        };
+
+        setFilteredData(filteredDataset);
+    };
+
+    useEffect(() => {
+        // Update the key whenever filteredData changes
+        setTreeDisplayKey((prevKey) => prevKey + 1);
+    }, [filteredData]);
 
     const handleFilterByRange = () => {
         setIsFilterRangeOpen(true);
@@ -172,7 +185,17 @@ export default function PageTransfer(props) {
                         </button>
                     </div>
                 </div>
-
+                <div className="dropdown">
+                    <span className="dropbtn">Filter (Category)</span>
+                    <div className="dropdown-content">
+                        {/* Dropdown Options */}
+                        <button onClick={() => handleCategoryFilter("Insignificant")}>Insignificant</button>
+                        <button onClick={() => handleCategoryFilter("Minor")}>Minor</button>
+                        <button onClick={() => handleCategoryFilter("Moderate")}>Moderate</button>
+                        <button onClick={() => handleCategoryFilter("High")}>High</button>
+                        <button onClick={() => handleCategoryFilter("Severe")}>Severe</button>
+                    </div>
+                </div>
                 {/* Filter by Range: */}
 
                 <div className="dropdown">
@@ -224,7 +247,11 @@ export default function PageTransfer(props) {
                     ))}
                 </div>
             </div>
-            <TreeDisplay fileData={sortedData || filteredData || filteredRangeData || fileData} reset={reset} />
+            <TreeDisplay
+                key={treeDisplayKey}
+                fileData={sortedData || filteredData || filteredData || filteredRangeData || fileData}
+                reset={reset}
+            />
         </div>
     );
 }
