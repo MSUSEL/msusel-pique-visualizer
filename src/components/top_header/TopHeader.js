@@ -1,4 +1,5 @@
 import "./TopHeader.css"
+import "../fileHandling/UploadFile.css"
 //import NodeRiskColor from "../treeNode/NodeColorHelper";
 
 
@@ -52,9 +53,11 @@ export function TopHeader() {
                     Color Changer
                 </button>
                 */}
+                {/* remove the button, rn using dropdown menu and links
                 <button className="main-button" onClick={handleLayoutModalOpen}>
-                    Layout Changer
+                    Change Layout
                 </button>
+                */}
             </div>
 
             <div className="modal color-modal">
@@ -78,6 +81,13 @@ export function TopHeader() {
                     <button className="layout-btn-todo">Columns</button>
                     <button className="layout-btn-todo">Icons</button>
                     <button className="layout-btn-todo">Gallerys</button>
+                </div>
+            </div>
+            <div className="dropdown">
+                <span className="dropbtn">Filter (Category)</span>
+                <div className="dropdown-content">
+                    <a>Tree</a>
+                    <a>List</a>
                 </div>
             </div>
 
