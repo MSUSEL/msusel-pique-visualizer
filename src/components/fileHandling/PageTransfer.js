@@ -72,18 +72,18 @@ export default function PageTransfer(props) {
         setSortedData(sorted);
         setSortType(sortType); // Store the selected sort type
     };
-
+    // insignificant, minor, moderate, high, and severe
     const handleFilterByCategory = (filterType) => {
         let filtered;
-        if (filterType === "low") {
+        if (filterType === "insignificant") {
             filtered = filterByCategory(fileData, "Insignificant");
-        } else if (filterType === "guarded") {
+        } else if (filterType === "minor") {
             filtered = filterByCategory(fileData, "Minor");
-        } else if (filterType === "elevated") {
+        } else if (filterType === "moderate") {
             filtered = filterByCategory(fileData, "Moderate");
         } else if (filterType === "high") {
             filtered = filterByCategory(fileData, "High");
-        } else if (filterType === "Moderate") {
+        } else if (filterType === "severe") {
             filtered = filterByCategory(fileData, "Severe");
         }
 
@@ -174,7 +174,7 @@ export default function PageTransfer(props) {
                 </div>
 
                 {/* Filter by Range: */}
-            
+
                 <div className="dropdown">
                     <span className="dropbtn" onClick={() => handleFilterByRange()}>
                         Filter (Range)
