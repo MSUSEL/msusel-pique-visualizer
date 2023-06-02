@@ -86,8 +86,8 @@ export function TopHeader() {
             <div className="dropdown">
                 <span className="dropbtn">Filter (Category)</span>
                 <div className="dropdown-content">
-                    <a>Tree</a>
-                    <a>List</a>
+                    <button>Tree</button>
+                    <button>List</button>
                 </div>
             </div>
 

@@ -43,6 +43,9 @@ export default function PageTransfer(props) {
 
     // Filter range state
     const [filteredRangeData, setFilteredRangeData] = useState(null);
+    const [isFilterRangeOpen, setIsFilterRangeOpen] = useState(false);
+    const [minValue, setMinValue] = useState("");
+    const [maxValue, setMaxValue] = useState("");
 
     // Reset state
     const [reset, setReset] = useState(false);
@@ -93,11 +96,28 @@ export default function PageTransfer(props) {
     };
 
 
-    const handleFilterByRange = () => {
+    /*const handleFilterByRange = () => {
         const min = parseFloat(prompt("Enter the minimum value:"));
         const max = parseFloat(prompt("Enter the maximum value:"));
         const filtered = filterRange(fileData, min, max);
+        setIsFilterRangeOpen(true);
         setFilteredRangeData(filtered);
+    };*/
+
+    const handleFilterByRange = () => {
+        setIsFilterRangeOpen(true);
+    };
+
+    const handleApplyFilter = () => {
+        const min = parseFloat(minValue);
+        const max = parseFloat(maxValue);
+        const filtered = filterRange(fileData, min, max);
+        setFilteredRangeData(filtered);
+        setIsFilterRangeOpen(false);
+    };
+
+    const closeModal = () => {
+        setIsFilterRangeOpen(false);
     };
 
     const handleReset = () => {
@@ -121,29 +141,71 @@ export default function PageTransfer(props) {
                 <div className="dropdown">
                     <span className="dropbtn">Sort</span>
                     <div className="dropdown-content">
-                        <a className={sortType === "asc" ? "selected" : ""} onClick={() => handleSort("asc")}>
+                        <button className={sortType === "asc" ? "selected" : ""} onClick={() => handleSort("asc")}>
                             Ascending
-                        </a>
-                        <a className={sortType === "desc" ? "selected" : ""} onClick={() => handleSort("desc")}>
+                        </button>
+                        <button className={sortType === "desc" ? "selected" : ""} onClick={() => handleSort("desc")}>
                             Descending
-                        </a>
+                        </button>
                     </div>
                 </div>
+
 
                 {/* Filter Dropdown: insignificant, minor, moderate, high, and severe */}
                 <div className="dropdown">
                     <span className="dropbtn">Filter (Category)</span>
                     <div className="dropdown-content">
-                        <a className={filteredType === "insignificant" ? "selected" : ""} onClick={() => handleFilterByCategory("low")}>
+                        <button className={filteredType === "insignificant" ? "selected" : ""} onClick={() => handleFilterByCategory("low")}>
                             Insignificant
-                        </a>
+                        </button>
+                        <button className={filteredType === "minor" ? "selected" : ""} onClick={() => handleFilterByCategory("low")}>
+                            Minor
+                        </button>
+                        <button className={filteredType === "moderate" ? "selected" : ""} onClick={() => handleFilterByCategory("low")}>
+                            Moderate
+                        </button>
+                        <button className={filteredType === "high" ? "selected" : ""} onClick={() => handleFilterByCategory("low")}>
+                            High
+                        </button>
+                        <button className={filteredType === "severe" ? "selected" : ""} onClick={() => handleFilterByCategory("low")}>
+                            Severe
+                        </button>
                     </div>
                 </div>
 
+                {/* Filter by Range: */}
+            
                 <div className="dropdown">
-                    <span className="dropbtn" onClick={() => handleFilterByRange()}>Filter (Range)</span>
+                    <span className="dropbtn" onClick={() => handleFilterByRange()}>
+                        Filter (Range)
+                    </span>
                 </div>
+                {/* Custom Modal */}
+                {isFilterRangeOpen && (
+                    <div className="custom-modal">
+                        <div className="modal-content">
+                            <h2>Filter By Range</h2>
+                            <input
+                                type="text"
+                                placeholder="Minimum value"
+                                value={minValue}
+                                onChange={(e) => setMinValue(e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Maximum value"
+                                value={maxValue}
+                                onChange={(e) => setMaxValue(e.target.value)}
+                            />
+                            <div className="modal-actions">
+                                <button onClick={handleApplyFilter}>Apply</button>
+                                <button onClick={closeModal}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
+                {/* Reset Display */}
                 <div className="dropdown">
                     <span className="dropbtn" onClick={() => handleReset()}>Reset Sorting & Filtering</span>
                 </div>
