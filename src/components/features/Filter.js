@@ -176,8 +176,19 @@ export function filterByCategory(fileData, selected_category) {
     console.log();
 
     const filter_fileData = { ...fileData };
-    filter_fileData.factors.product_factors = product_factors_kept_nodes;
-    filter_fileData.factors.quality_aspects = quality_aspects_kept_nodes;
+    //dataArray_product_factors.forEach(item => {
+    //    sortedFileData.factors.product_factors[item.name] = item;
+    //});
+    filter_fileData.factors.product_factors = {};
+    filter_fileData.factors.quality_aspects = {};
+
+    // product_factors_kept_nodes quality_aspects_kept_nodes
+    product_factors_kept_nodes.forEach(item => {
+        filter_fileData.factors.product_factors[item.name] = item;
+    });
+    quality_aspects_kept_nodes.forEach(item => {
+        filter_fileData.factors.quality_aspects[item.name] = item;
+    });
 
     return filter_fileData;
 }

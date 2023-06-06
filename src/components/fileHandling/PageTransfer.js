@@ -31,6 +31,7 @@ function getColor(value) {
 
 export default function PageTransfer(props) {
     const { fileData } = props;
+    const [initialFileData, setInitialFileData] = useState(null); // New state variable
 
     const [sortedData, setSortedData] = useState(null);
     const [sortType, setSortType] = useState(null);
@@ -47,6 +48,7 @@ export default function PageTransfer(props) {
 
     const [filteredTreeData, setFilteredTreeData] = useState(null);
 
+
     const handleSort = (sortType) => {
         let sorted;
         if (sortType === "asc") {
@@ -60,16 +62,17 @@ export default function PageTransfer(props) {
 
     const handleFilterByCategory = (filterType) => {
         setSelectedCategory(filterType);
-    
+
         const filtered = filterByCategory(fileData, filterType);
-        
-        if (filtered.nodes.length > 0) {
-            setFilteredData(filtered);
+        console.log(filtered);
+
+        if (filtered.factors.product_factors === 0 && filtered.factors.quality_aspects === 0) {
+            setFilteredData(initialFileData || fileData); // Use initialFileData here
+            alert("There are no nodes under this category");
         } else {
-            setFilteredData(null); // Reset the filtered data
+            setFilteredData(filtered);
         }
     };
-    
 
     const handleFilterByRange = () => {
         setIsFilterRangeOpen(true);
@@ -88,24 +91,54 @@ export default function PageTransfer(props) {
     };
 
     const handleReset = () => {
+        console.log(fileData);
         setSortedData(null);
+        setSortType(null);
         setFilteredData(null);
         setFilteredRangeData(null);
+        setMinValue("");
+        setMaxValue("");
+        setSelectedCategory("");
+        setFilteredTreeData(null);
         setReset(true);
-    };
+        // Set the reset state to false after resetting
+        setTimeout(() => {
+          setReset(false);
+          setFilteredData(null);
+          setFilteredRangeData(null);
+          setFilteredTreeData(null);
+        }, 0);
+      };
+      
 
     useEffect(() => {
-        setSortedData(null);
-        setFilteredData(null);
-        setFilteredRangeData(null);
-        setReset(false);
-    }, [fileData]);
+        if (!initialFileData && fileData) {
+            setInitialFileData(fileData); // Set initialFileData when fileData is initially loaded
+        }
+    }, [fileData, initialFileData]);
+
+    useEffect(() => {
+        if (filteredData) {
+            setFilteredTreeData(filteredData);
+        } else {
+            setFilteredTreeData(null); // Reset the filteredTreeData when filteredData is null
+        }
+    }, [filteredData]);
+
+    useEffect(() => {
+        if (reset) {
+            setFilteredData(null);
+            setFilteredRangeData(null);
+            setFilteredTreeData(null);
+        }
+    }, [reset]);
 
     useEffect(() => {
         if (filteredData) {
             setFilteredTreeData(filteredData);
         }
-    }, [filteredData]);
+    }, [fileData]);
+
 
     return (
         <div className="unselectableText">
