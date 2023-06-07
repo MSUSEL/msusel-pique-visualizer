@@ -10,6 +10,7 @@ import {
     determineParentClickerColor,
     findPIQUENode
 } from "./TreeDisplayHelpers";
+import "../fileHandling/UploadFile.css"
 /**
  * @param fileData PIQUE .json output file.
  */

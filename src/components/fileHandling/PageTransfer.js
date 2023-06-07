@@ -52,8 +52,8 @@ export default function PageTransfer(props) {
     const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
         const initialStatus = {
             Insignificant: true,
-            Minor: true,
-            Moderate: true,
+            Minor: false,
+            Moderate: false,
             High: true,
             Severe: true
         };
@@ -143,8 +143,6 @@ export default function PageTransfer(props) {
         }
     }, [reset]);
 
-
-
     return (
         <div className="unselectableText">
             <div>
@@ -154,6 +152,7 @@ export default function PageTransfer(props) {
                         Reset Sorting & Filtering
                     </span>
                 </div>
+
                 {/* Sort Dropdown */}
                 <div className="dropdown">
                     <span className="dropbtn">Sort</span>
@@ -171,41 +170,16 @@ export default function PageTransfer(props) {
                 <div className="dropdown">
                     <span className="dropbtn">Filter (Category)</span>
                     <div className="dropdown-content">
-                        <button
-                            className={`${selectedCategory === "Insignificant" ? "selected" : ""} ${!categoryButtonStatus.Insignificant ? "disabled" : ""}`}
-                            onClick={() => handleFilterByCategory("Insignificant")}
-                            disabled={!categoryButtonStatus.Insignificant}
-                        >
-                            Insignificant
-                        </button>
-                        <button
-                            className={`${selectedCategory === "Minor" ? "selected" : ""} ${!categoryButtonStatus.Minor ? "disabled" : ""}`}
-                            onClick={() => handleFilterByCategory("Minor")}
-                            disabled={!categoryButtonStatus.Minor}
-                        >
-                            Minor
-                        </button>
-                        <button
-                            className={`${selectedCategory === "Moderate" ? "selected" : ""} ${!categoryButtonStatus.Moderate ? "disabled" : ""}`}
-                            onClick={() => handleFilterByCategory("Moderate")}
-                            disabled={!categoryButtonStatus.Moderate}
-                        >
-                            Moderate
-                        </button>
-                        <button
-                            className={`${selectedCategory === "High" ? "selected" : ""} ${!categoryButtonStatus.High ? "disabled" : ""}`}
-                            onClick={() => handleFilterByCategory("High")}
-                            disabled={!categoryButtonStatus.High}
-                        >
-                            High
-                        </button>
-                        <button
-                            className={`${selectedCategory === "Severe" ? "selected" : ""} ${!categoryButtonStatus.Severe ? "disabled" : ""}`}
-                            onClick={() => handleFilterByCategory("Severe")}
-                            disabled={!categoryButtonStatus.Severe}
-                        >
-                            Severe
-                        </button>
+                        {Object.keys(categoryButtonStatus).map(category => (
+                            <button
+                                key={category}
+                                className={`${selectedCategory === category ? "selected" : ""} ${!categoryButtonStatus[category] ? "disabled" : ""}`}
+                                onClick={() => handleFilterByCategory(category)}
+                                disabled={!categoryButtonStatus[category]}
+                            >
+                                {category}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
@@ -241,7 +215,7 @@ export default function PageTransfer(props) {
                     </div>
                 )}
 
-                
+
             </div>
 
             {/* Legend Display */}

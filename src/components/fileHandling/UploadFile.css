@@ -215,6 +215,13 @@
   font-weight: bold;
 }
 
+/* Non-clickable button style */
+.dropdown-content button.disabled {
+  background-color: #b0b0b0;
+  color: black;
+  cursor: not-allowed;
+}
+
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
   display: block;
@@ -224,6 +231,7 @@
 .dropdown:hover .dropbtn {
   background-color: #d3d3d3;
 }
+
 
 /* modal container */
 .custom-modal {
