@@ -83,13 +83,14 @@ export function TopHeader() {
                     <button className="layout-btn-todo">Gallerys</button>
                 </div>
             </div>
+            {/* Ziyi: comment rn for the 1st demo, will implement this feature later
             <div className="dropdown">
                 <span className="dropbtn">Filter (Category)</span>
                 <div className="dropdown-content">
                     <button>Tree</button>
                     <button>List</button>
                 </div>
-            </div>
+            </div>*/}
 
             <div className="display-4" id="PIQUE_name">
                 PIQUE Visualizer

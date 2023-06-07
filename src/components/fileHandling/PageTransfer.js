@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASC, sortDESC } from "../features/Sort";
-import { filterByCategory, filterParentNodes, filterRange, filterNodesByCategory, filterEdgesByNodes } from "../features/Filter";
+import { filterByCategory, filterRange, filterByRange} from "../features/Filter";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 
@@ -31,7 +31,7 @@ function getColor(value) {
 
 export default function PageTransfer(props) {
     const { fileData } = props;
-    const [initialFileData, setInitialFileData] = useState(null); // New state variable
+    const [initialFileData, setInitialFileData] = useState(null);
 
     const [sortedData, setSortedData] = useState(null);
     const [sortType, setSortType] = useState(null);
@@ -47,7 +47,6 @@ export default function PageTransfer(props) {
     const [filteredData, setFilteredData] = useState(null);
 
     const [filteredTreeData, setFilteredTreeData] = useState(null);
-
 
     const handleSort = (sortType) => {
         let sorted;
@@ -67,7 +66,7 @@ export default function PageTransfer(props) {
         console.log(filtered);
 
         if (filtered.factors.product_factors === 0 && filtered.factors.quality_aspects === 0) {
-            setFilteredData(initialFileData || fileData); // Use initialFileData here
+            setFilteredData(initialFileData || fileData);
             alert("There are no nodes under this category");
         } else {
             setFilteredData(filtered);
@@ -79,9 +78,13 @@ export default function PageTransfer(props) {
     };
 
     const handleApplyFilter = () => {
+        console.log(`initial fileData has ${fileData.factors.quality_aspects.length} quality_aspects, and ${fileData.factors.product_factors.length} product_factors`);
         const min = parseFloat(minValue);
         const max = parseFloat(maxValue);
-        const filtered = filterRange(fileData, min, max);
+        //const filtered = filterRange(fileData, min, max);
+        const filtered = filterByRange(fileData, min, max);
+        console.log(fileData)
+        console.log(filtered)
         setFilteredRangeData(filtered);
         setIsFilterRangeOpen(false);
     };
@@ -101,27 +104,25 @@ export default function PageTransfer(props) {
         setSelectedCategory("");
         setFilteredTreeData(null);
         setReset(true);
-        // Set the reset state to false after resetting
         setTimeout(() => {
-          setReset(false);
-          setFilteredData(null);
-          setFilteredRangeData(null);
-          setFilteredTreeData(null);
+            setReset(false);
+            setFilteredData(null);
+            setFilteredRangeData(null);
+            setFilteredTreeData(null);
         }, 0);
-      };
-      
+    };
 
     useEffect(() => {
-        if (!initialFileData && fileData) {
-            setInitialFileData(fileData); // Set initialFileData when fileData is initially loaded
+        if (fileData) {
+            setInitialFileData(fileData);
         }
-    }, [fileData, initialFileData]);
+    }, [fileData]);
 
     useEffect(() => {
         if (filteredData) {
             setFilteredTreeData(filteredData);
         } else {
-            setFilteredTreeData(null); // Reset the filteredTreeData when filteredData is null
+            setFilteredTreeData(null);
         }
     }, [filteredData]);
 
