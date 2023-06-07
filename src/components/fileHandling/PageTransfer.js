@@ -225,8 +225,9 @@ export default function PageTransfer(props) {
                     {legendData.map((item) => (
                         <div className="legend-item" key={item.color}>
                             <label htmlFor={item.category} className={`legend-color legend-color-${item.color}`} />
-                            <span className="legend-range">{item.range}</span>
+
                             <span className="legend-category">{item.category}</span>
+                            <span className="legend-range">(quality score: {item.range})</span>
                         </div>
                     ))}
                 </div>

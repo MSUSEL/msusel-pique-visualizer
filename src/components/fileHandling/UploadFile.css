@@ -53,12 +53,13 @@
   border-radius: 50%;
 }
 
-.legend-range {
+/*.legend-range {
   font-weight: bold;
-}
+}*/
 
 .legend-category {
-  font-size: 12px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 /* Color coding styles */
@@ -217,8 +218,8 @@
 
 /* Non-clickable button style */
 .dropdown-content button.disabled {
-  background-color: #b0b0b0;
-  color: black;
+  background-color: transparent;
+  color: grey;
   cursor: not-allowed;
 }
 
@@ -303,7 +304,6 @@
   /* Replace with your preferred font */
   color: #333;
   /* Replace with your preferred color */
-  font-weight: bold;
 }
 
 .legend-title {
@@ -311,6 +311,7 @@
   margin-top: 0;
   margin-bottom: 5px;
   /* Updated margin */
+  font-weight: bold;
 }
 
 .legend-item {
