@@ -211,7 +211,8 @@
 /* Add a visual indicator for the toggled/pressed state */
 .dropdown-content button.selected {
   background-color: #d3d3d3;
-  color: #6a886b;
+  color: black;
+  font-weight: bold;
 }
 
 /* Show the dropdown menu on hover */
@@ -224,6 +225,7 @@
   background-color: #d3d3d3;
 }
 
+/* modal container */
 .custom-modal {
   position: fixed;
   top: 0;
@@ -278,4 +280,41 @@
 
 .modal-actions button:hover {
   opacity: 0.8;
+}
+
+
+/* Legand container */
+.legend-container {
+  margin-top: 20px;
+}
+
+.legend-title,
+.legend-range,
+.legend-category {
+  font-family: Arial, sans-serif;
+  /* Replace with your preferred font */
+  color: #333;
+  /* Replace with your preferred color */
+  font-weight: bold;
+}
+
+.legend-title {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 5px;
+  /* Updated margin */
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 5px;
 }

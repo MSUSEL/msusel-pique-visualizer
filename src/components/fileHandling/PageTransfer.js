@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASC, sortDESC } from "../features/Sort";
-import { filterByCategory, filterRange, filterByRange} from "../features/Filter";
+import { filterByCategory, filterByRange, checkOneCategoryStatus } from "../features/Filter";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
+import cloneDeep from "lodash/cloneDeep";
+
 
 const legendData = [
     { color: "red", range: "0 - 0.2", category: "Severe", colorCode: "#cb0032" },
@@ -44,33 +46,46 @@ export default function PageTransfer(props) {
     const [reset, setReset] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState("");
-    const [filteredData, setFilteredData] = useState(null);
+    const [filteredCategoryData, setfilteredCategoryData] = useState(null);
+    const riskLevels = ['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'];
 
-    const [filteredTreeData, setFilteredTreeData] = useState(null);
+    const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
+        const initialStatus = {
+            Insignificant: true,
+            Minor: true,
+            Moderate: true,
+            High: true,
+            Severe: true
+        };
+        /*
+        for (const level of riskLevels) {
+            const { productFactorsCount, qualityAspectsCount } = checkOneCategoryStatus(fileData, level);
+            if (productFactorsCount + qualityAspectsCount === 0) {
+                initialStatus[level] = false;
+            }
+            console.log(initialStatus[level])
+        }*/
+        return initialStatus;
+    });
 
     const handleSort = (sortType) => {
         let sorted;
         if (sortType === "asc") {
-            sorted = sortASC(filteredData || fileData);
+            sorted = sortASC(filteredCategoryData || fileData);
         } else if (sortType === "desc") {
-            sorted = sortDESC(filteredData || fileData);
+            sorted = sortDESC(filteredCategoryData || fileData);
         }
         setSortedData(sorted);
         setSortType(sortType);
     };
 
-    const handleFilterByCategory = (filterType) => {
+    const handleFilterByCategory = async (filterType) => {
         setSelectedCategory(filterType);
-
-        const filtered = filterByCategory(fileData, filterType);
-        console.log(filtered);
-
-        if (filtered.factors.product_factors === 0 && filtered.factors.quality_aspects === 0) {
-            setFilteredData(initialFileData || fileData);
-            alert("There are no nodes under this category");
-        } else {
-            setFilteredData(filtered);
-        }
+        // Create a deep copy of fileData
+        let fileDataCopy = cloneDeep(fileData);
+        // Filter the data based on the selected category using the copy
+        let filtered = filterByCategory(fileDataCopy, filterType);
+        setfilteredCategoryData(filtered);
     };
 
     const handleFilterByRange = () => {
@@ -78,13 +93,15 @@ export default function PageTransfer(props) {
     };
 
     const handleApplyFilter = () => {
-        console.log(`initial fileData has ${fileData.factors.quality_aspects.length} quality_aspects, and ${fileData.factors.product_factors.length} product_factors`);
-        const min = parseFloat(minValue);
-        const max = parseFloat(maxValue);
+        let min = parseFloat(minValue);
+        let max = parseFloat(maxValue);
         //const filtered = filterRange(fileData, min, max);
-        const filtered = filterByRange(fileData, min, max);
-        console.log(fileData)
-        console.log(filtered)
+        let fileDataCopy = cloneDeep(fileData);
+        // Filter the data based on the selected category using the copy
+        let filtered = filterByRange(sortedData || fileDataCopy, min, max);
+        console.log("filter by range:")
+        console.log("fileData", fileData)
+        console.log("filter results", filtered)
         setFilteredRangeData(filtered);
         setIsFilterRangeOpen(false);
     };
@@ -94,21 +111,20 @@ export default function PageTransfer(props) {
     };
 
     const handleReset = () => {
-        console.log(fileData);
+        console.log("reset:")
+        console.log("fileData", fileData);
         setSortedData(null);
         setSortType(null);
-        setFilteredData(null);
+        setfilteredCategoryData(null);
         setFilteredRangeData(null);
         setMinValue("");
         setMaxValue("");
         setSelectedCategory("");
-        setFilteredTreeData(null);
         setReset(true);
         setTimeout(() => {
             setReset(false);
-            setFilteredData(null);
+            setfilteredCategoryData(null);
             setFilteredRangeData(null);
-            setFilteredTreeData(null);
         }, 0);
     };
 
@@ -118,32 +134,26 @@ export default function PageTransfer(props) {
         }
     }, [fileData]);
 
-    useEffect(() => {
-        if (filteredData) {
-            setFilteredTreeData(filteredData);
-        } else {
-            setFilteredTreeData(null);
-        }
-    }, [filteredData]);
 
     useEffect(() => {
         if (reset) {
-            setFilteredData(null);
+            setSortedData(null)
+            setfilteredCategoryData(null);
             setFilteredRangeData(null);
-            setFilteredTreeData(null);
         }
     }, [reset]);
 
-    useEffect(() => {
-        if (filteredData) {
-            setFilteredTreeData(filteredData);
-        }
-    }, [fileData]);
 
 
     return (
         <div className="unselectableText">
             <div>
+                {/* Reset Display */}
+                <div className="dropdown">
+                    <span className="dropbtn" onClick={() => handleReset()}>
+                        Reset Sorting & Filtering
+                    </span>
+                </div>
                 {/* Sort Dropdown */}
                 <div className="dropdown">
                     <span className="dropbtn">Sort</span>
@@ -162,32 +172,37 @@ export default function PageTransfer(props) {
                     <span className="dropbtn">Filter (Category)</span>
                     <div className="dropdown-content">
                         <button
-                            className={selectedCategory === "Insignificant" ? "selected" : ""}
+                            className={`${selectedCategory === "Insignificant" ? "selected" : ""} ${!categoryButtonStatus.Insignificant ? "disabled" : ""}`}
                             onClick={() => handleFilterByCategory("Insignificant")}
+                            disabled={!categoryButtonStatus.Insignificant}
                         >
                             Insignificant
                         </button>
                         <button
-                            className={selectedCategory === "Minor" ? "selected" : ""}
+                            className={`${selectedCategory === "Minor" ? "selected" : ""} ${!categoryButtonStatus.Minor ? "disabled" : ""}`}
                             onClick={() => handleFilterByCategory("Minor")}
+                            disabled={!categoryButtonStatus.Minor}
                         >
                             Minor
                         </button>
                         <button
-                            className={selectedCategory === "Moderate" ? "selected" : ""}
+                            className={`${selectedCategory === "Moderate" ? "selected" : ""} ${!categoryButtonStatus.Moderate ? "disabled" : ""}`}
                             onClick={() => handleFilterByCategory("Moderate")}
+                            disabled={!categoryButtonStatus.Moderate}
                         >
                             Moderate
                         </button>
                         <button
-                            className={selectedCategory === "High" ? "selected" : ""}
+                            className={`${selectedCategory === "High" ? "selected" : ""} ${!categoryButtonStatus.High ? "disabled" : ""}`}
                             onClick={() => handleFilterByCategory("High")}
+                            disabled={!categoryButtonStatus.High}
                         >
                             High
                         </button>
                         <button
-                            className={selectedCategory === "Severe" ? "selected" : ""}
+                            className={`${selectedCategory === "Severe" ? "selected" : ""} ${!categoryButtonStatus.Severe ? "disabled" : ""}`}
                             onClick={() => handleFilterByCategory("Severe")}
+                            disabled={!categoryButtonStatus.Severe}
                         >
                             Severe
                         </button>
@@ -226,12 +241,7 @@ export default function PageTransfer(props) {
                     </div>
                 )}
 
-                {/* Reset Display */}
-                <div className="dropdown">
-                    <span className="dropbtn" onClick={() => handleReset()}>
-                        Reset Sorting & Filtering
-                    </span>
-                </div>
+                
             </div>
 
             {/* Legend Display */}
@@ -250,7 +260,7 @@ export default function PageTransfer(props) {
 
             {/* Tree Display */}
             <TreeDisplay
-                fileData={sortedData || filteredData || filteredTreeData || filteredRangeData || fileData}
+                fileData={sortedData || filteredCategoryData || filteredRangeData || fileData}
                 reset={reset}
             />
         </div>
