@@ -53,11 +53,11 @@ export function TopHeader() {
                     Color Changer
                 </button>
                 */}
-                {/* remove the button, rn using dropdown menu and links
+                {/* remove the button, rn using dropdown menu and links*/}
                 <button className="main-button" onClick={handleLayoutModalOpen}>
                     Change Layout
                 </button>
-                */}
+
             </div>
 
             <div className="modal color-modal">
@@ -79,8 +79,8 @@ export function TopHeader() {
                     <button className="layout-btn-doing">Tree</button>
                     <button className="layout-btn-doing">List</button>
                     <button className="layout-btn-todo">Columns</button>
-                    <button className="layout-btn-todo">Icons</button>
-                    <button className="layout-btn-todo">Gallerys</button>
+                    {/*<button className="layout-btn-todo">Icons</button>*/}
+                    <button className="layout-btn-todo">Galleries</button>
                 </div>
             </div>
             {/* Ziyi: comment rn for the 1st demo, will implement this feature later
