@@ -350,3 +350,19 @@
   background-color: #f1f1f1;
   cursor: pointer;
 }
+
+/* Checkbox Container */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Checkbox Label */
+.checkbox-container label {
+  margin-left: 5px;
+}
+
+/* Checkbox Container when checked */
+.checkbox-container input[type="checkbox"]:checked + label {
+  background-color: #ccc;
+}

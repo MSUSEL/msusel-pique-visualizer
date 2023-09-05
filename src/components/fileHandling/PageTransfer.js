@@ -50,6 +50,8 @@ export default function PageTransfer(props) {
     const riskLevels = ['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'];
     const [avgValue, setAvgValue] = useState('');
     const [showStatistics, setShowStatistics] = useState(false);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+
 
     const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
         const initialStatus = {
@@ -218,6 +220,25 @@ export default function PageTransfer(props) {
                             >
                                 {category}
                             </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Filter Dropdown */}
+                <div className="dropdown">
+                    <span className="dropbtn">Filter (Category) v2</span>
+                    <div className="dropdown-content">
+                        {Object.keys(categoryButtonStatus).map(category => (
+                            <div key={category} className="checkbox-container">
+                                <input
+                                    type="checkbox"
+                                    id={category}
+                                    checked={selectedCategories.includes(category)}
+                                    onChange={() => handleFilterByCategory(category)}
+                                    disabled={!categoryButtonStatus[category]}
+                                />
+                                <label htmlFor={category}>{category}</label>
+                            </div>
                         ))}
                     </div>
                 </div>
