@@ -163,18 +163,18 @@ export default function PageTransfer(props) {
                     <h3>Descriptive Statistics</h3>
                     {/* Quality Characteristics */}
                     <h4>Quality Characteristics</h4>
-                    <p>Severe: {10}</p>
-                    <p>High: {20}</p>
-                    <p>Medium: {30}</p>
-                    <p>Low: {40}</p>
-                    <p>Insignificant: {50}</p>
+                    <p>Severe: {0}</p>
+                    <p>High: {0}</p>
+                    <p>Medium: {0}</p>
+                    <p>Low: {0}</p>
+                    <p>Insignificant: {6}</p>
                     {/* Quality Factors */}
                     <h4>Quality Factors</h4>
-                    <p>Severe: {100}</p>
-                    <p>High: {200}</p>
-                    <p>Medium: {300}</p>
-                    <p>Low: {400}</p>
-                    <p>Insignificant: {500}</p>
+                    <p>Severe: {0}</p>
+                    <p>High: {1}</p>
+                    <p>Medium: {0}</p>
+                    <p>Low: {0}</p>
+                    <p>Insignificant: {34}</p>
                 </div>
             )}
 
