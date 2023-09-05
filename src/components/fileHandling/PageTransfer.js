@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
-import { sortASC, sortDESC } from "../features/Sort";
-import { filterByCategory, filterByRange, checkOneCategoryStatus } from "../features/Filter";
+import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights } from "../features/Sort";
+import { filterByCategory, filterByRange } from "../features/Filter";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 import cloneDeep from "lodash/cloneDeep";
@@ -68,12 +68,17 @@ export default function PageTransfer(props) {
         return initialStatus;
     });
 
+
     const handleSort = (sortType) => {
         let sorted;
         if (sortType === "asc") {
             sorted = sortASC(filteredCategoryData || fileData);
         } else if (sortType === "desc") {
             sorted = sortDESC(filteredCategoryData || fileData);
+        } else if (sortType === "asc_weight") {
+            sorted = sortASCforWeights(filteredCategoryData || fileData);
+        } else if (sortType === "desc_weight") {
+            sorted = sortDESCforWeights(filteredCategoryData || fileData);
         }
         setSortedData(sorted);
         setSortType(sortType);
@@ -158,10 +163,16 @@ export default function PageTransfer(props) {
                     <span className="dropbtn">Sort</span>
                     <div className="dropdown-content">
                         <button className={sortType === "asc" ? "selected" : ""} onClick={() => handleSort("asc")}>
-                            Ascending
+                            Value - Ascending
                         </button>
                         <button className={sortType === "desc" ? "selected" : ""} onClick={() => handleSort("desc")}>
-                            Descending
+                            Value - Descending
+                        </button>
+                        <button className={sortType === "asc_weight" ? "selected" : ""} onClick={() => handleSort("asc_weight")}>
+                            Weight - Ascending
+                        </button>
+                        <button className={sortType === "desc_weight" ? "selected" : ""} onClick={() => handleSort("desc_weight")}>
+                            Weight - Descending
                         </button>
                     </div>
                 </div>
