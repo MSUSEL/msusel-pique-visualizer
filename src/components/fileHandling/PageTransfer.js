@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
-import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights } from "../features/Sort";
+import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
 import { filterByCategory, filterByRange } from "../features/Filter";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
@@ -48,6 +48,8 @@ export default function PageTransfer(props) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [filteredCategoryData, setfilteredCategoryData] = useState(null);
     const riskLevels = ['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'];
+    const [avgValue, setAvgValue] = useState('');
+    const [showStatistics, setShowStatistics] = useState(false);
 
     const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
         const initialStatus = {
@@ -76,7 +78,7 @@ export default function PageTransfer(props) {
         } else if (sortType === "desc") {
             sorted = sortDESC(filteredCategoryData || fileData);
         } else if (sortType === "asc_weight") {
-            sorted = sortASCforWeights(filteredCategoryData || fileData);
+            sorted = newSortASCforWeights(filteredCategoryData || fileData);
         } else if (sortType === "desc_weight") {
             sorted = sortDESCforWeights(filteredCategoryData || fileData);
         }
@@ -150,6 +152,32 @@ export default function PageTransfer(props) {
 
     return (
         <div className="unselectableText">
+            {/* Descriptive Statistics Panel Button */}
+            <button className="statistics-button" onClick={() => setShowStatistics(!showStatistics)}>Descriptive Statistics</button>
+
+            {/* Descriptive Statistics Panel Content */}
+            {showStatistics && (
+                <div className="statistics-panel">
+                    <h3>Descriptive Statistics</h3>
+                    {/* Quality Characteristics */}
+                    <h4>Quality Characteristics</h4>
+                    <p>Severe: {10}</p>
+                    <p>High: {20}</p>
+                    <p>Medium: {30}</p>
+                    <p>Low: {40}</p>
+                    <p>Insignificant: {50}</p>
+                    {/* Quality Factors */}
+                    <h4>Quality Factors</h4>
+                    <p>Severe: {100}</p>
+                    <p>High: {200}</p>
+                    <p>Medium: {300}</p>
+                    <p>Low: {400}</p>
+                    <p>Insignificant: {500}</p>
+                </div>
+            )}
+
+            {/* Descriptive Statistics Panel */}
+
             <div>
                 {/* Reset Display */}
                 <div className="dropdown">
