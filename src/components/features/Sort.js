@@ -111,10 +111,10 @@ export function sortASCforWeights(fileData) {
     let dataArray_diagnostics = sortedFileData.diagnostics ? Object.values(sortedFileData.diagnostics) : [];
 
     // Sort the array based on the "value" property in ascending order
-    dataArray_product_factors.sort((a, b) => a.weights - b.weights);
-    dataArray_quality_aspects.sort((a, b) => a.weights - b.weights);
-    dataArray_measures.sort((a, b) => a.weights - b.weights);
-    dataArray_diagnostics.sort((a, b) => a.weights - b.weights);
+    dataArray_product_factors.sort((a, b) => a.value - b.value);
+    dataArray_quality_aspects.sort((a, b) => a.value - b.value);
+    dataArray_measures.sort((a, b) => a.value - b.value);
+    dataArray_diagnostics.sort((a, b) => a.value - b.value);
 
     sortedFileData.factors.product_factors = {};
     sortedFileData.factors.quality_aspects = {};
@@ -187,5 +187,47 @@ export function sortDESCforWeights(treeData) {
 
     sortTreeData(treeData, null);
 
+    return treeData;
+}
+
+export function newSortASCforWeights(treeData) {
+    if (!treeData) return treeData; // Return if null or undefined
+
+    // Sort children nodes based on their weights in the parent node
+    function sortChildrenByWeights(parentNode, childNodeKey) {
+        if (!parentNode || !parentNode.weights || !parentNode[childNodeKey]) return;
+
+        // Extract children nodes and weights
+        const childrenNodes = Object.values(parentNode[childNodeKey]);
+        const weights = parentNode.weights;
+
+        // Sort children nodes based on weights
+        childrenNodes.sort((a, b) => weights[a.name] - weights[b.name]);
+
+        // Update the parent node with sorted children
+        parentNode[childNodeKey] = {};
+        childrenNodes.forEach(child => {
+            parentNode[childNodeKey][child.name] = child;
+        });
+    }
+
+    // Step 1: Sort 'quality_aspects' based on 'tqi.weights'
+    sortChildrenByWeights(treeData, 'factors');
+
+    // Step 2: Sort 'product_factors' based on their own 'weights'
+    Object.values(treeData.factors).forEach(factor => {
+        sortChildrenByWeights(factor, 'product_factors');
+    });
+
+    // Step 3: Sort 'measures' based on 'product_factors.weights' and 'diagnostics' based on 'measures.weights'
+    Object.values(treeData.factors.product_factors).forEach(product_factor => {
+        sortChildrenByWeights(product_factor, 'measures');
+    });
+
+    Object.values(treeData.measures).forEach(measure => {
+        sortChildrenByWeights(measure, 'diagnostics');
+    });
+
+    console.log("New Ascending Sorting Done! Smallest <---> Larest");
     return treeData;
 }
