@@ -406,3 +406,111 @@
   margin: 4px 0;
   font-size: 14px;
 }
+
+/* Descriptive Statistics Button */
+.statistics-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+/* Descriptive Statistics Panel */
+.statistics-panel {
+  position: absolute;
+  top: 20%;
+  right: 0;
+  width: 300px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  overflow: auto;
+  z-index: 1;
+}
+
+/* Header for each section in the Descriptive Statistics Panel */
+.statistics-panel h4 {
+  background-color: #f1f1f1;
+  color: #333;
+  padding: 10px;
+  margin: 0;
+  font-size: 20px;
+}
+
+/* Paragraphs in Descriptive Statistics Panel */
+.statistics-panel p {
+  padding: 8px 12px;
+  margin: 0;
+}
+
+/* Different risk levels in Descriptive Statistics Panel */
+.statistics-panel p:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+.statistics-panel p:nth-child(2n) {
+  background-color: #e6e6e6;
+}
+
+/* Risk level categories for color */
+.statistics-panel p:nth-child(2),
+.statistics-panel p:nth-child(8),
+.statistics-panel p:nth-child(14),
+.statistics-panel p:nth-child(20) {
+  background-color: #cb0032;
+  /* red */
+}
+
+.statistics-panel p:nth-child(3),
+.statistics-panel p:nth-child(9),
+.statistics-panel p:nth-child(15),
+.statistics-panel p:nth-child(21) {
+  background-color: #ff6500;
+  /* orange */
+}
+
+.statistics-panel p:nth-child(4),
+.statistics-panel p:nth-child(10),
+.statistics-panel p:nth-child(16),
+.statistics-panel p:nth-child(22) {
+  background-color: #fde101;
+  /* yellow */
+}
+
+.statistics-panel p:nth-child(5),
+.statistics-panel p:nth-child(11),
+.statistics-panel p:nth-child(17),
+.statistics-panel p:nth-child(23) {
+  background-color: #3566cd;
+  /* light green */
+}
+
+.statistics-panel p:nth-child(6),
+.statistics-panel p:nth-child(12),
+.statistics-panel p:nth-child(18),
+.statistics-panel p:nth-child(24) {
+  background-color: #009a66;
+  /* green */
+}
+
+/* Descriptive Statistics Button */
+.statistics-button {
+  background-color: #9dd79f;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.statistics-button:hover {
+  background-color: #555;
+}

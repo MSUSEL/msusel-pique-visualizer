@@ -160,7 +160,7 @@ export default function PageTransfer(props) {
             {/* Descriptive Statistics Panel Content */}
             {showStatistics && (
                 <div className="statistics-panel">
-                    <h3>Descriptive Statistics</h3>
+                    {/* <h3>Descriptive Statistics</h3> */}
                     {/* Quality Characteristics */}
                     <h4>Quality Characteristics</h4>
                     <p>Severe: {0}</p>
@@ -168,6 +168,7 @@ export default function PageTransfer(props) {
                     <p>Medium: {0}</p>
                     <p>Low: {0}</p>
                     <p>Insignificant: {6}</p>
+
                     {/* Quality Factors */}
                     <h4>Quality Factors</h4>
                     <p>Severe: {0}</p>
@@ -175,10 +176,24 @@ export default function PageTransfer(props) {
                     <p>Medium: {0}</p>
                     <p>Low: {0}</p>
                     <p>Insignificant: {34}</p>
+
+                    {/* Quality Factors Measures */}
+                    <h4>Measures for Quality Factors</h4>
+                    <p>Severe: {0}</p>
+                    <p>High: {0}</p>
+                    <p>Medium: {1}</p>
+                    <p>Low: {0}</p>
+                    <p>Insignificant: {161}</p>
+
+                    {/* Measures Diagnostics*/}
+                    <h4>Diagnostics for Measures</h4>
+                    <p>Severe: {160}</p>
+                    <p>High: {0}</p>
+                    <p>Medium: {0}</p>
+                    <p>Low: {0}</p>
+                    <p>Insignificant: {1}</p>
                 </div>
             )}
-
-            {/* Descriptive Statistics Panel */}
 
             <div>
                 {/* Reset Display */}
