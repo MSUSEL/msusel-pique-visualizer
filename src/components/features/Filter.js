@@ -297,3 +297,27 @@ export function checkOneCategoryStatus(fileData, selected_category) {
 
     return { productFactorsCount, qualityAspectsCount };
 }
+
+const Filter = ({ selectedCategories, handleFilterByCategory, categoryButtonStatus }) => {
+    return (
+        <div className="dropdown">
+            <span className="dropbtn">Filter (Category) multiple</span>
+            <div className="dropdown-content">
+                {Object.keys(categoryButtonStatus).map(category => (
+                    <div key={category} className="checkbox-container">
+                        <input
+                            type="checkbox"
+                            id={category}
+                            checked={selectedCategories.includes(category)}
+                            onChange={() => handleFilterByCategory(category)}
+                            disabled={!categoryButtonStatus[category]}
+                        />
+                        <label htmlFor={category}>{category}</label>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default Filter;

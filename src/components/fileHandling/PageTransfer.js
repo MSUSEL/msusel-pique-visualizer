@@ -46,11 +46,13 @@ export default function PageTransfer(props) {
     const [reset, setReset] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [selectedCategories, setSelectedCategories] = useState([]);
+
     const [filteredCategoryData, setfilteredCategoryData] = useState(null);
     const riskLevels = ['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'];
     const [avgValue, setAvgValue] = useState('');
     const [showStatistics, setShowStatistics] = useState(false);
-    const [selectedCategories, setSelectedCategories] = useState([]);
+
 
 
     const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
@@ -88,13 +90,50 @@ export default function PageTransfer(props) {
         setSortType(sortType);
     };
 
-    const handleFilterByCategory = async (filterType) => {
+    /*const handleFilterByCategory = async (filterType) => {
         setSelectedCategory(filterType);
         // Create a deep copy of fileData
         let fileDataCopy = cloneDeep(fileData);
         // Filter the data based on the selected category using the copy
         let filtered = filterByCategory(fileDataCopy, filterType);
         setfilteredCategoryData(filtered);
+    };*/
+    const handleFilterByOneCategory = async (filterType) => {
+        setSelectedCategory(filterType);
+        // Create a deep copy of fileData
+        let fileDataCopy = cloneDeep(fileData);
+        // Filter the data based on the selected category using the copy
+        let filtered = filterByCategory(fileDataCopy, filterType);
+        setfilteredCategoryData(filtered);
+    }
+    const handleFilterByMultipleCategories = async () => {
+        // Create a deep copy of fileData
+        let fileDataCopy = cloneDeep(fileData);
+
+        // If there are selected categories, filter the data
+        if (selectedCategories.length > 0) {
+            let filtered = fileDataCopy;
+            selectedCategories.forEach((filterType) => {
+                filtered = filterByCategory(filtered, filterType);
+            });
+            setfilteredCategoryData(filtered);
+        } else {
+            // If no categories are selected, reset the filtered data
+            setfilteredCategoryData(null);
+        }
+    };
+
+    const handleFilterByCategory = (category) => {
+        let newSelectedCategories = [...selectedCategories];
+        if (newSelectedCategories.includes(category)) {
+            newSelectedCategories = newSelectedCategories.filter((item) => item !== category);
+        } else {
+            newSelectedCategories.push(category);
+        }
+        setSelectedCategories(newSelectedCategories);
+
+        // Call the new multiple category filter function
+        handleFilterByMultipleCategories();
     };
 
     const handleCustomCheckbox = (category) => {
@@ -106,6 +145,7 @@ export default function PageTransfer(props) {
         }
         handleFilterByCategory(category);
     };
+
 
     const handleFilterByRange = () => {
         setIsFilterRangeOpen(true);
