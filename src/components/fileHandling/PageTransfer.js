@@ -97,6 +97,16 @@ export default function PageTransfer(props) {
         setfilteredCategoryData(filtered);
     };
 
+    const handleCustomCheckbox = (category) => {
+        const checkboxElement = document.getElementById(`custom-${category}`);
+        if (checkboxElement.classList.contains("checked")) {
+            checkboxElement.classList.remove("checked");
+        } else {
+            checkboxElement.classList.add("checked");
+        }
+        handleFilterByCategory(category);
+    };
+
     const handleFilterByRange = () => {
         setIsFilterRangeOpen(true);
     };
@@ -241,17 +251,11 @@ export default function PageTransfer(props) {
 
                 {/* Filter Dropdown */}
                 <div className="dropdown">
-                    <span className="dropbtn">Filter (Category) v2</span>
+                    <span className="dropbtn">Filter (Category) multiple</span>
                     <div className="dropdown-content">
                         {Object.keys(categoryButtonStatus).map(category => (
-                            <div key={category} className="checkbox-container">
-                                <input
-                                    type="checkbox"
-                                    id={category}
-                                    checked={selectedCategories.includes(category)}
-                                    onChange={() => handleFilterByCategory(category)}
-                                    disabled={!categoryButtonStatus[category]}
-                                />
+                            <div key={category} className="checkbox-container" onClick={() => handleCustomCheckbox(category)}>
+                                <span id={"custom-" + category} className={"custom-checkbox " + (selectedCategories.includes(category) ? "checked" : "")}></span>
                                 <label htmlFor={category}>{category}</label>
                             </div>
                         ))}
