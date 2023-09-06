@@ -75,7 +75,7 @@ export function TopHeader() {
             <div className="modal layout-modal">
                 <div className="modal_content">
                     <span className="close" onClick={handleCloseModal}>&times;</span>
-                    <h1>Change the layout</h1>
+                    <h1>Layout Options</h1>
                     <button className="layout-btn-doing">Tree</button>
                     <button className="layout-btn-doing">List</button>
                     <button className="layout-btn-todo">Columns</button>
