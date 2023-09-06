@@ -179,13 +179,14 @@ export default function PageTransfer(props) {
         setMinValue("");
         setMaxValue("");
         setSelectedCategory("");
+        setSelectedCategories([]);  // Add this line to uncheck all checkboxes
         setReset(true);
         setTimeout(() => {
             setReset(false);
             setfilteredCategoryData(null);
             setFilteredRangeData(null);
         }, 0);
-    };
+    };    
 
     useEffect(() => {
         if (fileData) {
@@ -234,14 +235,6 @@ export default function PageTransfer(props) {
                     <p>Medium: {1}</p>
                     <p>Low: {0}</p>
                     <p>Insignificant: {161}</p>
-
-                    {/* Measures Diagnostics*/}
-                    <h4>Diagnostics for Measures</h4>
-                    <p>Severe: {160}</p>
-                    <p>High: {0}</p>
-                    <p>Medium: {0}</p>
-                    <p>Low: {0}</p>
-                    <p>Insignificant: {1}</p>
                 </div>
             )}
 
@@ -280,7 +273,7 @@ export default function PageTransfer(props) {
                             <button
                                 key={category}
                                 className={`${selectedCategory === category ? "selected" : ""} ${!categoryButtonStatus[category] ? "disabled" : ""}`}
-                                onClick={() => handleFilterByCategory(category)}
+                                onClick={() => handleFilterByOneCategory(category)}
                                 disabled={!categoryButtonStatus[category]}
                             >
                                 {category}
