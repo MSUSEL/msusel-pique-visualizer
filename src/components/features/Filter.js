@@ -1,5 +1,6 @@
 import "./Features.css";
 import cloneDeep from "lodash/cloneDeep";
+import React, { useState } from "react";
 
 const risk_level = {
     Severe: [0.0, 0.2],

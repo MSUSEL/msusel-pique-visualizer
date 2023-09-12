@@ -1,5 +1,6 @@
 import "./TopHeader.css"
 import "../fileHandling/UploadFile.css"
+import React, { useState } from "react";
 //import NodeRiskColor from "../treeNode/NodeColorHelper";
 
 
@@ -28,6 +29,10 @@ function handleClick(event){
 // TODO: Give each button a value
 
 export function TopHeader() {
+    const [showListLayout, setShowListLayout] = useState(false);
+    const toggleListLayout = () => {
+        setShowListLayout(!showListLayout);
+    };
     const handleColorModalOpen = () => {
         const colorModal = document.querySelector(".color-modal");
         colorModal.style.display = "block";
@@ -78,6 +83,7 @@ export function TopHeader() {
                     <h1>Layout Options</h1>
                     <button className="layout-btn-doing">Tree</button>
                     <button className="layout-btn-doing">List</button>
+                    {/* <button onClick={toggleListLayout}>List</button>*/}
                     <button className="layout-btn-todo">Columns</button>
                     {/*<button className="layout-btn-todo">Icons</button>*/}
                     <button className="layout-btn-todo">Galleries</button>
