@@ -5,6 +5,7 @@ import { filterByCategory, filterByRange } from "../features/Filter";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 import cloneDeep from "lodash/cloneDeep";
+import "../top_header/TopHeader.css"
 
 
 const legendData = [
@@ -169,6 +170,11 @@ export default function PageTransfer(props) {
         setIsFilterRangeOpen(false);
     };
 
+    const handleLayoutModalOpen = () => {
+        const layoutModal = document.querySelector(".layout-modal");
+        layoutModal.style.display = "block";
+    };
+
     const handleReset = () => {
         console.log("reset:")
         console.log("fileData", fileData);
@@ -186,7 +192,7 @@ export default function PageTransfer(props) {
             setfilteredCategoryData(null);
             setFilteredRangeData(null);
         }, 0);
-    };    
+    };
 
     useEffect(() => {
         if (fileData) {
@@ -300,6 +306,13 @@ export default function PageTransfer(props) {
                     <span className="dropbtn" onClick={() => handleFilterByRange()}>
                         Filter (Range)
                     </span>
+                </div>
+
+                {/* Layout options */}
+                <div className="dropdown">
+                <button className="dropbtn" onClick={handleLayoutModalOpen}>
+                    Layout Options
+                </button>
                 </div>
 
                 {/* Custom Modal */}

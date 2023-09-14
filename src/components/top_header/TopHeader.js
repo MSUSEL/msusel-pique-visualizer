@@ -58,10 +58,11 @@ export function TopHeader() {
                     Color Changer
                 </button>
                 */}
-                {/* remove the button, rn using dropdown menu and links*/}
+                {/* remove the button, rn using dropdown menu and links
                 <button className="main-button" onClick={handleLayoutModalOpen}>
                     Layout Options
                 </button>
+                */}
 
             </div>
 
