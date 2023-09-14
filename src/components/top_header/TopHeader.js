@@ -60,7 +60,7 @@ export function TopHeader() {
                 */}
                 {/* remove the button, rn using dropdown menu and links*/}
                 <button className="main-button" onClick={handleLayoutModalOpen}>
-                    Change Layout
+                    Layout Options
                 </button>
 
             </div>
