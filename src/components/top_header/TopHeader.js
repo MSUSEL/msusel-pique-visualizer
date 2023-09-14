@@ -65,7 +65,7 @@ export function TopHeader() {
 
             </div>
 
-            <div className="modal color-modal">
+            {/* <div className="modal color-modal">
                 <div className="modal_content">
                     <span className="close" onClick={handleCloseModal}>&times;</span>
                     <h1>Change the colors</h1>
@@ -76,6 +76,7 @@ export function TopHeader() {
                     <button className="color-btn">Change Low Color</button>
                 </div>
             </div>
+            */}
 
             <div className="modal layout-modal">
                 <div className="modal_content">
@@ -83,20 +84,14 @@ export function TopHeader() {
                     <h1>Layout Options</h1>
                     <button className="layout-btn-doing">Tree</button>
                     <button className="layout-btn-doing">List</button>
-                    {/* <button onClick={toggleListLayout}>List</button>*/}
+                    {/* 
+                    <button onClick={toggleListLayout}>List</button>
                     <button className="layout-btn-todo">Columns</button>
-                    {/*<button className="layout-btn-todo">Icons</button>*/}
+                    <button className="layout-btn-todo">Icons</button>
                     <button className="layout-btn-todo">Galleries</button>
+                    */}
                 </div>
             </div>
-            {/* Ziyi: comment rn for the 1st demo, will implement this feature later
-            <div className="dropdown">
-                <span className="dropbtn">Filter (Category)</span>
-                <div className="dropdown-content">
-                    <button>Tree</button>
-                    <button>List</button>
-                </div>
-            </div>*/}
 
             <div className="display-4" id="PIQUE_name">
                 PIQUE Visualizer
