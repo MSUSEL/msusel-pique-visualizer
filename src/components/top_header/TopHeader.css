@@ -83,3 +83,30 @@ button{
     padding: 20px;
     z-index: 1000; /* Make sure it's on top of other elements */
 }
+
+/* Nested list layout styles */
+.nested-list-level-0 {
+    margin-left: 0;
+    list-style-type: disc;
+}
+.nested-list-level-1 {
+    margin-left: 20px;
+    list-style-type: circle;
+}
+.nested-list-level-2 {
+    margin-left: 40px;
+    list-style-type: square;
+}
+.nested-list-level-3, .nested-list-level-4, .nested-list-level-5 {
+    margin-left: 60px;
+    list-style-type: decimal;
+}
+.nested-list-item {
+    font-size: 16px;
+}
+.nested-list-key {
+    font-weight: bold;
+}
+.nested-list-value {
+    font-style: italic;
+}

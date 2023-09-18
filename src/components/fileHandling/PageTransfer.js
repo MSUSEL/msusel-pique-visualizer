@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import Modal from 'react-modal';
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
 import { filterByCategory, filterByRange } from "../features/Filter";
+import { RenderNestedData } from "../features/ListLayout";
+import cloneDeep from "lodash/cloneDeep";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
-import cloneDeep from "lodash/cloneDeep";
 import "../top_header/TopHeader.css"
 
 
@@ -53,6 +55,8 @@ export default function PageTransfer(props) {
     const riskLevels = ['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'];
     const [avgValue, setAvgValue] = useState('');
     const [showStatistics, setShowStatistics] = useState(false);
+
+    const [isListLayoutModalOpen, setIsListLayoutModalOpen] = useState(false);
 
 
 
@@ -173,6 +177,62 @@ export default function PageTransfer(props) {
     const handleLayoutModalOpen = () => {
         const layoutModal = document.querySelector(".layout-modal");
         layoutModal.style.display = "block";
+    };
+
+    const openListLayoutModal = () => {
+        setIsListLayoutModalOpen(true);
+    };
+
+    const closeListLayoutModal = () => {
+        setIsListLayoutModalOpen(false);
+    };
+
+
+    const renderNestedData = (data, level = 0, parentKey = '') => {
+        let nameValue = {};
+        return (
+            <ul className={"nested-list-level-" + level}>
+                {Object.keys(data).sort((a, b) => {
+                    const order = ['tqi', 'quality_aspects', 'product_factors', 'measures', 'diagnostics'];
+                    return order.indexOf(a) - order.indexOf(b);
+                }).map((key, index) => {
+                    if (key === "name" || key === "value") {
+                        nameValue[key] = data[key];
+                        if (nameValue["name"] && nameValue["value"] !== undefined) {
+                            return (
+                                <li key={index} className="nested-list-item">
+                                    <span className={"nested-list-key-value level-" + level}>
+                                        {nameValue["name"]}: {nameValue["value"]}
+                                    </span>
+                                </li>
+                            );
+                        }
+                        return null;
+                    }
+
+                    if (
+                        key === "product_factors" ||
+                        key === "quality_aspects" ||
+                        key === "tqi" ||
+                        key === "measures" ||
+                        key === "diagnostics"
+                    ) {
+                        return (
+                            <li key={index} className="nested-list-item">
+                                <span className={"nested-list-key level-" + level}>{key}:</span>
+                                {typeof data[key] === "object" ? renderNestedData(data[key], level, key) : null}
+                            </li>
+                        );
+                    }
+
+                    if (typeof data[key] === "object") {
+                        return renderNestedData(data[key], level + 1);
+                    }
+
+                    return null;
+                })}
+            </ul>
+        );
     };
 
     const handleReset = () => {
@@ -304,16 +364,42 @@ export default function PageTransfer(props) {
                 {/* Filter by Range */}
                 <div className="dropdown">
                     <span className="dropbtn" onClick={() => handleFilterByRange()}>
-                        Filter (Range)
+                        Filter (Values Range)
                     </span>
                 </div>
 
-                {/* Layout options */}
+                {/* Filter by Range of weights */}
                 <div className="dropdown">
-                <button className="dropbtn" onClick={handleLayoutModalOpen}>
-                    Layout Options
-                </button>
+                    <span className="dropbtn" onClick={() => handleFilterByRange()}>
+                        Filter (Weights Range)
+                    </span>
                 </div>
+
+
+                {/* Layout Options Dropdown */}
+                <div className="dropdown">
+                    <span className="dropbtn">Layout Options</span>
+                    <div className="dropdown-content">
+                        <button className="layout-btn-doing">Tree</button>
+                        <button className="layout-btn-doing" onClick={openListLayoutModal}>List</button>
+                    </div>
+                </div>
+                {/* List Layout Modal */}
+                <Modal
+                    isOpen={isListLayoutModalOpen}
+                    onRequestClose={closeListLayoutModal}
+                    contentLabel="List Layout Modal"
+                >
+                    <h2>List Layout</h2>
+                    
+                    <button onClick={closeListLayoutModal}>Sort - Values</button>
+                    <button onClick={closeListLayoutModal}>Filter - Values</button>
+
+                    <button onClick={closeListLayoutModal}>Close</button>
+                    {/* {RenderNestedData(fileData)} */}
+                    {renderNestedData(fileData)}
+                </Modal>
+
 
                 {/* Custom Modal */}
                 {isFilterRangeOpen && (
