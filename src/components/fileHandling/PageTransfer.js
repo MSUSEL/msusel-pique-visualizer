@@ -57,8 +57,11 @@ export default function PageTransfer(props) {
     const [showStatistics, setShowStatistics] = useState(false);
 
     const [isListLayoutModalOpen, setIsListLayoutModalOpen] = useState(false);
+    const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
 
-
+    //for list layout:
+    const [sortOrder, setSortOrder] = useState('none'); // 'none', 'ascending', 'descending'
+    const [showSortOptions, setShowSortOptions] = useState(false);
 
     const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
         const initialStatus = {
@@ -179,6 +182,7 @@ export default function PageTransfer(props) {
         layoutModal.style.display = "block";
     };
 
+    // for list layout:
     const openListLayoutModal = () => {
         setIsListLayoutModalOpen(true);
     };
@@ -187,6 +191,15 @@ export default function PageTransfer(props) {
         setIsListLayoutModalOpen(false);
     };
 
+    const sortData = (data) => {
+        if (sortOrder === 'ascending') {
+            return Object.entries(data).sort(([, a], [, b]) => a - b);
+        } else if (sortOrder === 'descending') {
+            return Object.entries(data).sort(([, a], [, b]) => b - a);
+        } else {
+            return Object.entries(data);
+        }
+    };
 
     const renderNestedData = (data, level = 0, parentKey = '') => {
         let nameValue = {};
@@ -195,12 +208,12 @@ export default function PageTransfer(props) {
                 {Object.keys(data).sort((a, b) => {
                     const order = ['tqi', 'quality_aspects', 'product_factors', 'measures', 'diagnostics'];
                     return order.indexOf(a) - order.indexOf(b);
-                }).map((key, index) => {
+                }).map((key) => {
                     if (key === "name" || key === "value") {
                         nameValue[key] = data[key];
                         if (nameValue["name"] && nameValue["value"] !== undefined) {
                             return (
-                                <li key={index} className="nested-list-item">
+                                <li key={`${parentKey}-${nameValue["name"]}`} className="nested-list-item">
                                     <span className={"nested-list-key-value level-" + level}>
                                         {nameValue["name"]}: {nameValue["value"]}
                                     </span>
@@ -218,15 +231,15 @@ export default function PageTransfer(props) {
                         key === "diagnostics"
                     ) {
                         return (
-                            <li key={index} className="nested-list-item">
+                            <li key={`${parentKey}-${key}`} className="nested-list-item">
                                 <span className={"nested-list-key level-" + level}>{key}:</span>
-                                {typeof data[key] === "object" ? renderNestedData(data[key], level, key) : null}
+                                {typeof data[key] === "object" ? renderNestedData(data[key], level + 1, `${parentKey}-${key}`) : null}
                             </li>
                         );
                     }
 
                     if (typeof data[key] === "object") {
-                        return renderNestedData(data[key], level + 1);
+                        return renderNestedData(data[key], level + 1, `${parentKey}-${key}`);
                     }
 
                     return null;
@@ -234,7 +247,55 @@ export default function PageTransfer(props) {
             </ul>
         );
     };
-
+    
+    /*
+        const renderNestedData = (data, level = 0, parentKey = '') => {
+            let nameValue = {};
+            return (
+                <ul className={"nested-list-level-" + level}>
+                    {Object.keys(data).sort((a, b) => {
+                        const order = ['tqi', 'quality_aspects', 'product_factors', 'measures', 'diagnostics'];
+                        return order.indexOf(a) - order.indexOf(b);
+                    }).map((key, index) => {
+                        if (key === "name" || key === "value") {
+                            nameValue[key] = data[key];
+                            if (nameValue["name"] && nameValue["value"] !== undefined) {
+                                return (
+                                    <li key={`${parentKey}-${key}`} className="nested-list-item">
+                                        <span className={"nested-list-key-value level-" + level}>
+                                            {nameValue["name"]}: {nameValue["value"]}
+                                        </span>
+                                    </li>
+                                );
+                            }
+                            return null;
+                        }
+    
+                        if (
+                            key === "product_factors" ||
+                            key === "quality_aspects" ||
+                            key === "tqi" ||
+                            key === "measures" ||
+                            key === "diagnostics"
+                        ) {
+                            return (
+                                <li key={`${parentKey}-${key}`} className="nested-list-item">
+                                    <span className={"nested-list-key level-" + level}>{key}:</span>
+                                    {typeof data[key] === "object" ? renderNestedData(data[key], level, key) : null}
+                                </li>
+                            );
+                        }
+    
+                        if (typeof data[key] === "object") {
+                            return renderNestedData(data[key], level + 1);
+                        }
+    
+                        return null;
+                    })}
+                </ul>
+            );
+        };
+    */
     const handleReset = () => {
         console.log("reset:")
         console.log("fileData", fileData);
@@ -391,8 +452,15 @@ export default function PageTransfer(props) {
                     contentLabel="List Layout Modal"
                 >
                     <h2>List Layout</h2>
-                    
-                    <button onClick={closeListLayoutModal}>Sort - Values</button>
+
+                    <button onClick={() => setShowSortOptions(!showSortOptions)}>Sort - Values</button>
+                    {showSortOptions && (
+                        <div className="dropdown">
+                            <button onClick={() => setSortOrder('ascending')}>Ascending</button>
+                            <button onClick={() => setSortOrder('descending')}>Descending</button>
+                        </div>
+                    )}
+
                     <button onClick={closeListLayoutModal}>Filter - Values</button>
 
                     <button onClick={closeListLayoutModal}>Close</button>
@@ -402,35 +470,37 @@ export default function PageTransfer(props) {
 
 
                 {/* Custom Modal */}
-                {isFilterRangeOpen && (
-                    <div className="custom-modal">
-                        <div className="modal-content">
-                            <h2>Filter By Range</h2>
-                            <input
-                                type="text"
-                                placeholder="Minimum value"
-                                value={minValue}
-                                onChange={(e) => setMinValue(e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Maximum value"
-                                value={maxValue}
-                                onChange={(e) => setMaxValue(e.target.value)}
-                            />
-                            <div className="modal-actions">
-                                <button onClick={handleApplyFilter}>Apply</button>
-                                <button onClick={closeModal}>Cancel</button>
+                {
+                    isFilterRangeOpen && (
+                        <div className="custom-modal">
+                            <div className="modal-content">
+                                <h2>Filter By Range</h2>
+                                <input
+                                    type="text"
+                                    placeholder="Minimum value"
+                                    value={minValue}
+                                    onChange={(e) => setMinValue(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Maximum value"
+                                    value={maxValue}
+                                    onChange={(e) => setMaxValue(e.target.value)}
+                                />
+                                <div className="modal-actions">
+                                    <button onClick={handleApplyFilter}>Apply</button>
+                                    <button onClick={closeModal}>Cancel</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
 
-            </div>
+            </div >
 
             {/* Legend Display */}
-            <div className="legend-container">
+            < div className="legend-container" >
                 <div className="legend">
                     <h3 className="legend-title">Risk Level</h3>
                     {legendData.map((item) => (
@@ -442,13 +512,14 @@ export default function PageTransfer(props) {
                         </div>
                     ))}
                 </div>
-            </div>
+            </div >
 
             {/* Tree Display */}
-            <TreeDisplay
-                fileData={sortedData || filteredCategoryData || filteredRangeData || fileData}
+            < TreeDisplay
+                fileData={sortedData || filteredCategoryData || filteredRangeData || fileData
+                }
                 reset={reset}
             />
-        </div>
+        </div >
     );
 }
