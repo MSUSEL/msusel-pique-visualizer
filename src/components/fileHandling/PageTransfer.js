@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
 import { filterByCategory, filterByRange } from "../features/Filter";
-import { RenderNestedData } from "../features/ListLayout";
+// import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
@@ -56,12 +56,20 @@ export default function PageTransfer(props) {
     const [avgValue, setAvgValue] = useState('');
     const [showStatistics, setShowStatistics] = useState(false);
 
-    const [isListLayoutModalOpen, setIsListLayoutModalOpen] = useState(false);
-    const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
-
     //for list layout:
+    const [isListLayoutModalOpen, setIsListLayoutModalOpen] = useState(false);
     const [sortOrder, setSortOrder] = useState('none'); // 'none', 'ascending', 'descending'
     const [showSortOptions, setShowSortOptions] = useState(false);
+    const [listSortedData, setListSortedData] = useState(null);
+
+    useEffect(() => {
+        console.log("Current sort order:", sortOrder);  // <-- Add this line
+        if (fileData && sortOrder) {
+            const listSorted = deepSort(fileData, sortOrder);
+            setListSortedData(listSorted);
+            console.log(listSortedData)
+        }
+    }, [fileData, sortOrder]);
 
     const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
         const initialStatus = {
@@ -191,29 +199,52 @@ export default function PageTransfer(props) {
         setIsListLayoutModalOpen(false);
     };
 
-    const sortData = (data) => {
-        if (sortOrder === 'ascending') {
-            return Object.entries(data).sort(([, a], [, b]) => a - b);
-        } else if (sortOrder === 'descending') {
-            return Object.entries(data).sort(([, a], [, b]) => b - a);
+    const deepSort = (obj, order) => {
+        if (Array.isArray(obj)) {
+            return obj.sort((a, b) => {
+                if (order === 'ascending') {
+                    return a.value - b.value;
+                } else {
+                    return b.value - a.value;
+                }
+            }).map(item => deepSort(item, order));
+        } else if (typeof obj === 'object') {
+            const sortedObj = {};
+            Object.keys(obj).sort().forEach(key => {
+                if (['quality_aspects', 'product_factors', 'measures', 'diagnostics'].includes(key) && Array.isArray(obj[key])) {
+                    obj[key].sort((a, b) => {
+                        if (order === 'ascending') {
+                            return a.value - b.value;
+                        } else {
+                            return b.value - a.value;
+                        }
+                    });
+                }
+                sortedObj[key] = deepSort(obj[key], order);
+            });
+            return sortedObj;
         } else {
-            return Object.entries(data);
+            return obj;
         }
     };
 
-    const renderNestedData = (data, level = 0, parentKey = '') => {
+
+
+
+    const renderNestedData = (data, level = 0, parentKey = '', sortOrder = 'ascending') => {
+        // console.log("Data passed to renderNestedData:", data);  // <-- Add this line
         let nameValue = {};
         return (
             <ul className={"nested-list-level-" + level}>
                 {Object.keys(data).sort((a, b) => {
                     const order = ['tqi', 'quality_aspects', 'product_factors', 'measures', 'diagnostics'];
                     return order.indexOf(a) - order.indexOf(b);
-                }).map((key) => {
+                }).map((key, index) => {
                     if (key === "name" || key === "value") {
                         nameValue[key] = data[key];
                         if (nameValue["name"] && nameValue["value"] !== undefined) {
                             return (
-                                <li key={`${parentKey}-${nameValue["name"]}`} className="nested-list-item">
+                                <li key={index} className="nested-list-item">
                                     <span className={"nested-list-key-value level-" + level}>
                                         {nameValue["name"]}: {nameValue["value"]}
                                     </span>
@@ -230,16 +261,26 @@ export default function PageTransfer(props) {
                         key === "measures" ||
                         key === "diagnostics"
                     ) {
+                        let sortedData = data[key];
+                        if (Array.isArray(sortedData)) {
+                            sortedData.sort((a, b) => {
+                                if (sortOrder === 'ascending') {
+                                    return a.value - b.value;
+                                } else {
+                                    return b.value - a.value;
+                                }
+                            });
+                        }
                         return (
-                            <li key={`${parentKey}-${key}`} className="nested-list-item">
+                            <li key={index} className="nested-list-item">
                                 <span className={"nested-list-key level-" + level}>{key}:</span>
-                                {typeof data[key] === "object" ? renderNestedData(data[key], level + 1, `${parentKey}-${key}`) : null}
+                                {typeof sortedData === "object" ? renderNestedData(sortedData, level + 1, key, sortOrder) : null}
                             </li>
                         );
                     }
 
                     if (typeof data[key] === "object") {
-                        return renderNestedData(data[key], level + 1, `${parentKey}-${key}`);
+                        return renderNestedData(data[key], level + 1, '', sortOrder);
                     }
 
                     return null;
@@ -247,7 +288,8 @@ export default function PageTransfer(props) {
             </ul>
         );
     };
-    
+
+
     /*
         const renderNestedData = (data, level = 0, parentKey = '') => {
             let nameValue = {};
@@ -329,6 +371,8 @@ export default function PageTransfer(props) {
             setFilteredRangeData(null);
         }
     }, [reset]);
+
+    console.log("Current listSortedData:", listSortedData);
 
     return (
         <div className="unselectableText">
@@ -465,7 +509,14 @@ export default function PageTransfer(props) {
 
                     <button onClick={closeListLayoutModal}>Close</button>
                     {/* {RenderNestedData(fileData)} */}
-                    {renderNestedData(fileData)}
+                    {/* {renderNestedData(listSortedData || fileData) */}
+                    {/* {renderNestedData(listSortedData || fileData, 0, '', sortOrder)} */}
+                    {(() => {
+                        const listsortedData = deepSort(fileData, sortOrder);
+                        return renderNestedData(listsortedData);
+                    })()}
+
+
                 </Modal>
 
 
