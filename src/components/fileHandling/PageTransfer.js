@@ -7,8 +7,7 @@ import { filterByCategory, filterByRange } from "../features/Filter";
 import cloneDeep from "lodash/cloneDeep";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
-import "../top_header/TopHeader.css"
-
+import "../top_header/TopHeader.css";
 
 const legendData = [
     { color: "red", range: "0 - 0.2", category: "Severe", colorCode: "#cb0032" },
@@ -43,6 +42,7 @@ export default function PageTransfer(props) {
 
     const [filteredRangeData, setFilteredRangeData] = useState(null);
     const [isFilterRangeOpen, setIsFilterRangeOpen] = useState(false);
+    const [isWeightFilterRangeOpen, setIsWeightFilterRangeOpen] = useState(false);
     const [minValue, setMinValue] = useState("");
     const [maxValue, setMaxValue] = useState("");
 
@@ -61,6 +61,13 @@ export default function PageTransfer(props) {
     const [sortOrder, setSortOrder] = useState('none'); // 'none', 'ascending', 'descending'
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [listSortedData, setListSortedData] = useState(null);
+    const [showBothFilterOptions, setShowBothFilterOptions] = useState(false);
+
+    const [showFilterOptions, setShowFilterOptions] = useState(false);
+    const [filterOrder, setFilterOrder] = useState('all');
+    //test case
+    const [currentData, setCurrentData] = useState(fileData); // Initialize it to fileData
+
 
     useEffect(() => {
         console.log("Current sort order:", sortOrder);  // <-- Add this line
@@ -98,9 +105,9 @@ export default function PageTransfer(props) {
         } else if (sortType === "desc") {
             sorted = sortDESC(filteredCategoryData || fileData);
         } else if (sortType === "asc_weight") {
-            sorted = newSortASCforWeights(filteredCategoryData || fileData);
+            sorted = weightAscendingData;
         } else if (sortType === "desc_weight") {
-            sorted = sortDESCforWeights(filteredCategoryData || fileData);
+            sorted = weightDescendingData;
         }
         setSortedData(sorted);
         setSortType(sortType);
@@ -159,10 +166,12 @@ export default function PageTransfer(props) {
         } else {
             checkboxElement.classList.add("checked");
         }
-        handleFilterByCategory(category);
+        // handleFilterByCategory(category);
+        let filtered = filterMultiCategoriesData;
+        setfilteredCategoryData(filtered);
     };
 
-
+    // filter by range - node values
     const handleFilterByRange = () => {
         setIsFilterRangeOpen(true);
     };
@@ -185,6 +194,28 @@ export default function PageTransfer(props) {
         setIsFilterRangeOpen(false);
     };
 
+    // filter by range - edge weights
+    const handleFilterByWeightRange = () => {
+        setIsWeightFilterRangeOpen(true);
+    };
+
+    const handleApplyWeightFilter = () => {
+        let min = parseFloat(minValue);
+        let max = parseFloat(maxValue);
+        //const filtered = filterRange(fileData, min, max);
+        let fileDataCopy = cloneDeep(fileData);
+        // Filter the data based on the selected category using the copy
+        let filtered = weightRangeData;
+
+        setFilteredRangeData(filtered);
+        setIsWeightFilterRangeOpen(false);
+    };
+
+    const closeWeightModal = () => {
+        setIsWeightFilterRangeOpen(false);
+    };
+
+    // list
     const handleLayoutModalOpen = () => {
         const layoutModal = document.querySelector(".layout-modal");
         layoutModal.style.display = "block";
@@ -355,6 +386,8 @@ export default function PageTransfer(props) {
             setfilteredCategoryData(null);
             setFilteredRangeData(null);
         }, 0);
+        setSortOrder('none');
+        setSelectedCategories([]);
     };
 
     useEffect(() => {
@@ -393,7 +426,7 @@ export default function PageTransfer(props) {
 
                     {/* Quality Factors */}
                     <h4>Quality Factors</h4>
-                    <p>Severe: {0}</p>
+                    <p>Severe: {1}</p>
                     <p>High: {1}</p>
                     <p>Medium: {0}</p>
                     <p>Low: {0}</p>
@@ -401,7 +434,7 @@ export default function PageTransfer(props) {
 
                     {/* Quality Factors Measures */}
                     <h4>Measures for Quality Factors</h4>
-                    <p>Severe: {0}</p>
+                    <p>Severe: {3}</p>
                     <p>High: {0}</p>
                     <p>Medium: {1}</p>
                     <p>Low: {0}</p>
@@ -438,7 +471,7 @@ export default function PageTransfer(props) {
 
                 {/* Filter Dropdown */}
                 <div className="dropdown">
-                    <span className="dropbtn">Filter (Category)</span>
+                    <span className="dropbtn">Filter (One Category)</span>
                     <div className="dropdown-content">
                         {Object.keys(categoryButtonStatus).map(category => (
                             <button
@@ -453,9 +486,9 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter Dropdown */}
+                {/* Filter Dropdown - multiple categories */}
                 <div className="dropdown">
-                    <span className="dropbtn">Filter (Category) multiple</span>
+                    <span className="dropbtn">Filter (Categories) </span>
                     <div className="dropdown-content">
                         {Object.keys(categoryButtonStatus).map(category => (
                             <div key={category} className="checkbox-container" onClick={() => handleCustomCheckbox(category)}>
@@ -466,75 +499,29 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter by Range */}
+                {/* Filter by Range of values */}
                 <div className="dropdown">
                     <span className="dropbtn" onClick={() => handleFilterByRange()}>
                         Filter (Values Range)
                     </span>
                 </div>
 
-                {/* Filter by Range of weights */}
-                <div className="dropdown">
-                    <span className="dropbtn" onClick={() => handleFilterByRange()}>
-                        Filter (Weights Range)
-                    </span>
-                </div>
-
-
-                {/* Layout Options Dropdown */}
-                <div className="dropdown">
-                    <span className="dropbtn">Layout Options</span>
-                    <div className="dropdown-content">
-                        <button className="layout-btn-doing">Tree</button>
-                        <button className="layout-btn-doing" onClick={openListLayoutModal}>List</button>
-                    </div>
-                </div>
-                {/* List Layout Modal */}
-                <Modal
-                    isOpen={isListLayoutModalOpen}
-                    onRequestClose={closeListLayoutModal}
-                    contentLabel="List Layout Modal"
-                >
-                    <h2>List Layout</h2>
-
-                    <button onClick={() => setShowSortOptions(!showSortOptions)}>Sort - Values</button>
-                    {showSortOptions && (
-                        <div className="dropdown">
-                            <button onClick={() => setSortOrder('ascending')}>Ascending</button>
-                            <button onClick={() => setSortOrder('descending')}>Descending</button>
-                        </div>
-                    )}
-
-                    <button onClick={closeListLayoutModal}>Filter - Values</button>
-
-                    <button onClick={closeListLayoutModal}>Close</button>
-                    {/* {RenderNestedData(fileData)} */}
-                    {/* {renderNestedData(listSortedData || fileData) */}
-                    {/* {renderNestedData(listSortedData || fileData, 0, '', sortOrder)} */}
-                    {(() => {
-                        const listsortedData = deepSort(fileData, sortOrder);
-                        return renderNestedData(listsortedData);
-                    })()}
-
-
-                </Modal>
-
-
                 {/* Custom Modal */}
                 {
                     isFilterRangeOpen && (
                         <div className="custom-modal">
                             <div className="modal-content">
-                                <h2>Filter By Range</h2>
+                                <h2>Node Value Range</h2>
+                                <h4>Please enter the range of node values</h4>
                                 <input
                                     type="text"
-                                    placeholder="Minimum value"
+                                    placeholder="Minimum node value"
                                     value={minValue}
                                     onChange={(e) => setMinValue(e.target.value)}
                                 />
                                 <input
                                     type="text"
-                                    placeholder="Maximum value"
+                                    placeholder="Maximum node value"
                                     value={maxValue}
                                     onChange={(e) => setMaxValue(e.target.value)}
                                 />
@@ -546,6 +533,88 @@ export default function PageTransfer(props) {
                         </div>
                     )
                 }
+
+
+
+                {/* Filter by Range of weights */}
+                <div className="dropdown">
+                    <span className="dropbtn" onClick={() => handleFilterByWeightRange()}>
+                        Filter (Weights Range)
+                    </span>
+                </div>
+                {/* Custom Modal */}
+                {
+                    isWeightFilterRangeOpen && (
+                        <div className="custom-modal">
+                            <div className="modal-content">
+                                <h2>Weights Denoted on Edges </h2>
+                                <h4>Please enter the range of weights</h4>
+                                <input
+                                    type="text"
+                                    placeholder="Minimum weight"
+                                    value={minValue}
+                                    onChange={(e) => setMinValue(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Maximum weight"
+                                    value={maxValue}
+                                    onChange={(e) => setMaxValue(e.target.value)}
+                                />
+                                <div className="modal-actions">
+                                    <button onClick={handleApplyWeightFilter}>Apply</button>
+                                    <button onClick={closeWeightModal}>Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+
+                {/* Layout Options Dropdown */}
+                <div className="dropdown">
+                    <span className="dropbtn">Layout Options</span>
+                    <div className="dropdown-content">
+                        <button className="layout-btn-doing">Tree (Default) </button>
+                        <button className="layout-btn-doing" onClick={openListLayoutModal}>List</button>
+                    </div>
+                </div>
+                {/* List Layout Modal */}
+                <Modal
+                    isOpen={isListLayoutModalOpen}
+                    onRequestClose={closeListLayoutModal}
+                    contentLabel="List Layout Modal"
+                >
+                    <h2>List Layout</h2>
+                    {/* Sort based on node values */}
+                    <button className="sort-button" onClick={() => setShowSortOptions(!showSortOptions)}>Sort - Node Values</button>
+                    {showSortOptions && (
+                        <div className="sort-dropdown">
+                            <button className="sort-ascend-button" onClick={() => { setSortOrder('ascending'); setCurrentData(ascendingData); }}>Ascending</button>
+                            <button className="sort-descend-button" onClick={() => { setSortOrder('descending'); setCurrentData(descendingData); }}>Descending</button>
+                        </div>
+                    )}
+
+                    {/* Filter based on node categories*/}
+                    <button className="sort-button" onClick={() => setShowFilterOptions(!showFilterOptions)}>Filter - Risk Category</button>
+                    {showFilterOptions && (
+                        <div className="sort-dropdown">
+                            <button className="filter-button-insignificant" onClick={() => { setFilterOrder('Insignificant'); setCurrentData(insignificantData); }}>Insignificant</button>
+                            <button className="filter-button-minor" onClick={() => { setFilterOrder('Minor'); setCurrentData(minorData); }}>Minor</button>
+                            <button className="filter-button-moderate" onClick={() => { setFilterOrder('Moderate'); setCurrentData(moderateData); }}>Moderate</button>
+                            <button className="filter-button-high" onClick={() => { setFilterOrder('High'); setCurrentData(highData); }}>High</button>
+                            <button className="filter-button-severe" onClick={() => { setFilterOrder('Severe'); setCurrentData(severeData); }}>Severe</button>
+                        </div>
+                    )}
+
+                    {/* Close panel of list */}
+                    <button className="sort-button" onClick={closeListLayoutModal}>Close</button>
+
+                    {renderNestedData(currentData)}
+                </Modal>
+
+
+
+
 
 
             </div >
