@@ -251,7 +251,7 @@
   background-color: #f9f9f9;
   border-radius: 4px;
   padding: 20px;
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
@@ -464,7 +464,7 @@
 .statistics-panel p:nth-child(8),
 .statistics-panel p:nth-child(14),
 .statistics-panel p:nth-child(20) {
-  background-color: #cb0033a8;
+  background-color: rgba(255, 0, 0, 0.497);
   /* red */
 }
 
@@ -472,7 +472,7 @@
 .statistics-panel p:nth-child(9),
 .statistics-panel p:nth-child(15),
 .statistics-panel p:nth-child(21) {
-  background-color: #ff66009f;
+  background-color: rgba(255, 166, 0, 0.715);
   /* orange */
 }
 
@@ -480,7 +480,7 @@
 .statistics-panel p:nth-child(10),
 .statistics-panel p:nth-child(16),
 .statistics-panel p:nth-child(22) {
-  background-color: #fde001a5;
+  background-color: #f3ec669c;
   /* yellow */
 }
 
@@ -488,7 +488,7 @@
 .statistics-panel p:nth-child(11),
 .statistics-panel p:nth-child(17),
 .statistics-panel p:nth-child(23) {
-  background-color: #3565cd95;
+  background-color: rgba(0, 136, 255, 0.4);
   /* light green */
 }
 
@@ -496,7 +496,7 @@
 .statistics-panel p:nth-child(12),
 .statistics-panel p:nth-child(18),
 .statistics-panel p:nth-child(24) {
-  background-color: #009a679b;
+  background-color: rgba(0, 128, 0, 0.437);
   /* green */
 }
 
@@ -656,4 +656,89 @@
 .diagnostics {
   font-weight: bold;
   color: #B22222;
+}
+
+/* list - sort*/
+.sort-button {
+  background-color: #ddd;
+  color: black;
+  padding: 10px 10px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+
+.sort-dropdown {
+  display: flex;
+  flex-direction: column;
+}
+
+.sort-ascend-button {
+  background-color: #008bba8a;
+  color: white;
+  padding: 10px 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+
+.sort-descend-button {
+  background-color: #f4433652;
+  color: white;
+  padding: 10px 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+
+/* list - filter - risk category*/
+
+.filter-button-insignificant {
+  background-color: rgba(0, 128, 0, 0.437);
+  color: black;
+  padding: 10px 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+
+.filter-button-minor {
+  background-color: rgba(0, 136, 255, 0.4);
+  color: black;
+  padding: 10px 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+.filter-button-moderate {
+  background-color: #f3ec669c;
+  color: black;
+  padding: 10px 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+.filter-button-high {
+  background-color: rgba(255, 166, 0, 0.715);
+  color: black;
+  padding: 10px 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+.filter-button-severe {
+  background-color: rgba(255, 0, 0, 0.497);
+  color: black;
+  padding: 10px 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
 }
