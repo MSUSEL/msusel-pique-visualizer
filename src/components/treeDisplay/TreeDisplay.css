@@ -16,6 +16,13 @@
 }
 
 #reset_tree_buttons_div {
+    background-color: #f1f1f1;
+    color: black;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
     height: 8vh;
     display: flex;
     justify-content: center;
@@ -23,6 +30,13 @@
 }
 
 .reset_buttons {
+    background-color: lightgray;
+    color: black;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
     margin-left: 10px;
     margin-right: 10px;
     border-radius: 10px;
