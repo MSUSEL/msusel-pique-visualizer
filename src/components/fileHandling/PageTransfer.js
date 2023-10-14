@@ -5,6 +5,7 @@ import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights, newSortASCfor
 import { filterByCategory, filterByRange } from "../features/Filter";
 // import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
+import countChars from "./descriptiveStats";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 import "../top_header/TopHeader.css"
@@ -374,6 +375,8 @@ export default function PageTransfer(props) {
 
     console.log("Current listSortedData:", listSortedData);
 
+    let qCharsCount = countChars(fileData);
+
     return (
         <div className="unselectableText">
             {/* Descriptive Statistics Panel Button */}
@@ -385,27 +388,28 @@ export default function PageTransfer(props) {
                     {/* <h3>Descriptive Statistics</h3> */}
                     {/* Quality Characteristics */}
                     <h4>Quality Characteristics</h4>
-                    <p>Severe: {0}</p>
-                    <p>High: {0}</p>
-                    <p>Medium: {0}</p>
-                    <p>Low: {0}</p>
-                    <p>Insignificant: {6}</p>
+                    <p>Severe: {qCharsCount.qChar[0]}</p>
+                    <p>High: {qCharsCount.qChar[1]}</p>
+                    <p>Medium: {qCharsCount.qChar[2]}</p>
+                    <p>Low: {qCharsCount.qChar[3]}</p>
+                    <p>Insignificant: {qCharsCount.qChar[4]}</p>
+                    
 
                     {/* Quality Factors */}
                     <h4>Quality Factors</h4>
-                    <p>Severe: {0}</p>
-                    <p>High: {1}</p>
-                    <p>Medium: {0}</p>
-                    <p>Low: {0}</p>
-                    <p>Insignificant: {34}</p>
+                    <p>Severe: {qCharsCount.qFact[0]}</p>
+                    <p>High: {qCharsCount.qFact[1]}</p>
+                    <p>Medium: {qCharsCount.qFact[2]}</p>
+                    <p>Low: {qCharsCount.qFact[3]}</p>
+                    <p>Insignificant: {qCharsCount.qFact[4]}</p>
 
                     {/* Quality Factors Measures */}
                     <h4>Measures for Quality Factors</h4>
-                    <p>Severe: {0}</p>
-                    <p>High: {0}</p>
-                    <p>Medium: {1}</p>
-                    <p>Low: {0}</p>
-                    <p>Insignificant: {161}</p>
+                    <p>Severe: {qCharsCount.qfMeas[0]}</p>
+                    <p>High: {qCharsCount.qfMeas[1]}</p>
+                    <p>Medium: {qCharsCount.qfMeas[2]}</p>
+                    <p>Low: {qCharsCount.qfMeas[3]}</p>
+                    <p>Insignificant: {qCharsCount.qfMeas[4]}</p>
                 </div>
             )}
 
