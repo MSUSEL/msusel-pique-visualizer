@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import TreeDisplay from "../treeDisplay/TreeDisplay";
-import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
+import { sortASCforValues, sortDESCforValues, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
 import { filterByCategory, filterByRange } from "../features/Filter";
 // import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
@@ -100,15 +100,16 @@ export default function PageTransfer(props) {
 
     const handleSort = (sortType) => {
         let sorted;
-        if (sortType === "asc") {
-            sorted = sortASC(filteredCategoryData || fileData);
-        } else if (sortType === "desc") {
-            sorted = sortDESC(filteredCategoryData || fileData);
-        } else if (sortType === "asc_weight") {
+        let fileDataCopy = cloneDeep(fileData);
+        if (sortType === "asc_value") {
+            sorted = sortASCforValues(filteredCategoryData || fileDataCopy);
+        } else if (sortType === "desc_value") {
+            sorted = sortDESCforValues(filteredCategoryData || fileDataCopy);
+        } /** else if (sortType === "asc_weight") {
             sorted = weightAscendingData;
         } else if (sortType === "desc_weight") {
             sorted = weightDescendingData;
-        }
+        }*/
         setSortedData(sorted);
         setSortType(sortType);
     };
@@ -167,8 +168,8 @@ export default function PageTransfer(props) {
             checkboxElement.classList.add("checked");
         }
         // handleFilterByCategory(category);
-        let filtered = filterMultiCategoriesData;
-        setfilteredCategoryData(filtered);
+        //let filtered = filterMultiCategoriesData;
+        //setfilteredCategoryData(filtered);
     };
 
     // filter by range - node values
@@ -205,7 +206,7 @@ export default function PageTransfer(props) {
         //const filtered = filterRange(fileData, min, max);
         let fileDataCopy = cloneDeep(fileData);
         // Filter the data based on the selected category using the copy
-        let filtered = weightRangeData;
+        let filtered = fileData;//weightRangeData;
 
         setFilteredRangeData(filtered);
         setIsWeightFilterRangeOpen(false);
@@ -454,10 +455,10 @@ export default function PageTransfer(props) {
                 <div className="dropdown">
                     <span className="dropbtn">Sort</span>
                     <div className="dropdown-content">
-                        <button className={sortType === "asc" ? "selected" : ""} onClick={() => handleSort("asc")}>
+                        <button className={sortType === "asc_value" ? "selected" : ""} onClick={() => handleSort("asc_value")}>
                             Value - Ascending
                         </button>
-                        <button className={sortType === "desc" ? "selected" : ""} onClick={() => handleSort("desc")}>
+                        <button className={sortType === "desc_value" ? "selected" : ""} onClick={() => handleSort("desc_value")}>
                             Value - Descending
                         </button>
                         <button className={sortType === "asc_weight" ? "selected" : ""} onClick={() => handleSort("asc_weight")}>
@@ -471,7 +472,7 @@ export default function PageTransfer(props) {
 
                 {/* Filter Dropdown */}
                 <div className="dropdown">
-                    <span className="dropbtn">Filter (One Category)</span>
+                    <span className="dropbtn">Filter (Risk Levels)</span>
                     <div className="dropdown-content">
                         {Object.keys(categoryButtonStatus).map(category => (
                             <button
@@ -486,7 +487,7 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter Dropdown - multiple categories */}
+                {/* Filter Dropdown - multiple categories 
                 <div className="dropdown">
                     <span className="dropbtn">Filter (Categories) </span>
                     <div className="dropdown-content">
@@ -497,7 +498,7 @@ export default function PageTransfer(props) {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div>*/}
 
                 {/* Filter by Range of values */}
                 <div className="dropdown">
@@ -578,14 +579,14 @@ export default function PageTransfer(props) {
                         <button className="layout-btn-doing" onClick={openListLayoutModal}>List</button>
                     </div>
                 </div>
-                {/* List Layout Modal */}
+                {/* List Layout Modal 
                 <Modal
                     isOpen={isListLayoutModalOpen}
                     onRequestClose={closeListLayoutModal}
                     contentLabel="List Layout Modal"
                 >
                     <h2>List Layout</h2>
-                    {/* Sort based on node values */}
+                    
                     <button className="sort-button" onClick={() => setShowSortOptions(!showSortOptions)}>Sort - Node Values</button>
                     {showSortOptions && (
                         <div className="sort-dropdown">
@@ -594,7 +595,7 @@ export default function PageTransfer(props) {
                         </div>
                     )}
 
-                    {/* Filter based on node categories*/}
+                    
                     <button className="sort-button" onClick={() => setShowFilterOptions(!showFilterOptions)}>Filter - Risk Category</button>
                     {showFilterOptions && (
                         <div className="sort-dropdown">
@@ -606,11 +607,11 @@ export default function PageTransfer(props) {
                         </div>
                     )}
 
-                    {/* Close panel of list */}
+                    
                     <button className="sort-button" onClick={closeListLayoutModal}>Close</button>
 
                     {renderNestedData(currentData)}
-                </Modal>
+                </Modal>*/}
 
 
 
