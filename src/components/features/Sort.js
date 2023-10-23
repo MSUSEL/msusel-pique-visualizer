@@ -6,52 +6,83 @@ import _ from 'lodash';
 
 // based on node values
 
-export function sortASC(fileData) {
+export function sortASCforValues(fileData) {
     if (!fileData) {
-        return fileData;  // If fileData or factors is not defined, return original data
+        return fileData;  // If fileData is not defined, return original data
     }
 
     let sortedFileData = JSON.parse(JSON.stringify(fileData));
 
-    let dataArray_product_factors = fileData.factors.product_factors ? Object.values(sortedFileData.factors.product_factors) : [];
-    //console.log(dataArray_product_factors);
-    let dataArray_quality_aspects = fileData.factors.quality_aspects ? Object.values(sortedFileData.factors.quality_aspects) : [];
-    let dataArray_measures = sortedFileData.measures ? Object.values(sortedFileData.measures) : [];
-    let dataArray_diagnostics = sortedFileData.diagnostics ? Object.values(sortedFileData.diagnostics) : [];
+    // Sort measures based on their "value"
+    if (sortedFileData.measures) {
+        let dataArray_measures = Object.values(sortedFileData.measures);
+        dataArray_measures.sort((a, b) => a.value - b.value);
+        sortedFileData.measures = {};
+        dataArray_measures.forEach(item => {
+            sortedFileData.measures[item.name] = item;
+        });
+    }
 
-    // Sort the array based on the "value" property in ascending order
-    dataArray_product_factors.sort((a, b) => a.value - b.value);
-    dataArray_quality_aspects.sort((a, b) => a.value - b.value);
-    dataArray_measures.sort((a, b) => a.value - b.value);
-    dataArray_diagnostics.sort((a, b) => a.value - b.value);
+    // Sort product_factors based on their "value" and align their weights
+    if (sortedFileData.factors && sortedFileData.factors.product_factors) {
+        let dataArray_product_factors = Object.values(sortedFileData.factors.product_factors);
+        dataArray_product_factors.sort((a, b) => a.value - b.value);
+        sortedFileData.factors.product_factors = {};
+        dataArray_product_factors.forEach(item => {
+            // Sort the weights based on measures
+            if (item.weights) {
+                item.weights = Object.fromEntries(Object.entries(item.weights).sort((a, b) => {
+                    return sortedFileData.measures[a[0]].value - sortedFileData.measures[b[0]].value;
+                }));
+            }
+            sortedFileData.factors.product_factors[item.name] = item;
+        });
+    }
 
-    sortedFileData.factors.product_factors = {};
-    sortedFileData.factors.quality_aspects = {};
-    sortedFileData.measures = {};
-    sortedFileData.diagnostics = {};
+    // Sort quality_aspects based on their "value" and align their weights
+    if (sortedFileData.factors && sortedFileData.factors.quality_aspects) {
+        let dataArray_quality_aspects = Object.values(sortedFileData.factors.quality_aspects);
+        dataArray_quality_aspects.sort((a, b) => a.value - b.value);
+        sortedFileData.factors.quality_aspects = {};
+        dataArray_quality_aspects.forEach(item => {
+            // Sort the weights based on product_factors
+            if (item.weights) {
+                item.weights = Object.fromEntries(Object.entries(item.weights).sort((a, b) => {
+                    return sortedFileData.factors.product_factors[a[0]].value - sortedFileData.factors.product_factors[b[0]].value;
+                }));
+            }
+            sortedFileData.factors.quality_aspects[item.name] = item;
+        });
+    }
 
-    dataArray_product_factors.forEach(item => {
-        sortedFileData.factors.product_factors[item.name] = item;
-    });
-    dataArray_quality_aspects.forEach(item => {
-        sortedFileData.factors.quality_aspects[item.name] = item;
-    });
-    dataArray_measures.forEach(item => {
-        sortedFileData.measures[item.name] = item;
-    });
-    dataArray_diagnostics.forEach(item => {
-        sortedFileData.diagnostics[item.name] = item;
-    });
+    // Sort tqi and align its weights
+    if (sortedFileData.factors && sortedFileData.factors.tqi) {
+        let dataArray_tqi = Object.values(sortedFileData.factors.tqi);
+        dataArray_tqi.sort((a, b) => a.value - b.value);
+        sortedFileData.factors.tqi = {};
+        dataArray_tqi.forEach(item => {
+            // Sort the weights based on quality_aspects
+            if (item.weights) {
+                item.weights = Object.fromEntries(Object.entries(item.weights).sort((a, b) => {
+                    return sortedFileData.factors.quality_aspects[a[0]].value - sortedFileData.factors.quality_aspects[b[0]].value;
+                }));
+            }
+            sortedFileData.factors.tqi[item.name] = item;
+        //if (sortedFileData.factors.tqi.weights) {
+        //    sortedFileData.factors.tqi.weights = Object.fromEntries(Object.entries(sortedFileData.factors.tqi.weights).sort((a, b) => {
+        //        return sortedFileData.factors.quality_aspects[a[0]].value - sortedFileData.factors.quality_aspects[b[0]].value;
+        //    }));
+        });
+    }
 
-
-    console.log("Ascending Sorting Done! Smallest <---> Larest")
-
+    console.log("Ascending Sorting Done! Smallest <---> Largest");
 
     return sortedFileData;
 }
 
 
-export function sortDESC(fileData) {
+
+export function sortDESCforValues(fileData) {
     if (!fileData) {
         return fileData;  // If fileData or factors is not defined, return original data
     }
@@ -141,31 +172,6 @@ export function sortASCforWeights(fileData) {
     return sortedFileData;
 }
 
-
-/**
- * Sort all nodes based on weights in ascending order (smallest on the left and largest on the right)
- * @param {Object} treeData - The hierarchical tree data.
- * @return {Object} The tree data sorted in ascending order based on weights.
-
-export function sortASCforWeights(treeData) {
-    if (!treeData) return treeData; // Return if null or undefined
-
-    function sortTreeData(data, parentWeights) {
-        if (!data) return;
-        if (data.hasOwnProperty('children')) {
-            if (parentWeights) {
-                data.children.sort((a, b) => parentWeights[a.name] - parentWeights[b.name]);
-            }
-            data.children.forEach(child => sortTreeData(child, data.weights));
-        }
-    }
-
-    sortTreeData(treeData, null);
-    console.log("Ascending Sorting Done! Smallest <---> Larest")
-    return treeData;
-
-}
- */
 
 /**
  * Sort all nodes based on weights in descending order (largest on the left and smallest on the right)
