@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import TreeDisplay from "../treeDisplay/TreeDisplay";
-import { sortASCforValues, sortDESCforValues, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
-import { filterByCategory, filterByValueRange, filterRiskLevels, filterByWeightRange } from "../features/Filter";
-// import { RenderNestedData } from "../features/ListLayout";
+import { sortASCforValues, sortDESCforValues, sortASCforWeights, sortDESCforWeights } from "../features/Sort";
+import { filterByValueRange, filterRiskLevels, filterByWeightRange } from "../features/Filter";
+import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
@@ -17,63 +17,37 @@ const legendData = [
     { color: "green", range: "0.8 - 1", category: "Insignificant", colorCode: "#009a66" }
 ];
 
-function getColor(value) {
-    if (value >= 0.8 && value <= 1) {
-        return "green";
-    } else if (value > 0.6 && value <= 0.8) {
-        return "blue";
-    } else if (value > 0.4 && value <= 0.6) {
-        return "yellow";
-    } else if (value > 0.2 && value <= 0.4) {
-        return "orange";
-    } else if (value > 0 && value <= 0.2) {
-        return "red";
-    } else {
-        return "black"; // Default color if value is outside the defined ranges
-    }
-}
-
 export default function PageTransfer(props) {
     const { fileData } = props;
+    // initilize
     const [initialFileData, setInitialFileData] = useState(null);
-
+    // sort, by values or by weights
     const [sortedData, setSortedData] = useState(null);
     const [sortType, setSortType] = useState(null);
 
+    //reset
+    const [reset, setReset] = useState(false);
+    // filter
+    //1. by risk level
+    const [selectedRiskLevels, setSelectedRiskLevels] = useState([]);
+    const [isDoneButtonClickable, setIsDoneButtonClickable] = useState(false);
+    const [filteredCategoryData, setfilteredCategoryData] = useState(null);
+    // 2. by range, value or weight, min - max
     const [filteredRangeData, setFilteredRangeData] = useState(null);
     const [isFilterRangeOpen, setIsFilterRangeOpen] = useState(false);
     const [isWeightFilterRangeOpen, setIsWeightFilterRangeOpen] = useState(false);
     const [minValue, setMinValue] = useState("");
     const [maxValue, setMaxValue] = useState("");
 
-    const [reset, setReset] = useState(false);
-
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [selectedCategories, setSelectedCategories] = useState([]);
-    const [selectedRiskLevels, setSelectedRiskLevels] = useState([]);
-    const [isDoneButtonClickable, setIsDoneButtonClickable] = useState(false);
-
-
-    const [filteredCategoryData, setfilteredCategoryData] = useState(null);
-    const riskLevels = ['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'];
-    const [avgValue, setAvgValue] = useState('');
+    // descriptiove statistics
     const [showStatistics, setShowStatistics] = useState(false);
 
     //for list layout:
     const [isListLayoutModalOpen, setIsListLayoutModalOpen] = useState(false);
     const [sortOrder, setSortOrder] = useState('none'); // 'none', 'ascending', 'descending'
-    const [showSortOptions, setShowSortOptions] = useState(false);
     const [listSortedData, setListSortedData] = useState(null);
-    const [showBothFilterOptions, setShowBothFilterOptions] = useState(false);
-
-    const [showFilterOptions, setShowFilterOptions] = useState(false);
-    const [filterOrder, setFilterOrder] = useState('all');
-    //test case
-    const [currentData, setCurrentData] = useState(fileData); // Initialize it to fileData
-
-
     useEffect(() => {
-        console.log("Current sort order:", sortOrder);  // <-- Add this line
+        console.log("Current sort order:", sortOrder);
         if (fileData && sortOrder) {
             const listSorted = deepSort(fileData, sortOrder);
             setListSortedData(listSorted);
@@ -81,18 +55,7 @@ export default function PageTransfer(props) {
         }
     }, [fileData, sortOrder]);
 
-    const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
-        const initialStatus = {
-            Insignificant: true,
-            Minor: false,
-            Moderate: false,
-            High: true,
-            Severe: true
-        };
-        return initialStatus;
-    });
-
-
+    // sort
     const handleSort = (sortType) => {
         let sorted;
         let fileDataCopy = cloneDeep(fileData);
@@ -109,56 +72,6 @@ export default function PageTransfer(props) {
         setSortType(sortType);
     };
 
-    const handleFilterByOneCategory = async (filterType) => {
-        setSelectedCategory(filterType);
-        // Create a deep copy of fileData
-        let fileDataCopy = cloneDeep(fileData);
-        // Filter the data based on the selected category using the copy
-        let filtered = filterByCategory(fileDataCopy, filterType);
-        setfilteredCategoryData(filtered);
-    }
-    const handleFilterByMultipleCategories = async () => {
-        // Create a deep copy of fileData
-        let fileDataCopy = cloneDeep(fileData);
-
-        // If there are selected categories, filter the data
-        if (selectedCategories.length > 0) {
-            let filtered = fileDataCopy;
-            selectedCategories.forEach((filterType) => {
-                filtered = filterByCategory(filtered, filterType);
-            });
-            setfilteredCategoryData(filtered);
-        } else {
-            // If no categories are selected, reset the filtered data
-            setfilteredCategoryData(null);
-        }
-    };
-
-    const handleFilterByCategory = (category) => {
-        let newSelectedCategories = [...selectedCategories];
-        if (newSelectedCategories.includes(category)) {
-            newSelectedCategories = newSelectedCategories.filter((item) => item !== category);
-        } else {
-            newSelectedCategories.push(category);
-        }
-        setSelectedCategories(newSelectedCategories);
-
-        // Call the new multiple category filter function
-        handleFilterByMultipleCategories();
-    };
-
-    const handleCustomCheckbox = (category) => {
-        const checkboxElement = document.getElementById(`custom-${category}`);
-        if (checkboxElement.classList.contains("checked")) {
-            checkboxElement.classList.remove("checked");
-        } else {
-            checkboxElement.classList.add("checked");
-        }
-        // handleFilterByCategory(category);
-        //let filtered = filterMultiCategoriesData;
-        //setfilteredCategoryData(filtered);
-    };
-
     // filer - one or multiple risk level categories
     // Handle checkbox changes
     const handleCheckboxChange = (riskLevel) => {
@@ -169,8 +82,7 @@ export default function PageTransfer(props) {
             // Add the risk level to the array
             setSelectedRiskLevels([...selectedRiskLevels, riskLevel]);
         }
-    };
-    // Update the Done button clickability
+    }
     React.useEffect(() => {
         setIsDoneButtonClickable(selectedRiskLevels.length > 0);
     }, [selectedRiskLevels]);
@@ -189,7 +101,7 @@ export default function PageTransfer(props) {
         setIsFilterRangeOpen(true);
     };
 
-    const handleApplyFilter = () => {
+    const handleApplyFilterByValueRange = () => {
         let min = parseFloat(minValue);
         let max = parseFloat(maxValue);
         //const filtered = filterRange(fileData, min, max);
@@ -212,7 +124,7 @@ export default function PageTransfer(props) {
         setIsWeightFilterRangeOpen(true);
     };
 
-    const handleApplyWeightFilter = () => {
+    const handleApplyFilterbyWeightRange = () => {
         let min = parseFloat(minValue);
         let max = parseFloat(maxValue);
         //const filtered = filterRange(fileData, min, max);
@@ -228,13 +140,8 @@ export default function PageTransfer(props) {
         setIsWeightFilterRangeOpen(false);
     };
 
-    // list
-    const handleLayoutModalOpen = () => {
-        const layoutModal = document.querySelector(".layout-modal");
-        layoutModal.style.display = "block";
-    };
 
-    // for list layout:
+    // List layout:
     const openListLayoutModal = () => {
         setIsListLayoutModalOpen(true);
     };
@@ -271,8 +178,6 @@ export default function PageTransfer(props) {
             return obj;
         }
     };
-
-
 
 
     const renderNestedData = (data, level = 0, parentKey = '', sortOrder = 'ascending') => {
@@ -334,54 +239,6 @@ export default function PageTransfer(props) {
     };
 
 
-    /*
-        const renderNestedData = (data, level = 0, parentKey = '') => {
-            let nameValue = {};
-            return (
-                <ul className={"nested-list-level-" + level}>
-                    {Object.keys(data).sort((a, b) => {
-                        const order = ['tqi', 'quality_aspects', 'product_factors', 'measures', 'diagnostics'];
-                        return order.indexOf(a) - order.indexOf(b);
-                    }).map((key, index) => {
-                        if (key === "name" || key === "value") {
-                            nameValue[key] = data[key];
-                            if (nameValue["name"] && nameValue["value"] !== undefined) {
-                                return (
-                                    <li key={`${parentKey}-${key}`} className="nested-list-item">
-                                        <span className={"nested-list-key-value level-" + level}>
-                                            {nameValue["name"]}: {nameValue["value"]}
-                                        </span>
-                                    </li>
-                                );
-                            }
-                            return null;
-                        }
-    
-                        if (
-                            key === "product_factors" ||
-                            key === "quality_aspects" ||
-                            key === "tqi" ||
-                            key === "measures" ||
-                            key === "diagnostics"
-                        ) {
-                            return (
-                                <li key={`${parentKey}-${key}`} className="nested-list-item">
-                                    <span className={"nested-list-key level-" + level}>{key}:</span>
-                                    {typeof data[key] === "object" ? renderNestedData(data[key], level, key) : null}
-                                </li>
-                            );
-                        }
-    
-                        if (typeof data[key] === "object") {
-                            return renderNestedData(data[key], level + 1);
-                        }
-    
-                        return null;
-                    })}
-                </ul>
-            );
-        };
-    */
     const handleReset = () => {
         console.log("reset:")
         console.log("fileData", fileData);
@@ -391,8 +248,6 @@ export default function PageTransfer(props) {
         setFilteredRangeData(null);
         setMinValue("");
         setMaxValue("");
-        setSelectedCategory("");
-        setSelectedCategories([]);  // Uncheck all checkboxes for multiple categories filter
         setReset(true);
         setTimeout(() => {
             setReset(false);
@@ -400,7 +255,6 @@ export default function PageTransfer(props) {
             setFilteredRangeData(null);
         }, 0);
         setSortOrder('none');
-        setSelectedCategories([]);
 
         // Reset the risk level checkboxes and done button
         setSelectedRiskLevels([]); // Assuming setSelectedRiskLevels is your state setter for selected risk levels
@@ -487,35 +341,7 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter Dropdown */}
-                <div className="dropdown">
-                    <span className="dropbtn">Filter (Risk Levels)</span>
-                    <div className="dropdown-content">
-                        {Object.keys(categoryButtonStatus).map(category => (
-                            <button
-                                key={category}
-                                className={`${selectedCategory === category ? "selected" : ""} ${!categoryButtonStatus[category] ? "disabled" : ""}`}
-                                onClick={() => handleFilterByOneCategory(category)}
-                                disabled={!categoryButtonStatus[category]}
-                            >
-                                {category}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Filter Dropdown - multiple categories 
-                <div className="dropdown">
-                    <span className="dropbtn">Filter (Categories) </span>
-                    <div className="dropdown-content">
-                        {Object.keys(categoryButtonStatus).map(category => (
-                            <div key={category} className="checkbox-container" onClick={() => handleCustomCheckbox(category)}>
-                                <span id={"custom-" + category} className={"custom-checkbox " + (selectedCategories.includes(category) ? "checked" : "")}></span>
-                                <label htmlFor={category}>{category}</label>
-                            </div>
-                        ))}
-                    </div>
-                </div>*/}
+                {/* Filter Dropdown - one or multiple categories */}
                 <div className="dropdown">
                     <span className="dropbtn">Filter (Risk Levels)</span>
                     <div className="dropdown-content">
@@ -570,15 +396,13 @@ export default function PageTransfer(props) {
                                     onChange={(e) => setMaxValue(e.target.value)}
                                 />
                                 <div className="modal-actions">
-                                    <button onClick={handleApplyFilter}>Apply</button>
+                                    <button onClick={handleApplyFilterByValueRange}>Apply</button>
                                     <button onClick={closeModal}>Cancel</button>
                                 </div>
                             </div>
                         </div>
                     )
                 }
-
-
 
                 {/* Filter by Range of weights */}
                 <div className="dropdown">
@@ -606,7 +430,7 @@ export default function PageTransfer(props) {
                                     onChange={(e) => setMaxValue(e.target.value)}
                                 />
                                 <div className="modal-actions">
-                                    <button onClick={handleApplyWeightFilter}>Apply</button>
+                                    <button onClick={handleApplyFilterbyWeightRange}>Apply</button>
                                     <button onClick={closeWeightModal}>Cancel</button>
                                 </div>
                             </div>
@@ -654,13 +478,7 @@ export default function PageTransfer(props) {
                     <button className="sort-button" onClick={closeListLayoutModal}>Close</button>
 
                     {renderNestedData(currentData)}
-                </Modal>*/}
-
-
-
-
-
-
+                </Modal> */}
             </div >
 
             {/* Legend Display */}
