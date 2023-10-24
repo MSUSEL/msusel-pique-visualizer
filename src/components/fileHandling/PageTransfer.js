@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASCforValues, sortDESCforValues, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
-import { filterByCategory, filterByRange } from "../features/Filter";
+import { filterByCategory, filterByRange, filterRiskLevels } from "../features/Filter";
 // import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
 import "./UploadFile.css";
@@ -50,6 +50,9 @@ export default function PageTransfer(props) {
 
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedRiskLevels, setSelectedRiskLevels] = useState([]);
+    const [isDoneButtonClickable, setIsDoneButtonClickable] = useState(false);
+
 
     const [filteredCategoryData, setfilteredCategoryData] = useState(null);
     const riskLevels = ['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'];
@@ -86,14 +89,6 @@ export default function PageTransfer(props) {
             High: true,
             Severe: true
         };
-        /*
-        for (const level of riskLevels) {
-            const { productFactorsCount, qualityAspectsCount } = checkOneCategoryStatus(fileData, level);
-            if (productFactorsCount + qualityAspectsCount === 0) {
-                initialStatus[level] = false;
-            }
-            console.log(initialStatus[level])
-        }*/
         return initialStatus;
     });
 
@@ -114,14 +109,6 @@ export default function PageTransfer(props) {
         setSortType(sortType);
     };
 
-    /*const handleFilterByCategory = async (filterType) => {
-        setSelectedCategory(filterType);
-        // Create a deep copy of fileData
-        let fileDataCopy = cloneDeep(fileData);
-        // Filter the data based on the selected category using the copy
-        let filtered = filterByCategory(fileDataCopy, filterType);
-        setfilteredCategoryData(filtered);
-    };*/
     const handleFilterByOneCategory = async (filterType) => {
         setSelectedCategory(filterType);
         // Create a deep copy of fileData
@@ -170,6 +157,31 @@ export default function PageTransfer(props) {
         // handleFilterByCategory(category);
         //let filtered = filterMultiCategoriesData;
         //setfilteredCategoryData(filtered);
+    };
+
+    // filer - one or multiple risk level categories
+    // Handle checkbox changes
+    const handleCheckboxChange = (riskLevel) => {
+        if (selectedRiskLevels.includes(riskLevel)) {
+            // Remove the risk level from the array
+            setSelectedRiskLevels(selectedRiskLevels.filter(item => item !== riskLevel));
+        } else {
+            // Add the risk level to the array
+            setSelectedRiskLevels([...selectedRiskLevels, riskLevel]);
+        }
+    };
+    // Update the Done button clickability
+    React.useEffect(() => {
+        setIsDoneButtonClickable(selectedRiskLevels.length > 0);
+    }, [selectedRiskLevels]);
+    // Perform filtering based on selected risk levels
+    const handleDoneClick = () => {
+        let fileDataCopy = cloneDeep(fileData);
+        let filteredFileData = filterRiskLevels(sortedData || fileDataCopy, selectedRiskLevels);
+        setfilteredCategoryData(filteredFileData);
+
+        console.log("Performing filtering with selected risk levels:", selectedRiskLevels);
+        console.log("Filtered file data:", filteredFileData);
     };
 
     // filter by range - node values
@@ -380,7 +392,7 @@ export default function PageTransfer(props) {
         setMinValue("");
         setMaxValue("");
         setSelectedCategory("");
-        setSelectedCategories([]);  // Add this line to uncheck all checkboxes
+        setSelectedCategories([]);  // Uncheck all checkboxes for multiple categories filter
         setReset(true);
         setTimeout(() => {
             setReset(false);
@@ -389,7 +401,12 @@ export default function PageTransfer(props) {
         }, 0);
         setSortOrder('none');
         setSelectedCategories([]);
+
+        // Reset the risk level checkboxes and done button
+        setSelectedRiskLevels([]); // Assuming setSelectedRiskLevels is your state setter for selected risk levels
+        setIsDoneButtonClickable(false); // Assuming setIsDoneButtonClickable is your state setter for the done button
     };
+
 
     useEffect(() => {
         if (fileData) {
@@ -499,6 +516,32 @@ export default function PageTransfer(props) {
                         ))}
                     </div>
                 </div>*/}
+                <div className="dropdown">
+                    <span className="dropbtn">Filter (Risk Levels)</span>
+                    <div className="dropdown-content">
+                        {['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'].map(riskLevel => (
+                            <div key={riskLevel}>
+                                <input
+                                    type="checkbox"
+                                    id={riskLevel}
+                                    name={riskLevel}
+                                    checked={selectedRiskLevels.includes(riskLevel)}
+                                    onChange={() => handleCheckboxChange(riskLevel)}
+                                />
+                                <label htmlFor={riskLevel}>{riskLevel}</label>
+                            </div>
+                        ))}
+                        <button
+                            onClick={handleDoneClick}
+                            disabled={!isDoneButtonClickable}
+                            style={{
+                                backgroundColor: isDoneButtonClickable ? 'lightgreen' : 'lightgray'
+                            }}
+                        >
+                            Done
+                        </button>
+                    </div>
+                </div>
 
                 {/* Filter by Range of values */}
                 <div className="dropdown">

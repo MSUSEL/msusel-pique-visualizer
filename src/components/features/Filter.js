@@ -3,12 +3,53 @@ import cloneDeep from "lodash/cloneDeep";
 import React, { useState } from "react";
 
 const risk_level = {
-    Severe: [0.0, 0.2],
+    Severe: [-1, 0.2],
     High: [0.2, 0.4],
     Moderate: [0.4, 0.6],
     Minor: [0.6, 0.8],
     Insignificant: [0.8, 1.0],
 };
+
+export function filterRiskLevels(fileData, selectedRiskLevels) {
+    if (!fileData) {
+        return fileData;  // If fileData is not defined, return original data
+    }
+
+    let filteredFileData = JSON.parse(JSON.stringify(fileData));
+
+
+    // Step 1: Get value range based on selectedRiskLevels
+    const value_range = selectedRiskLevels.map(risk => risk_level[risk]);
+
+    // Step 2: Filter product_factors based on value range
+    const product_factors = filteredFileData.factors.product_factors;
+    const filtered_product_factors = {};
+    for (const [key, value] of Object.entries(product_factors)) {
+        if (value_range.some(([lower, upper]) => lower <= value.value && value.value <= upper)) {
+            filtered_product_factors[key] = value;
+        }
+    }
+    filteredFileData.factors.product_factors = filtered_product_factors;
+
+    // Step 3: Filter quality_aspects based on product_factors
+    if (Object.keys(filtered_product_factors).length === 0) {
+        const quality_aspects = filteredFileData.factors.quality_aspects;
+        const filtered_quality_aspects = {};
+        for (const [key, value] of Object.entries(quality_aspects)) {
+            if (value_range.some(([lower, upper]) => lower <= value.value && value.value <= upper)) {
+                filtered_quality_aspects[key] = value;
+            }
+        }
+        filteredFileData.factors.quality_aspects = filtered_quality_aspects;
+    }
+
+    // Step 4: Check for tqi based on quality_aspects
+    if (Object.keys(filteredFileData.factors.quality_aspects).length === 0) {
+        console.log("NO RESULTS");
+    }
+
+    return filteredFileData;
+}
 
 export function findObjectsWithValue(fileData, section) {
     let objects_with_value = [];
