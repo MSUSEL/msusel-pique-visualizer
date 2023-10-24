@@ -105,11 +105,11 @@ export default function PageTransfer(props) {
             sorted = sortASCforValues(filteredCategoryData || fileDataCopy);
         } else if (sortType === "desc_value") {
             sorted = sortDESCforValues(filteredCategoryData || fileDataCopy);
-        } /** else if (sortType === "asc_weight") {
-            sorted = weightAscendingData;
+        } else if (sortType === "asc_weight") {
+            sorted = sortASCforWeights(filteredCategoryData || fileDataCopy);
         } else if (sortType === "desc_weight") {
-            sorted = weightDescendingData;
-        }*/
+            sorted = sortDESCforWeights(filteredCategoryData || fileDataCopy);
+        }
         setSortedData(sorted);
         setSortType(sortType);
     };
