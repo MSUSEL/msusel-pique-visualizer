@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASCforValues, sortDESCforValues, sortASCforWeights, sortDESCforWeights, newSortASCforWeights } from "../features/Sort";
-import { filterByCategory, filterByRange, filterRiskLevels } from "../features/Filter";
+import { filterByCategory, filterByValueRange, filterRiskLevels, filterByWeightRange } from "../features/Filter";
 // import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
 import "./UploadFile.css";
@@ -185,7 +185,7 @@ export default function PageTransfer(props) {
     };
 
     // filter by range - node values
-    const handleFilterByRange = () => {
+    const handlefilterByValueRange = () => {
         setIsFilterRangeOpen(true);
     };
 
@@ -195,7 +195,7 @@ export default function PageTransfer(props) {
         //const filtered = filterRange(fileData, min, max);
         let fileDataCopy = cloneDeep(fileData);
         // Filter the data based on the selected category using the copy
-        let filtered = filterByRange(sortedData || fileDataCopy, min, max);
+        let filtered = filterByValueRange(sortedData || fileDataCopy, min, max);
         console.log("filter by range:")
         console.log("fileData", fileData)
         console.log("filter results", filtered)
@@ -218,7 +218,7 @@ export default function PageTransfer(props) {
         //const filtered = filterRange(fileData, min, max);
         let fileDataCopy = cloneDeep(fileData);
         // Filter the data based on the selected category using the copy
-        let filtered = fileData;//weightRangeData;
+        let filtered = filterByWeightRange(sortedData || fileDataCopy, min, max);//weightRangeData;
 
         setFilteredRangeData(filtered);
         setIsWeightFilterRangeOpen(false);
@@ -545,7 +545,7 @@ export default function PageTransfer(props) {
 
                 {/* Filter by Range of values */}
                 <div className="dropdown">
-                    <span className="dropbtn" onClick={() => handleFilterByRange()}>
+                    <span className="dropbtn" onClick={() => handlefilterByValueRange()}>
                         Filter (Values Range)
                     </span>
                 </div>

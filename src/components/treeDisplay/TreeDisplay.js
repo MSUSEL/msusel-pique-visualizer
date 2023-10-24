@@ -382,7 +382,7 @@ export default function TreeDisplay(props) {
                         .attr("font-weight", "bold")
                         .append("textPath")
                         .attr("startOffset", `${(treeNodes[aspect].node_center_x < p_factors[factor].node_center_x ? 50 : 35)}%`)
-                        .attr("font-size", "10px")
+                        .attr("font-size", "10px") 
                         .attr("xlink:href", "#" + treeNodes[aspect].name + "_edge" + factor)
                         .text(treeNodes[aspect].json_data.weights[p_factors[factor].name].toFixed(6))
                 }
