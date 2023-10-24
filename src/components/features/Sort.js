@@ -80,8 +80,6 @@ export function sortASCforValues(fileData) {
     return sortedFileData;
 }
 
-
-
 export function sortDESCforValues(fileData) {
     if (!fileData) {
         return fileData;  // If fileData is not defined, return original data
