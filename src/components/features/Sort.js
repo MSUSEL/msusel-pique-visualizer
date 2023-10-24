@@ -136,7 +136,7 @@ export function sortDESCforValues(fileData) {
 
 
 // based on weights
-// Utility function to check for null or undefined
+//ascending
 function sortWeightsASCRecursively(obj) {
     for (const key in obj) {
         if (typeof obj[key] === 'object' && obj[key] !== null) {
@@ -244,69 +244,90 @@ export function sortASCforWeights(fileData) {
 }
 }
 
+// descending
+function sortWeightsDESCRecursively(obj) {
+    for (const key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+            // Recursive call to navigate through nested structure
+            sortWeightsDESCRecursively(obj[key]);
+        }
 
-
-/**
- * Sort all nodes based on weights in descending order (largest on the left and smallest on the right)
- * @param {Object} treeData - The hierarchical tree data.
- * @return {Object} The tree data sorted in descending order based on weights.
- */
-export function sortDESCforWeights(treeData) {
-    if (!treeData) return treeData; // Return if null or undefined
-
-    function sortTreeData(data, parentWeights) {
-        if (!data) return;
-        if (data.hasOwnProperty('children')) {
-            if (parentWeights) {
-                data.children.sort((a, b) => parentWeights[b.name] - parentWeights[a.name]);
-            }
-            data.children.forEach(child => sortTreeData(child, data.weights));
+        if (key === 'weights') {
+            // Sort the weights dictionary based on values
+            obj[key] = Object.fromEntries(
+                Object.entries(obj[key]).sort((a, b) => b[1] - a[1])
+            );
         }
     }
-
-    sortTreeData(treeData, null);
-
-    return treeData;
+    return obj;
 }
 
-export function newSortASCforWeights(treeData) {
-    if (!treeData) return treeData; // Return if null or undefined
+export function sortDESCforWeights(fileData) {
+    if (!fileData) {
+        return fileData;
+    }
+    let sortedFileData = JSON.parse(JSON.stringify(fileData));
 
-    // Sort children nodes based on their weights in the parent node
-    function sortChildrenByWeights(parentNode, childNodeKey) {
-        if (!parentNode || !parentNode.weights || !parentNode[childNodeKey]) return;
-
-        // Extract children nodes and weights
-        const childrenNodes = Object.values(parentNode[childNodeKey]);
-        const weights = parentNode.weights;
-
-        // Sort children nodes based on weights
-        childrenNodes.sort((a, b) => weights[a.name] - weights[b.name]);
-
-        // Update the parent node with sorted children
-        parentNode[childNodeKey] = {};
-        childrenNodes.forEach(child => {
-            parentNode[childNodeKey][child.name] = child;
+    if (sortedFileData.factors && sortedFileData.factors.tqi) {
+        let dataArray_tqi = Object.values(sortedFileData.factors.tqi);
+        dataArray_tqi = sortWeightsDESCRecursively(dataArray_tqi);
+        sortedFileData.factors.tqi = {};
+        dataArray_tqi.forEach(item => {
+            sortedFileData.factors.tqi[item.name] = item;
         });
     }
 
-    // Step 1: Sort 'quality_aspects' based on 'tqi.weights'
-    sortChildrenByWeights(treeData, 'factors');
+    if (sortedFileData.factors && sortedFileData.factors.quality_aspects) {
+        let dataArray_quality_aspects = Object.values(sortedFileData.factors.quality_aspects);
+        dataArray_quality_aspects = sortWeightsDESCRecursively(dataArray_quality_aspects);
+        sortedFileData.factors.quality_aspects = {};
+        dataArray_quality_aspects.forEach(item => {
+            sortedFileData.factors.quality_aspects[item.name] = item;
+        });
 
-    // Step 2: Sort 'product_factors' based on their own 'weights'
-    Object.values(treeData.factors).forEach(factor => {
-        sortChildrenByWeights(factor, 'product_factors');
-    });
+        for (const tqiKey in sortedFileData.factors.tqi) {
+            const tqiOrder = Object.keys(sortedFileData.factors.tqi[tqiKey].weights);
+            let sortedQualityAspects = {};
+            tqiOrder.forEach(key => {
+                if (sortedFileData.factors.quality_aspects[key]) {
+                    sortedQualityAspects[key] = sortedFileData.factors.quality_aspects[key];
+                }
+            });
+            sortedFileData.factors.quality_aspects = sortedQualityAspects;
+        }
+    }
 
-    // Step 3: Sort 'measures' based on 'product_factors.weights' and 'diagnostics' based on 'measures.weights'
-    Object.values(treeData.factors.product_factors).forEach(product_factor => {
-        sortChildrenByWeights(product_factor, 'measures');
-    });
+    if (sortedFileData.factors && sortedFileData.factors.product_factors) {
+        let dataArray_product_factors = Object.values(sortedFileData.factors.product_factors);
+        dataArray_product_factors = sortWeightsDESCRecursively(dataArray_product_factors);
+        sortedFileData.factors.product_factors = {};
+        dataArray_product_factors.forEach(item => {
+            sortedFileData.factors.product_factors[item.name] = item;
+        });
 
-    Object.values(treeData.measures).forEach(measure => {
-        sortChildrenByWeights(measure, 'diagnostics');
-    });
+        if (sortedFileData.factors.product_factors && sortedFileData.factors.quality_aspects) {
+            for (const qaKey in sortedFileData.factors.quality_aspects) {
+                const qaOrder = Object.keys(sortedFileData.factors.quality_aspects[qaKey].weights);
+                let sortedProductFactors = {};
+                qaOrder.forEach(key => {
+                    if (sortedFileData.factors.product_factors[key]) {
+                        sortedProductFactors[key] = sortedFileData.factors.product_factors[key];
+                    }
+                });
+                sortedFileData.factors.product_factors = sortedProductFactors;
+            }
+        }
+    }
 
-    console.log("New Ascending Sorting Done! Smallest <---> Larest");
-    return treeData;
+    if (sortedFileData.measures) {
+        let dataArray_measures = Object.values(sortedFileData.measures);
+        dataArray_measures = sortWeightsDESCRecursively(dataArray_measures);
+        sortedFileData.measures = {};
+        dataArray_measures.forEach(item => {
+            sortedFileData.measures[item.name] = item;
+        });
+    }
+
+    console.log("Descending Sorting by Weights Done!");
+    return sortedFileData;
 }
