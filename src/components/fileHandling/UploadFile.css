@@ -748,7 +748,7 @@
 .main-dropdown {
   position: relative;
   display: inline-block;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .main-dropdown-content {
@@ -767,7 +767,7 @@
   position: relative;
   width: 100%;
   padding: 10px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 0px solid #f9f9f9;
   min-width: 220px; /* Increase this to give more space */
 }
 
@@ -776,22 +776,22 @@
   position: absolute;
   left: 100%;
   top: 0;
-  min-width: 200px;
+  min-width: 220px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   background-color: #f9f9f9;
-  border-radius: 4px;
+  border-radius: 0px;
   padding: 10px;
 } 
 
 .dropbtn {
-  background-color: gainsboro;
+  background-color: rgba(128, 128, 128, 0.667);
   color: white;
   padding: 10px;
-  margin: 5px;
+  margin: 2px;
   border: none;
   cursor: pointer;
   border-radius: 4px;
-  min-width: 50px; /* Increase this to give more space */
+  min-width: 60px; /* Increase this to give more space */
   text-align: center; /* To center the text */
 }
 
