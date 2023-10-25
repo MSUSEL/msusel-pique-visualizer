@@ -742,3 +742,81 @@
   cursor: pointer;
   width: 10%;
 }
+
+/* for all fiterings */
+/* Main dropdown */
+.main-dropdown {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.main-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+/* Sub dropdowns */
+.sub-dropdown {
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  min-width: 220px; /* Increase this to give more space */
+}
+
+.sub-dropdown-content {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  padding: 10px;
+} 
+
+.dropbtn {
+  background-color: gainsboro;
+  color: white;
+  padding: 10px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  min-width: 50px; /* Increase this to give more space */
+  text-align: center; /* To center the text */
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Button styling */
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: lightgray;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Show dropdown content on hover */
+.main-dropdown:hover .main-dropdown-content,
+.sub-dropdown:hover .sub-dropdown-content {
+  display: block;
+}

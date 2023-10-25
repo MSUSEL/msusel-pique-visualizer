@@ -341,102 +341,54 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter Dropdown - one or multiple categories */}
-                <div className="dropdown">
-                    <span className="dropbtn">Filter (Risk Levels)</span>
-                    <div className="dropdown-content">
-                        {['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'].map(riskLevel => (
-                            <div key={riskLevel}>
-                                <input
-                                    type="checkbox"
-                                    id={riskLevel}
-                                    name={riskLevel}
-                                    checked={selectedRiskLevels.includes(riskLevel)}
-                                    onChange={() => handleCheckboxChange(riskLevel)}
-                                />
-                                <label htmlFor={riskLevel}>{riskLevel}</label>
+                {/* filter Dropdown */}
+                <div className="main-dropdown">
+                    <button className="dropbtn">Filter</button>
+                    <div className="main-dropdown-content">
+                        {/* Sub-button for Filter by Risk Levels */}
+                        <div className="sub-dropdown">
+                            <span className="dropbtn">Filter (Risk Levels)</span>
+                            <div className="sub-dropdown-content">
+                                {['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'].map(riskLevel => (
+                                    <div key={riskLevel}>
+                                        <input
+                                            type="checkbox"
+                                            id={riskLevel}
+                                            name={riskLevel}
+                                            checked={selectedRiskLevels.includes(riskLevel)}
+                                            onChange={() => handleCheckboxChange(riskLevel)}
+                                        />
+                                        <label htmlFor={riskLevel}>{riskLevel}</label>
+                                    </div>
+                                ))}
+                                <button
+                                    onClick={handleDoneClick}
+                                    disabled={!isDoneButtonClickable}
+                                    style={{
+                                        backgroundColor: isDoneButtonClickable ? 'lightgreen' : 'lightgray'
+                                    }}
+                                >
+                                    Done
+                                </button>
                             </div>
-                        ))}
-                        <button
-                            onClick={handleDoneClick}
-                            disabled={!isDoneButtonClickable}
-                            style={{
-                                backgroundColor: isDoneButtonClickable ? 'lightgreen' : 'lightgray'
-                            }}
-                        >
-                            Done
-                        </button>
+                        </div>
+
+                        {/* Sub-button for Filter by Values Range */}
+                        <div className="sub-dropdown">
+                            <span className="dropbtn" onClick={() => handlefilterByValueRange()}>
+                                Filter (Values Range)
+                            </span>
+                        </div>
+
+                        {/* Sub-button for Filter by Weights Range */}
+                        <div className="sub-dropdown">
+                            <span className="dropbtn" onClick={() => handleFilterByWeightRange()}>
+                                Filter (Weights Range)
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Filter by Range of values */}
-                <div className="dropdown">
-                    <span className="dropbtn" onClick={() => handlefilterByValueRange()}>
-                        Filter (Values Range)
-                    </span>
-                </div>
-
-                {/* Custom Modal */}
-                {
-                    isFilterRangeOpen && (
-                        <div className="custom-modal">
-                            <div className="modal-content">
-                                <h2>Node Value Range</h2>
-                                <h4>Please enter the range of node values</h4>
-                                <input
-                                    type="text"
-                                    placeholder="Minimum node value"
-                                    value={minValue}
-                                    onChange={(e) => setMinValue(e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Maximum node value"
-                                    value={maxValue}
-                                    onChange={(e) => setMaxValue(e.target.value)}
-                                />
-                                <div className="modal-actions">
-                                    <button onClick={handleApplyFilterByValueRange}>Apply</button>
-                                    <button onClick={closeModal}>Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                }
-
-                {/* Filter by Range of weights */}
-                <div className="dropdown">
-                    <span className="dropbtn" onClick={() => handleFilterByWeightRange()}>
-                        Filter (Weights Range)
-                    </span>
-                </div>
-                {/* Custom Modal */}
-                {
-                    isWeightFilterRangeOpen && (
-                        <div className="custom-modal">
-                            <div className="modal-content">
-                                <h2>Weights Denoted on Edges </h2>
-                                <h4>Please enter the range of weights</h4>
-                                <input
-                                    type="text"
-                                    placeholder="Minimum weight"
-                                    value={minValue}
-                                    onChange={(e) => setMinValue(e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Maximum weight"
-                                    value={maxValue}
-                                    onChange={(e) => setMaxValue(e.target.value)}
-                                />
-                                <div className="modal-actions">
-                                    <button onClick={handleApplyFilterbyWeightRange}>Apply</button>
-                                    <button onClick={closeWeightModal}>Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                }
 
                 {/* Layout Options Dropdown */}
                 <div className="dropdown">
