@@ -5,7 +5,7 @@ import { sortASC, sortDESC, sortASCforWeights, sortDESCforWeights, newSortASCfor
 import { filterByCategory, filterByRange } from "../features/Filter";
 // import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
-import countChars from "./descriptiveStats";
+import {countChars, displayDSList} from "./descriptiveStats";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 import "../top_header/TopHeader.css"
@@ -63,6 +63,12 @@ export default function PageTransfer(props) {
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [listSortedData, setListSortedData] = useState(null);
 
+    //for descriptive statistics list:
+    const [isCountListOpen, setIsCountListOpen] = useState(false);
+
+    const [cDropStates, setCDropStates] = useState(Array(15).fill(false));
+
+    
     useEffect(() => {
         console.log("Current sort order:", sortOrder);  // <-- Add this line
         if (fileData && sortOrder) {
@@ -375,7 +381,7 @@ export default function PageTransfer(props) {
 
     console.log("Current listSortedData:", listSortedData);
 
-    let qCharsCount = countChars(fileData);
+    let DescStats = countChars(fileData);
 
     return (
         <div className="unselectableText">
@@ -388,28 +394,190 @@ export default function PageTransfer(props) {
                     {/* <h3>Descriptive Statistics</h3> */}
                     {/* Quality Characteristics */}
                     <h4>Quality Characteristics</h4>
-                    <p>Severe: {qCharsCount.qChar[0]}</p>
-                    <p>High: {qCharsCount.qChar[1]}</p>
-                    <p>Medium: {qCharsCount.qChar[2]}</p>
-                    <p>Low: {qCharsCount.qChar[3]}</p>
-                    <p>Insignificant: {qCharsCount.qChar[4]}</p>
                     
+                    <p class = "sevLvl">Severe: {DescStats.qChar[0]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[0] = !prevStates[0];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[0] && displayDSList('quality_aspects', 'severe', DescStats)
+                    }
+
+                    <p class = "highLvl">High: {DescStats.qChar[1]} 
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[1] = !prevStates[1];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[1] && displayDSList('quality_aspects', 'high', DescStats)
+                    }
+
+                    <p class = "modLvl">Moderate: {DescStats.qChar[2]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[2] = !prevStates[2];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[2] && displayDSList('quality_aspects', 'moderate', DescStats)
+                    }
+
+                    <p class = "minLvl">Minor: {DescStats.qChar[3]}
+                    <button onClick={() => {
+                        const updatedDropStates = [...cDropStates];
+                        updatedDropStates[3] = !cDropStates[3];
+                        setCDropStates(updatedDropStates);
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[3] && displayDSList('quality_aspects', 'minor', DescStats)
+                    }
+                    
+                    <p class = "insigLvl">Insignificant: {DescStats.qChar[4]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[4] = !prevStates[4];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[4] && displayDSList('quality_aspects', 'insignificant', DescStats)
+                    }
+
 
                     {/* Quality Factors */}
                     <h4>Quality Factors</h4>
-                    <p>Severe: {qCharsCount.qFact[0]}</p>
-                    <p>High: {qCharsCount.qFact[1]}</p>
-                    <p>Medium: {qCharsCount.qFact[2]}</p>
-                    <p>Low: {qCharsCount.qFact[3]}</p>
-                    <p>Insignificant: {qCharsCount.qFact[4]}</p>
+                    <p class = "sevLvl">Severe: {DescStats.qFact[0]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[5] = !prevStates[5];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[5] && displayDSList('product_factors', 'severe', DescStats)
+                    }
+                    
+                    <p class = "highLvl">High: {DescStats.qFact[1]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[6] = !prevStates[6];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[6] && displayDSList('product_factors', 'high', DescStats)
+                    }
+                    
+                    <p class = "modLvl">Moderate: {DescStats.qFact[2]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[7] = !prevStates[7];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[7] && displayDSList('product_factors', 'moderate', DescStats)
+                    }
+                    
+                    <p class = "minLvl">Minor: {DescStats.qFact[3]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[8] = !prevStates[8];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[8] && displayDSList('product_factors', 'minor', DescStats)
+                    }
+                    
+                    <p class = "insigLvl">Insignificant: {DescStats.qFact[4]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[9] = !prevStates[9];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[9] && displayDSList('product_factors', 'insignificant', DescStats)
+                    }
 
                     {/* Quality Factors Measures */}
                     <h4>Measures for Quality Factors</h4>
-                    <p>Severe: {qCharsCount.qfMeas[0]}</p>
-                    <p>High: {qCharsCount.qfMeas[1]}</p>
-                    <p>Medium: {qCharsCount.qfMeas[2]}</p>
-                    <p>Low: {qCharsCount.qfMeas[3]}</p>
-                    <p>Insignificant: {qCharsCount.qfMeas[4]}</p>
+                    <p class = "sevLvl">Severe: {DescStats.qfMeas[0]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[10] = !prevStates[10];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[10] && displayDSList('measures', 'severe', DescStats)
+                    }
+                    
+                    <p class = "highLvl">High: {DescStats.qfMeas[1]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[11] = !prevStates[11];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[11] && displayDSList('measures', 'high', DescStats)
+                    }
+                    
+                    <p class = "modLvl">Moderate: {DescStats.qfMeas[2]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[12] = !prevStates[12];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[12] && displayDSList('measures', 'moderate', DescStats)
+                    }
+                    
+                    <p class = "minLvl">Minor: {DescStats.qfMeas[3]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[13] = !prevStates[13];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[13] && displayDSList('measures', 'minor', DescStats)
+                    }
+                    
+                    <p class = "insigLvl">Insignificant: {DescStats.qfMeas[4]}
+                    <button onClick={() => {
+                        setCDropStates(prevStates => {
+                            const updatedDropStates = [...prevStates];
+                            updatedDropStates[14] = !prevStates[14];
+                            return updatedDropStates;
+                        });
+                        }}>&or;</button></p>
+                    {
+                        cDropStates[14] && displayDSList('measures', 'insignificant', DescStats)
+                    }
+
                 </div>
             )}
 

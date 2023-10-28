@@ -1,14 +1,15 @@
+import React, { useState } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import { findObjectsWithValue } from "../features/Filter";
 
-export default function countChars(fileData)
+export function countChars(fileData)
 {
     var qChar = [0,0,0,0,0], qFact = [0,0,0,0,0], qfMeas = [0,0,0,0,0];
     
     let cFileData = cloneDeep(fileData)
 
-    let qAspects = findObjectsWithValue(cFileData, 'quality_aspects')
-    for (let node of qAspects)
+    let qAspectsArr = findObjectsWithValue(cFileData, 'quality_aspects')
+    for (let node of qAspectsArr)
     {
         let value = node.value;
         if (value < 0.2) {qChar[0]++;}
@@ -18,8 +19,8 @@ export default function countChars(fileData)
         else if (value >= 0.8 && value <= 1.0) {qChar[4]++;}
     }
 
-    let pFactors = findObjectsWithValue(cFileData, 'product_factors')
-    for (let node of pFactors)
+    let pFactorsArr = findObjectsWithValue(cFileData, 'product_factors')
+    for (let node of pFactorsArr)
     {
         let value = node.value;
         if (value < 0.2) {qFact[0]++;}
@@ -29,17 +30,58 @@ export default function countChars(fileData)
         else if (value >= 0.8 && value <= 1.0) {qFact[4]++;}
     }
 
-    let fMeasures = findObjectsWithValue(cFileData, 'measures')
-    for (let node of fMeasures)
+    let fMeasuresArr = findObjectsWithValue(cFileData, 'measures')
+    for (let node of fMeasuresArr)
     {
         let value = node.value;
         if (value < 0.2) {qfMeas[0]++;}
         else if (value >= 0.2 && value < 0.4) {qfMeas[1]++;}
         else if (value >= 0.4 && value < 0.6) {qfMeas[2]++;}
-        else if (value >= 0.8 && value < 0.8) {qfMeas[3]++;}
+        else if (value >= 0.6 && value < 0.8) {qfMeas[3]++;}
         else if (value >= 0.8 && value <= 1.0) {qfMeas[4]++;}
     }
 
-    var qualityChars = {qChar,qFact,qfMeas};
-    return qualityChars;
+    var DescStats = {qChar,qFact,qfMeas,qAspectsArr,pFactorsArr,fMeasuresArr};
+
+    return DescStats;
+}
+
+export function getRelatedArray(section, riskLvl, DescStats) {
+    let tempArr = [], finalArray = [];
+    if (section == "quality_aspects") {tempArr = DescStats.qAspectsArr}
+    else if (section == "product_factors") {tempArr = DescStats.pFactorsArr}
+    else if (section == "measures") {tempArr = DescStats.fMeasuresArr}
+    else console.log("error 1");
+
+    for (let iter of tempArr)
+    {
+        let value = iter.value;
+        if (riskLvl == "severe" && value < 0.2) {finalArray.push(iter);}
+        else if (riskLvl == "high" && (value >= 0.2 && value < 0.4)) {finalArray.push(iter);}
+        else if (riskLvl == "moderate" && (value >= 0.4 && value < 0.6)) {finalArray.push(iter);}
+        else if (riskLvl == "minor" && (value >= 0.6 && value < 0.8)) {finalArray.push(iter);}
+        else if (riskLvl == "insignificant" && (value >= 0.8 && value <= 1.0)) {finalArray.push(iter);}
+    }
+
+    return finalArray;
+}
+
+export function displayDSList(section, riskLvl, DescStats)
+{
+    let targetArray = getRelatedArray(section,riskLvl,DescStats);
+
+    if (targetArray.length == 0)
+    {
+        return <p>List is empty</p>
+    }
+    else
+    {
+        const items = targetArray.map((item, index) => (
+            <React.Fragment key = {index}>
+                <dt>{item.name}</dt>
+                <dd>{item.value}</dd>
+            </React.Fragment>
+        ));
+        return <dl>{items}</dl>
+    }
 }
