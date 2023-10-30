@@ -3,11 +3,11 @@ import Modal from 'react-modal';
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import { sortASCforValues, sortDESCforValues, sortASCforWeights, sortDESCforWeights } from "../features/Sort";
 import { filterByValueRange, filterRiskLevels, filterByWeightRange } from "../features/Filter";
-import { RenderNestedData } from "../features/ListLayout";
 import cloneDeep from "lodash/cloneDeep";
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 import "../top_header/TopHeader.css";
+import { ListDisplay } from "../layouts/List.js"
 
 const legendData = [
     { color: "red", range: "0 - 0.2", category: "Severe", colorCode: "#cb0032" },
@@ -42,19 +42,18 @@ export default function PageTransfer(props) {
     // descriptiove statistics
     const [showStatistics, setShowStatistics] = useState(false);
 
-    //for list layout:
-    const [isListPanelOpen, setIsListPanelOpen] = useState(false);
-    const [isListLayoutModalOpen, setIsListLayoutModalOpen] = useState(false);
-    const [sortOrder, setSortOrder] = useState('none'); // 'none', 'ascending', 'descending'
-    const [listSortedData, setListSortedData] = useState(null);
-    useEffect(() => {
-        console.log("Current sort order:", sortOrder);
-        if (fileData && sortOrder) {
-            const listSorted = deepSort(fileData, sortOrder);
-            setListSortedData(listSorted);
-            console.log(listSortedData)
-        }
-    }, [fileData, sortOrder]);
+    // data to use for display
+    const dataToUse = sortedData || filteredCategoryData || filteredRangeData || fileData;
+
+    // all layouts
+    const [layout, setLayout] = useState('tree');  // default layout is 'tree'
+    const setListLayout = () => {
+        setLayout('list');
+    };
+
+    const setTreeLayout = () => {
+        setLayout('tree');
+    };
 
     // sort
     const handleSort = (sortType) => {
@@ -142,270 +141,6 @@ export default function PageTransfer(props) {
     };
 
 
-    // List layout:
-    const openListLayoutModal = () => {
-        setIsListLayoutModalOpen(true);
-    };
-
-    const closeListLayoutModal = () => {
-        setIsListLayoutModalOpen(false);
-    };
-
-    const deepSort = (obj, order) => {
-        if (Array.isArray(obj)) {
-            return obj.sort((a, b) => {
-                if (order === 'ascending') {
-                    return a.value - b.value;
-                } else {
-                    return b.value - a.value;
-                }
-            }).map(item => deepSort(item, order));
-        } else if (typeof obj === 'object') {
-            const sortedObj = {};
-            Object.keys(obj).sort().forEach(key => {
-                if (['quality_aspects', 'product_factors', 'measures', 'diagnostics'].includes(key) && Array.isArray(obj[key])) {
-                    obj[key].sort((a, b) => {
-                        if (order === 'ascending') {
-                            return a.value - b.value;
-                        } else {
-                            return b.value - a.value;
-                        }
-                    });
-                }
-                sortedObj[key] = deepSort(obj[key], order);
-            });
-            return sortedObj;
-        } else {
-            return obj;
-        }
-    };
-
-
-    const renderNestedData = (data, level = 0, parentKey = '', sortOrder = 'ascending') => {
-        // console.log("Data passed to renderNestedData:", data);  // <-- Add this line
-        let nameValue = {};
-        return (
-            <ul className={"nested-list-level-" + level}>
-                {Object.keys(data).sort((a, b) => {
-                    const order = ['tqi', 'quality_aspects', 'product_factors', 'measures', 'diagnostics'];
-                    return order.indexOf(a) - order.indexOf(b);
-                }).map((key, index) => {
-                    if (key === "name" || key === "value") {
-                        nameValue[key] = data[key];
-                        if (nameValue["name"] && nameValue["value"] !== undefined) {
-                            return (
-                                <li key={index} className="nested-list-item">
-                                    <span className={"nested-list-key-value level-" + level}>
-                                        {nameValue["name"]}: {nameValue["value"]}
-                                    </span>
-                                </li>
-                            );
-                        }
-                        return null;
-                    }
-
-                    if (
-                        key === "product_factors" ||
-                        key === "quality_aspects" ||
-                        key === "tqi" ||
-                        key === "measures" ||
-                        key === "diagnostics"
-                    ) {
-                        let sortedData = data[key];
-                        if (Array.isArray(sortedData)) {
-                            sortedData.sort((a, b) => {
-                                if (sortOrder === 'ascending') {
-                                    return a.value - b.value;
-                                } else {
-                                    return b.value - a.value;
-                                }
-                            });
-                        }
-                        return (
-                            <li key={index} className="nested-list-item">
-                                <span className={"nested-list-key level-" + level}>{key}:</span>
-                                {typeof sortedData === "object" ? renderNestedData(sortedData, level + 1, key, sortOrder) : null}
-                            </li>
-                        );
-                    }
-
-                    if (typeof data[key] === "object") {
-                        return renderNestedData(data[key], level + 1, '', sortOrder);
-                    }
-
-                    return null;
-                })}
-            </ul>
-        );
-    };
-
-
-    // new list layout
-    const toggleListPanel = () => {
-        setIsListPanelOpen(!isListPanelOpen);
-    };
-
-    // Define the function that returns the list panel JSX
-    const renderListPanel = (fileData) => {
-        try {
-            return (
-                <div className="list-panel">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            {/* Sort Dropdown */}
-                            <div className="dropdown">
-                                <span className="dropbtn">Sort</span>
-                                <div className="dropdown-content">
-                                    {/* sorting options */}
-                                    <button className={sortType === "asc_value" ? "selected" : ""} onClick={() => handleSort("asc_value")}>
-                                        Value - Ascending
-                                    </button>
-                                    <button className={sortType === "desc_value" ? "selected" : ""} onClick={() => handleSort("desc_value")}>
-                                        Value - Descending
-                                    </button>
-                                    <button className={sortType === "asc_weight" ? "selected" : ""} onClick={() => handleSort("asc_weight")}>
-                                        Weight - Ascending
-                                    </button>
-                                    <button className={sortType === "desc_weight" ? "selected" : ""} onClick={() => handleSort("desc_weight")}>
-                                        Weight - Descending
-                                    </button>
-                                </div>
-                            </div>
-                            {/* Filter Dropdown */}
-                            <div className="dropdown">
-                                <span className="dropbtn">Filter</span>
-                                <div className="dropdown-content">
-                                    {/* Sub-button for Filter by Risk Levels */}
-                                    <div className="sub-dropdown">
-                                        <span className="dropbtn">Filter (Risk Levels)</span>
-                                        <div className="sub-dropdown-content">
-                                            {['Insignificant', 'Minor', 'Moderate', 'High', 'Severe'].map(riskLevel => (
-                                                <div key={riskLevel}>
-                                                    <input
-                                                        type="checkbox"
-                                                        id={riskLevel}
-                                                        name={riskLevel}
-                                                        checked={selectedRiskLevels.includes(riskLevel)}
-                                                        onChange={() => handleCheckboxChange(riskLevel)}
-                                                    />
-                                                    <label htmlFor={riskLevel}>{riskLevel}</label>
-                                                </div>
-                                            ))}
-                                            <button
-                                                onClick={handleDoneClick}
-                                                disabled={!isDoneButtonClickable}
-                                                style={{
-                                                    backgroundColor: isDoneButtonClickable ? 'lightgreen' : 'lightgray'
-                                                }}
-                                            >
-                                                Done
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Sub-button for Filter by Values Range */}
-                                    <div className="sub-dropdown">
-                                        <span className="dropbtn" onClick={() => handlefilterByValueRange()}>
-                                            Filter (Values Range)
-                                        </span>
-                                    </div>
-
-                                    {/* Sub-button for Filter by Weights Range */}
-                                    <div className="sub-dropdown">
-                                        <span className="dropbtn" onClick={() => handleFilterByWeightRange()}>
-                                            Filter (Weights Range)
-                                        </span>
-                                    </div>
-
-                                </div>
-                            </div>
-                            {/* Reset Display */}
-                            <div className="dropdown">
-                                <span className="dropbtn" onClick={() => handleReset()}>
-                                    Reset Sorting & Filtering
-                                </span>
-                            </div>
-
-                        </div>
-                        <h2>List Layout</h2>
-                        <button onClick={() => setIsListPanelOpen(false)}>
-                            <svg height="24px" width="24px" viewBox="0 0 24 24">
-                                <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12 5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
-                            </svg>
-                        </button>
-                    </div>
-                    {/* Display fileData.name, fileData.additionalData, and fileData.global_config */}
-                    <h3>Project Name: {fileData.name}</h3>
-                    <div>Additional Data: {JSON.stringify(fileData.additionalData, null, 2)}</div>
-                    <div>Global Config: {JSON.stringify(fileData.global_config, null, 2)}</div>
-
-                    {/* Loop through the high-level keys and display them */}
-                    {fileData && Object.keys(fileData).map((key, index) => {
-                        try {
-                            if (key === 'diagnostics' || key === 'name' || key === 'additionalData' || key === 'global_config') {
-                                return null;  // Skip rendering fileData.diagnostics
-                            }
-                            return (
-                                <div key={index}>
-                                    <strong>{key}:</strong>
-                                    {(key === 'factors' || key === 'measures') ? (
-                                        <div style={{ marginLeft: '20px' }}>
-                                            {/* Loop through the keys */}
-                                            {Object.keys(fileData[key]).map((subKey) => (
-                                                <div key={subKey}>
-                                                    <strong>{subKey}:</strong>
-                                                    {fileData[key][subKey] ? (  // Check if this object exists
-                                                        <div style={{ marginLeft: '20px' }}>
-                                                            {/* Display individual categories */}
-                                                            {Object.keys(fileData[key][subKey]).map((categoryKey, catIndex) => {
-                                                                const category = fileData[key][subKey][categoryKey];
-                                                                return (
-                                                                    <div key={catIndex}>
-                                                                        <strong>Name:</strong> {category.name}<br />
-                                                                        <strong>Value:</strong> {category.value}<br />
-                                                                        <strong>Description:</strong> {category.description}<br />
-                                                                        <strong>Eval Strategy:</strong> {category.eval_strategy}<br />
-                                                                        <strong>Normalizer:</strong> {category.normalizer}<br />
-                                                                        <strong>Utility Function:</strong> {category.utility_function}<br />
-                                                                        <strong>Weights:</strong>
-                                                                        <div style={{ marginLeft: '20px' }}>
-                                                                            {Object.keys(category.weights).map((weightKey) => (
-                                                                                <div key={weightKey}>
-                                                                                    <strong>{weightKey}:</strong> {category.weights[weightKey]}
-                                                                                </div>
-                                                                            ))}
-                                                                        </div>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    ) : (<div>
-                                                        <em>Information not available</em>
-                                                    </div>)}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            {/* For other keys, just stringify */}
-                                            {JSON.stringify(fileData[key])}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        } catch (error) {
-                            return <div>Error while displaying {key}: {error.message}</div>
-                        }
-                    })}
-                </div>
-            );
-        } catch (error) {
-            return <div>Error while displaying panel: {error.message}</div>;
-        }
-    };
-
-
-
     const handleReset = () => {
         console.log("reset:")
         console.log("fileData", fileData);
@@ -421,7 +156,7 @@ export default function PageTransfer(props) {
             setfilteredCategoryData(null);
             setFilteredRangeData(null);
         }, 0);
-        setSortOrder('none');
+        //setSortOrder('none');
 
         // Reset the risk level checkboxes and done button
         setSelectedRiskLevels([]); // Assuming setSelectedRiskLevels is your state setter for selected risk levels
@@ -444,7 +179,6 @@ export default function PageTransfer(props) {
         }
     }, [reset]);
 
-    console.log("Current listSortedData:", listSortedData);
 
     return (
         <div className="unselectableText">
@@ -546,6 +280,33 @@ export default function PageTransfer(props) {
                                 Filter (Values Range)
                             </span>
                         </div>
+                        {/* Custom Modal */}
+                        {
+                            isFilterRangeOpen && (
+                                <div className="custom-modal">
+                                    <div className="modal-content">
+                                        <h2>Node Value Range</h2>
+                                        <h4>Please enter the range of node values</h4>
+                                        <input
+                                            type="text"
+                                            placeholder="Minimum node value"
+                                            value={minValue}
+                                            onChange={(e) => setMinValue(e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Maximum node value"
+                                            value={maxValue}
+                                            onChange={(e) => setMaxValue(e.target.value)}
+                                        />
+                                        <div className="modal-actions">
+                                            <button onClick={handleApplyFilterByValueRange}>Apply</button>
+                                            <button onClick={closeModal}>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
 
                         {/* Sub-button for Filter by Weights Range */}
                         <div className="sub-dropdown">
@@ -553,6 +314,33 @@ export default function PageTransfer(props) {
                                 Filter (Weights Range)
                             </span>
                         </div>
+                        {/* Custom Modal */}
+                        {
+                            isWeightFilterRangeOpen && (
+                                <div className="custom-modal">
+                                    <div className="modal-content">
+                                        <h2>Weights Denoted on Edges </h2>
+                                        <h4>Please enter the range of weights</h4>
+                                        <input
+                                            type="text"
+                                            placeholder="Minimum weight"
+                                            value={minValue}
+                                            onChange={(e) => setMinValue(e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="Maximum weight"
+                                            value={maxValue}
+                                            onChange={(e) => setMaxValue(e.target.value)}
+                                        />
+                                        <div className="modal-actions">
+                                            <button onClick={handleApplyFilterbyWeightRange}>Apply</button>
+                                            <button onClick={closeWeightModal}>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
 
@@ -561,14 +349,10 @@ export default function PageTransfer(props) {
                 <div className="dropdown">
                     <span className="dropbtn">Layout Options</span>
                     <div className="dropdown-content">
-                        <button className="layout-btn-doing">Tree (Default)</button>
-                        <button className="layout-btn-doing" onClick={toggleListPanel}>List</button>
-                        <button className="layout-btn-doing" onClick={openListLayoutModal}>Nested List</button>
+                        <button className="layout-btn-doing" onClick={setTreeLayout}>Tree</button>
+                        <button className="layout-btn-doing" onClick={setListLayout}>List</button>
                     </div>
                 </div>
-
-                {/* Use the function to render the list panel */}
-                {isListPanelOpen && renderListPanel(sortedData || filteredCategoryData || filteredRangeData || fileData)}
 
             </div >
 
@@ -587,12 +371,17 @@ export default function PageTransfer(props) {
                 </div>
             </div >
 
-            {/* Tree Display */}
+            {/* Tree Display 
             < TreeDisplay
                 fileData={sortedData || filteredCategoryData || filteredRangeData || fileData
                 }
                 reset={reset}
-            />
+            />*/}
+            {/* Conditional Rendering based on Layout */}
+            <div className="layout-container">
+                {layout === 'tree' && <TreeDisplay fileData={dataToUse} reset={reset} />}
+                {layout === 'list' && ListDisplay(dataToUse)}
+            </div>
         </div >
     );
 }
