@@ -63,24 +63,24 @@
 }
 
 /* Color coding styles */
-.legend-color-green {
-  background-color: #009a66;
-}
-
-.legend-color-blue {
-  background-color: #3566cd;
-}
-
-.legend-color-yellow {
-  background-color: #fde101;
+.legend-color-red {
+  background-color: #E58F8F;
 }
 
 .legend-color-orange {
-  background-color: #ff6500;
+  background-color: #EAA27D;
 }
 
-.legend-color-red {
-  background-color: #cb0032;
+.legend-color-yellow {
+  background-color: #E9DB7D;
+}
+
+.legend-color-blue {
+  background-color: #8DB1E0;
+}
+
+.legend-color-green {
+  background-color: #8FBC94;
 }
 
 /* Sort button group */
@@ -819,17 +819,4 @@ button:disabled {
 .main-dropdown:hover .main-dropdown-content,
 .sub-dropdown:hover .sub-dropdown-content {
   display: block;
-}
-
-.list-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 300px;
-  height: 100%;
-  background-color: white;
-  overflow-y: auto;
-  border-left: 1px solid #ccc;
-  padding: 16px;
-  z-index: 1000;
 }

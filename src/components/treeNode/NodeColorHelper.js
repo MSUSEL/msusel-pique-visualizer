@@ -4,23 +4,23 @@
 
 const Severe = {
     name: 'Severe',
-    color: '#cb0032'
+    color: '#E58F8F'
 }
 const High = {
     name: 'High',
-    color: '#ff6500'
+    color: '#EAA27D'
 };
 const Elevated = {
     name: 'Elevated',
-    color: '#fde101'
+    color: '#E9DB7D'
 };
 const Guarded = {
     name: 'Guarded',
-    color: '#3566cd'
+    color: '#8DB1E0'
 };
 const Low = {
     name: 'Low',
-    color: '#009a66'
+    color: '#8FBC94'
 }
 
 export default function NodeRiskColor(score,scale="normal") {
