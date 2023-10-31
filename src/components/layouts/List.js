@@ -1,5 +1,6 @@
 import "./List.css"
 import React, { useState } from 'react';
+import { legendData } from "../legend/legend";
 
 
 export const ListDisplay = ({ fileData }) => {
@@ -32,9 +33,23 @@ export const ListDisplay = ({ fileData }) => {
 
     const CategoryItem = ({ category }) => {
         const [isExpanded, setIsExpanded] = useState(false);
+        const getBackgroundColor = (value) => {
+            for (const legendItem of legendData) {
+                const [low, high] = legendItem.range.split(" - ").map(Number);
+                if (low <= value && value <= high) {
+                    return legendItem.colorCode;
+                }
+            }
+            return null; // Default case if value does not fit into any range
+        };
+        const backgroundColor = getBackgroundColor(category.value);
+
         return (
             <div>
-                <button className="list-layout-button" onClick={() => setIsExpanded(!isExpanded)}>
+                <button className="list-layout-button" 
+                onClick={() => setIsExpanded(!isExpanded)}
+                style={{ backgroundColor }}
+                >
                     <strong className="object-text">{category.name} : </strong>  {category.value} 
                 </button>
                 {isExpanded && (
