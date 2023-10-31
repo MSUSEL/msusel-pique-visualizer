@@ -1,77 +1,99 @@
 import "./List.css"
-// Define the function that returns the list panel JSX
-export const ListDisplay = (fileData) => {
+import React, { useState } from 'react';
+
+
+export const ListDisplay = ({ fileData }) => {
+
+    const [showTQI, setShowTQI] = useState(false);
+    const [showQualityAspects, setShowQualityAspects] = useState(false);
+    const [showProductFactors, setShowProductFactors] = useState(false);
+    const [showMeasures, setShowMeasures] = useState(false);
+
+    const toggleSection = (sectionName) => {
+        switch (sectionName) {
+            case 'TQI':
+                setShowTQI(!showTQI);
+                break;
+            case 'QualityAspects':
+                setShowQualityAspects(!showQualityAspects);
+                break;
+            case 'ProductFactors':
+                setShowProductFactors(!showProductFactors);
+                break;
+            case 'Measures':
+                setShowMeasures(!showMeasures);
+                break;
+            default:
+                break;
+        }
+    };
+
+
+
+    const CategoryItem = ({ category }) => {
+        const [isExpanded, setIsExpanded] = useState(false);
+        return (
+            <div>
+                <button className="list-layout-button" onClick={() => setIsExpanded(!isExpanded)}>
+                    <strong className="object-text">{category.name} : </strong>  {category.value} 
+                </button>
+                {isExpanded && (
+                    <div style={{ marginLeft: '20px' }}>
+                        <strong>Description:</strong> {category.description}<br />
+                        <strong>Eval Strategy:</strong> {category.eval_strategy}<br />
+                        <strong>Normalizer:</strong> {category.normalizer}<br />
+                        <strong>Utility Function:</strong> {category.utility_function}<br />
+                        <strong>Weights:</strong>
+                        <div style={{ marginLeft: '20px' }}>
+                            {Object.keys(category.weights).map((weightKey) => (
+                                <div key={weightKey}>
+                                    <strong>{weightKey}:</strong> {category.weights[weightKey]}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+
+    const renderSection = (data) => {
+        return (
+            <div>
+                {Object.keys(data).map((categoryKey, catIndex) => {
+                    const category = data[categoryKey];
+                    return (
+                        <CategoryItem key={catIndex} category={category} />
+                    );
+                })}
+            </div>
+        );
+    };
+
+
     try {
         return (
-            <div className="list-panel">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                    </div>
-                    <h2>List Layout</h2>
-                </div>
-                {/* Display fileData.name, fileData.additionalData, and fileData.global_config */}
-                <h3>Project Name: {fileData.name}</h3>
-                {/* <div>Additional Data: {JSON.stringify(fileData.additionalData, null, 2)}</div>
-                    {/* <div>Global Config: {JSON.stringify(fileData.global_config, null, 2)}</div>
+            <div className="list-panel" style={{ display: 'flex', flexDirection: 'column' }}>
+                <button className={`list-layout-button section-button ${showTQI ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('TQI')}>
+                    Total Quality Index (TQI)
+                </button>
+                {showTQI && renderSection(fileData.factors.tqi)}
 
-                    {/* Loop through the high-level keys and display them */}
-                {fileData && Object.keys(fileData).map((key, index) => {
-                    try {
-                        if (key === 'diagnostics' || key === 'name' || key === 'additionalData' || key === 'global_config') {
-                            return null;  // Skip rendering fileData.diagnostics
-                        }
-                        return (
-                            <div key={index}>
-                                <strong>{key}:</strong>
-                                {(key === 'factors' || key === 'measures') ? (
-                                    <div style={{ marginLeft: '20px' }}>
-                                        {/* Loop through the keys */}
-                                        {Object.keys(fileData[key]).map((subKey) => (
-                                            <div key={subKey}>
-                                                <strong>{subKey}:</strong>
-                                                {fileData[key][subKey] ? (  // Check if this object exists
-                                                    <div style={{ marginLeft: '20px' }}>
-                                                        {/* Display individual categories */}
-                                                        {Object.keys(fileData[key][subKey]).map((categoryKey, catIndex) => {
-                                                            const category = fileData[key][subKey][categoryKey];
-                                                            return (
-                                                                <div key={catIndex}>
-                                                                    <strong>Name:</strong> {category.name}<br />
-                                                                    <strong>Value:</strong> {category.value}<br />
-                                                                    <strong>Description:</strong> {category.description}<br />
-                                                                    <strong>Eval Strategy:</strong> {category.eval_strategy}<br />
-                                                                    <strong>Normalizer:</strong> {category.normalizer}<br />
-                                                                    <strong>Utility Function:</strong> {category.utility_function}<br />
-                                                                    <strong>Weights:</strong>
-                                                                    <div style={{ marginLeft: '20px' }}>
-                                                                        {Object.keys(category.weights).map((weightKey) => (
-                                                                            <div key={weightKey}>
-                                                                                <strong>{weightKey}:</strong> {category.weights[weightKey]}
-                                                                            </div>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                ) : (<div>
-                                                    <em>Information not available</em>
-                                                </div>)}
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        {/* For other keys, just stringify */}
-                                        {JSON.stringify(fileData[key])}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    } catch (error) {
-                        return <div>Error while displaying {key}: {error.message}</div>
-                    }
-                })}
+                <button className={`list-layout-button section-button ${showQualityAspects ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('QualityAspects')}>
+                    Quality Characteristics
+                </button>
+                {showQualityAspects && renderSection(fileData.factors.quality_aspects)}
+
+                <button className={`list-layout-button section-button ${showProductFactors ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('ProductFactors')}>
+                    Quality Factors
+                </button>
+                {showProductFactors && renderSection(fileData.factors.product_factors)}
+
+                <button className={`list-layout-button section-button ${showMeasures ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('Measures')}>
+                    Measures for Quality Factors
+                </button>
+                {showMeasures && renderSection(fileData.measures)}
             </div>
         );
     } catch (error) {

@@ -1,14 +1,50 @@
-
 .list-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100%;
-    background-color: white;
+    width: 100%;
+    height: 45%;
+    background-color: transparent;
     overflow-y: auto;
     border-left: 1px solid #ccc;
     padding: 16px;
     z-index: 1000;
-  }
-  
+}
+
+.list-layout-button {
+    background-color: transparent;
+    border: 1px solid #A8A8A8;  /* Morandi Gray */
+    color: #4E4E4E;  /* Dark Gray */
+    padding: 10px;
+    margin-top: 5px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1.1em;
+}
+/* Style for the expanded main section buttons */
+.expanded-main-section {
+    background-color: #7D7D7D; 
+}
+
+.list-layout-button:hover {
+    background-color: #89ABE3;  
+    color: #FFFFFF;  /* White */
+}
+
+
+/* Style for each Category Item */
+.category-item {
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 2px solid #ccc;
+}
+
+.section-button {
+    font-size: 1.4em;  /* Larger font size */
+    font-family: 'Arial', sans-serif;  /* Different font */
+    text-transform: uppercase;  /* All uppercase */
+}
+
+.object-text {
+    font-size: 1.2em;  /* Increase font size */
+    line-height: 1.5;  /* Increase line height for better readability */
+    font-family: "Gill Sans", sans-serif;
+}

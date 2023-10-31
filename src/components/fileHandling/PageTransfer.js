@@ -86,7 +86,7 @@ export default function PageTransfer(props) {
     React.useEffect(() => {
         setIsDoneButtonClickable(selectedRiskLevels.length > 0);
     }, [selectedRiskLevels]);
-    // Perform filtering based on selected risk levels
+
     const handleDoneClick = () => {
         let fileDataCopy = cloneDeep(fileData);
         let filteredFileData = filterRiskLevels(sortedData || fileDataCopy, selectedRiskLevels);
@@ -104,9 +104,7 @@ export default function PageTransfer(props) {
     const handleApplyFilterByValueRange = () => {
         let min = parseFloat(minValue);
         let max = parseFloat(maxValue);
-        //const filtered = filterRange(fileData, min, max);
         let fileDataCopy = cloneDeep(fileData);
-        // Filter the data based on the selected category using the copy
         let filtered = filterByValueRange(sortedData || fileDataCopy, min, max);
         console.log("filter by range:")
         console.log("fileData", fileData)
@@ -143,7 +141,6 @@ export default function PageTransfer(props) {
 
     const handleReset = () => {
         console.log("reset:")
-        console.log("fileData", fileData);
         setSortedData(null);
         setSortType(null);
         setfilteredCategoryData(null);
@@ -159,8 +156,8 @@ export default function PageTransfer(props) {
         //setSortOrder('none');
 
         // Reset the risk level checkboxes and done button
-        setSelectedRiskLevels([]); // Assuming setSelectedRiskLevels is your state setter for selected risk levels
-        setIsDoneButtonClickable(false); // Assuming setIsDoneButtonClickable is your state setter for the done button
+        setSelectedRiskLevels([]); 
+        setIsDoneButtonClickable(false); 
     };
 
 
@@ -344,7 +341,6 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-
                 {/* Layout Options Dropdown */}
                 <div className="dropdown">
                     <span className="dropbtn">Layout Options</span>
@@ -371,16 +367,11 @@ export default function PageTransfer(props) {
                 </div>
             </div >
 
-            {/* Tree Display 
-            < TreeDisplay
-                fileData={sortedData || filteredCategoryData || filteredRangeData || fileData
-                }
-                reset={reset}
-            />*/}
+
             {/* Conditional Rendering based on Layout */}
             <div className="layout-container">
                 {layout === 'tree' && <TreeDisplay fileData={dataToUse} reset={reset} />}
-                {layout === 'list' && ListDisplay(dataToUse)}
+                {layout === 'list' && <ListDisplay fileData={dataToUse}/>}
             </div>
         </div >
     );
