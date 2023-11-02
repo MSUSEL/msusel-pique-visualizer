@@ -6,7 +6,7 @@ export function countChars(fileData)
 {
     var qChar = [0,0,0,0,0], qFact = [0,0,0,0,0], qfMeas = [0,0,0,0,0];
     
-    let cFileData = cloneDeep(fileData)
+    const cFileData = cloneDeep(fileData)
 
     let qAspectsArr = findObjectsWithValue(cFileData, 'quality_aspects')
     for (let node of qAspectsArr)
@@ -69,19 +69,34 @@ export function getRelatedArray(section, riskLvl, DescStats) {
 export function displayDSList(section, riskLvl, DescStats)
 {
     let targetArray = getRelatedArray(section,riskLvl,DescStats);
+    const childClass = getChildClass(riskLvl);
 
     if (targetArray.length == 0)
     {
-        return <p>List is empty</p>
+        return <div className = {childClass}><p>No nodes match this risk level</p></div>
     }
     else
     {
         const items = targetArray.map((item, index) => (
-            <React.Fragment key = {index}>
-                <dt>{item.name}</dt>
-                <dd>{item.value}</dd>
-            </React.Fragment>
+            <div className = {childClass}>
+                <React.Fragment key = {index}>
+                    <dt>{item.name}</dt>
+                    <dd>{"Value: " + item.value}</dd>
+                    {item.description && (<dd>{"Description: " + item.description}</dd>)}
+                </React.Fragment>
+            </div>
         ));
-        return <dl>{items}</dl>
+        return <div className = {childClass}><dl>{items}</dl></div>
+    }
+}
+
+function getChildClass(riskLvl)
+{
+    switch (riskLvl){
+        case 'severe': return 'dsSevLevelDrop';
+        case 'high': return 'dsHighLevelDrop';
+        case 'moderate': return 'dsModLevelDrop';
+        case 'minor': return 'dsMinLevelDrop';
+        case 'insignificant': return 'dsInsigLevelDrop';
     }
 }
