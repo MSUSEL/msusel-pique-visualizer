@@ -7,6 +7,7 @@ import { filterByCategory, filterByRange } from "../features/Filter";
 import cloneDeep from "lodash/cloneDeep";
 import {countChars, displayDSList} from "./descriptiveStats";
 import DSSide from "./DSSideMenu";
+import {resetTreeDisplay, resetTreeView, nodesForPanelBoxes, clearSidePanel} from "../treeDisplay/TreeDisplay"
 import "./UploadFile.css";
 import "../treeDisplay/TreeDisplay.css";
 import "../top_header/TopHeader.css"
@@ -381,12 +382,10 @@ export default function PageTransfer(props) {
     }, [reset]);
 
     console.log("Current listSortedData:", listSortedData);
-    console.log("PageTranser fileData: ", fileData);
+    console.log("PageTransfer fileData: ", fileData);
         
     return (
-        <div className="unselectableText">            
-            <DSSide data = {fileData}/>
-    
+        <div className="unselectableText">                
             <div>
                 {/* Reset Display */}
                 <div className="dropdown">
@@ -543,12 +542,14 @@ export default function PageTransfer(props) {
                 </div>
             </div >
 
-            {/* Tree Display */}
-            < TreeDisplay
-                fileData={sortedData || filteredCategoryData || filteredRangeData || fileData
-                }
-                reset={reset}
-            />
+            <div className="PTCanvasContainer">
+                {/* Tree Display */}
+                < TreeDisplay
+                    fileData={sortedData || filteredCategoryData || filteredRangeData || fileData}
+                    reset={reset}
+                />
+                <DSSide data = {fileData}/>
+            </div>
         </div>
     );
 }
