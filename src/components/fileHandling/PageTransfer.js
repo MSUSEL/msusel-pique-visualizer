@@ -345,7 +345,17 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-            </div >
+
+                <div className="dropdown">
+                    <span className="dropbtn" onClick={() => handleFilterByRange()}>Filter (Range)</span>
+                </div>
+
+                <div className="dropdown">
+                    <span className="dropbtn" onClick={() => handleReset()}>Reset Sorting & Filtering</span>
+                </div>
+                
+            </div>
+
 
             {/* Legend Display */}
             < div className="legend-container" >
