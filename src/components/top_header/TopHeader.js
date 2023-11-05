@@ -1,10 +1,10 @@
-import "./TopHeader.css"
-import "../fileHandling/UploadFile.css"
+import "./TopHeader.css";
+import "../fileHandling/UploadFile.css";
+import { useState } from "react";
 //import NodeRiskColor from "../treeNode/NodeColorHelper";
 
-
 // pop up window controllers
-// TODO: Change to handle all buttons 
+// TODO: Change to handle all buttons
 //uncomment this after the bug is fixed
 /*
 document.addEventListener("DOMContentLoaded",() =>{
@@ -28,31 +28,31 @@ function handleClick(event){
 // TODO: Give each button a value
 
 export function TopHeader() {
-    const [showListLayout, setShowListLayout] = useState(false);
-    const toggleListLayout = () => {
-        setShowListLayout(!showListLayout);
-    };
-    const handleColorModalOpen = () => {
-        const colorModal = document.querySelector(".color-modal");
-        colorModal.style.display = "block";
-    };
+  const [showListLayout, setShowListLayout] = useState(false);
+  const toggleListLayout = () => {
+    setShowListLayout(!showListLayout);
+  };
+  const handleColorModalOpen = () => {
+    const colorModal = document.querySelector(".color-modal");
+    colorModal.style.display = "block";
+  };
 
-    const handleLayoutModalOpen = () => {
-        const layoutModal = document.querySelector(".layout-modal");
-        layoutModal.style.display = "block";
-    };
+  const handleLayoutModalOpen = () => {
+    const layoutModal = document.querySelector(".layout-modal");
+    layoutModal.style.display = "block";
+  };
 
-    const handleCloseModal = () => {
-        const modals = document.querySelectorAll(".modal");
-        modals.forEach(modal => {
-            modal.style.display = "none";
-        });
-    };
+  const handleCloseModal = () => {
+    const modals = document.querySelectorAll(".modal");
+    modals.forEach((modal) => {
+      modal.style.display = "none";
+    });
+  };
 
-    return (
-        <>
-            <div class="btn">
-                {/* Ziyi: comment rn for the 1st demo, will implement this feature later
+  return (
+    <>
+      <div class="btn">
+        {/* Ziyi: comment rn for the 1st demo, will implement this feature later
                 <button className="main-button" onClick={handleColorModalOpen}>
                     Color Changer
                 </button>
@@ -74,41 +74,40 @@ export function TopHeader() {
            
 
                 */}
-                {/* remove the button, rn using dropdown menu and links
+        {/* remove the button, rn using dropdown menu and links
                 <button className="main-button" onClick={handleLayoutModalOpen}>
                     Change Layout
                 </button>
                 */}
-                <div className="modal layout-modal">
-                    <div className="modal_content">
-                        <span className="close" onClick={handleCloseModal}>&times;</span>
-                        <h1>Change the layout</h1>
-                        <button className="layout-btn-doing">Tree</button>
-                        <button className="layout-btn-doing">List</button>
-                        <button className="layout-btn-todo">Columns</button>
-                        <button className="layout-btn-todo">Icons</button>
-                        <button className="layout-btn-todo">Gallerys</button>
-                    </div>
-                </div>
-            </div>
+        <div className="modal layout-modal">
+          <div className="modal_content">
+            <span className="close" onClick={handleCloseModal}>
+              &times;
+            </span>
+            <h1>Change the layout</h1>
+            <button className="layout-btn-doing">Tree</button>
+            <button className="layout-btn-doing">List</button>
+            <button className="layout-btn-todo">Columns</button>
+            <button className="layout-btn-todo">Icons</button>
+            <button className="layout-btn-todo">Gallerys</button>
+          </div>
+        </div>
+      </div>
 
-            <div className="dropdown">
-                <span className="dropbtn">Filter (Category)</span>
-                <div className="dropdown-content">
-                    <a>Tree</a>
-                    <a>List</a>
+      <div className="dropdown">
+        <span className="dropbtn">Filter (Category)</span>
+        <div className="dropdown-content">
+          <a>Tree</a>
+          <a>List</a>
+        </div>
+      </div>
 
-                </div>
-            </div>
-
-            <div className="display-4" id="PIQUE_name">
-                PIQUE Visualizer
-            </div>
-        </>
-    )
+      <div className="display-4" id="PIQUE_name">
+        PIQUE Visualizer
+      </div>
+    </>
+  );
 }
-
-
 
 /* add this back into the top header function once the bug is fixed
 <div class="btn">
