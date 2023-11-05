@@ -28,6 +28,10 @@ function handleClick(event){
 // TODO: Give each button a value
 
 export function TopHeader() {
+    const [showListLayout, setShowListLayout] = useState(false);
+    const toggleListLayout = () => {
+        setShowListLayout(!showListLayout);
+    };
     const handleColorModalOpen = () => {
         const colorModal = document.querySelector(".color-modal");
         colorModal.style.display = "block";
@@ -52,7 +56,10 @@ export function TopHeader() {
                 <button className="main-button" onClick={handleColorModalOpen}>
                     Color Changer
                 </button>
+
+
                 <div className="modal color-modal">
+
                 <div className="modal_content">
                     <span className="close" onClick={handleCloseModal}>&times;</span>
                     <h1>Change the colors</h1>
@@ -63,6 +70,9 @@ export function TopHeader() {
                     <button className="color-btn">Change Low Color</button>
                 </div>
             </div>
+
+           
+
                 */}
                 {/* remove the button, rn using dropdown menu and links
                 <button className="main-button" onClick={handleLayoutModalOpen}>
@@ -87,6 +97,7 @@ export function TopHeader() {
                 <div className="dropdown-content">
                     <a>Tree</a>
                     <a>List</a>
+
                 </div>
             </div>
 
