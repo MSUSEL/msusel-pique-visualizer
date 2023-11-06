@@ -4,6 +4,7 @@ import TreeNode from "../treeNode/TreeNode";
 import NodeRiskColor from "../treeNode/NodeColorHelper";
 import "./TreeDisplay.css"
 import NodeDescriptionPanel from "../nodeDescriptionPanel/NodeDescriptionPanel";
+import DSSide from "../fileHandling/PageTransfer";
 import {
     determineDescriptionClickerBorder,
     determineDescriptionClickerColor, determineParentClickerBorder,
