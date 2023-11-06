@@ -62,15 +62,15 @@ export default function PageTransfer(props) {
   const [isCountListOpen, setIsCountListOpen] = useState(false);
 
   const [cDropStates, setCDropStates] = useState(Array(15).fill(false));
-
-  useEffect(() => {
-    console.log("Current sort order:", sortOrder); // <-- Add this line
-    if (fileData && sortOrder) {
-      const listSorted = deepSort(fileData, sortOrder);
-      setListSortedData(listSorted);
-      console.log(listSortedData);
-    }
-  }, [fileData, sortOrder]);
+  // FIXME DELETE
+  //   useEffect(() => {
+  //     console.log("Current sort order:", sortOrder); // <-- Add this line
+  //     if (fileData && sortOrder) {
+  //       const listSorted = deepSort(fileData, sortOrder);
+  //       setListSortedData(listSorted);
+  //       console.log(listSortedData);
+  //     }
+  //   }, [fileData, sortOrder]);
 
   const [categoryButtonStatus, setCategoryButtonStatus] = useState(() => {
     const initialStatus = {
@@ -439,16 +439,14 @@ export default function PageTransfer(props) {
         </div>
 
         <div className="dropdown">
-          <span className="dropbtn" onClick={() => handleFilterByRange()}>
-            Filter (Range)
-          </span>
+          {/* <span className="dropbtn" onClick={() => handleFilterByRange()}>Filter (Range)</span> */}
         </div>
 
-        <div className="dropdown">
+        {/* <div className="dropdown">
           <span className="dropbtn" onClick={() => handleReset()}>
             Reset Sorting & Filtering
           </span>
-        </div>
+        </div> */}
       </div>
 
       {/* Legend Display */}
