@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
+import * as R from "ramda";
 import TreeDisplay from "../treeDisplay/TreeDisplay";
 import {
   sortASCforValues,
@@ -26,6 +27,24 @@ import "../treeDisplay/TreeDisplay.css";
 import "../top_header/TopHeader.css";
 import { ListDisplay } from "../layouts/List.js";
 import { legendData } from "../legend/legend";
+import {
+  Button,
+  ControlGroup,
+  InputGroup,
+  Menu,
+  MenuItem,
+  Popover,
+} from "@blueprintjs/core";
+import { ToggleButton } from "../atomics/ToggleButtons";
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+
+const SORT_TYPE_NAMES = {
+  asc_weight: "Weight - Ascending",
+  desc_weight: "Weight - Descending",
+  desc_value: "Value - Descending",
+  asc_value: "Value - Ascending",
+};
 
 export default function PageTransfer(props) {
   const { fileData } = props;
@@ -277,47 +296,156 @@ export default function PageTransfer(props) {
       <div>
         {/* Reset Display */}
         <div className="dropdown">
-          <span className="dropbtn" onClick={() => handleReset()}>
+          {/* <span className="dropbtn" onClick={() => handleReset()}>
             Reset Sorting & Filtering
-          </span>
+          </span> */}
+          <Button onClick={() => handleReset()}>
+            Reset Sorting & Filtering
+          </Button>
         </div>
 
-        {/* Sort Dropdown */}
-        <div className="dropdown">
-          <span className="dropbtn">Sort</span>
-          <div className="dropdown-content">
-            <button
-              className={sortType === "asc_value" ? "selected" : ""}
-              onClick={() => handleSort("asc_value")}
-            >
-              Value - Ascending
-            </button>
-            <button
-              className={sortType === "desc_value" ? "selected" : ""}
-              onClick={() => handleSort("desc_value")}
-            >
-              Value - Descending
-            </button>
-            <button
-              className={sortType === "asc_weight" ? "selected" : ""}
-              onClick={() => handleSort("asc_weight")}
-            >
-              Weight - Ascending
-            </button>
-            <button
-              className={sortType === "desc_weight" ? "selected" : ""}
-              onClick={() => handleSort("desc_weight")}
-            >
-              Weight - Descending
-            </button>
-          </div>
-        </div>
+        <Popover
+          placement="bottom"
+          minimal={true}
+          content={
+            <Menu>
+              {["asc_weight", "desc_weight", "desc_value", "asc_value"].map(
+                (sortTypeItem) => {
+                  return (
+                    <MenuItem
+                      key={sortTypeItem}
+                      active={sortType === sortTypeItem}
+                      text={SORT_TYPE_NAMES[sortTypeItem]}
+                      onClick={() => handleSort(sortTypeItem)}
+                    />
+                  );
+                }
+              )}
+            </Menu>
+          }
+        >
+          <Button
+            icon={
+              R.isNil(sortType)
+                ? "sort"
+                : sortType.startsWith("asc")
+                ? "arrow-up"
+                : "arrow-down"
+            }
+          >
+            {sortType ? SORT_TYPE_NAMES[sortType] : "Sort"}
+          </Button>
+        </Popover>
 
-        {/* filter Dropdown */}
+        <Popover
+          placement="bottom"
+          minimal={true}
+          content={
+            <Menu>
+              {["Insignificant", "Minor", "Moderate", "High", "Severe"].map(
+                (riskLevel) => (
+                  <MenuItem
+                    key={riskLevel}
+                    text={riskLevel}
+                    active={selectedRiskLevels.includes(riskLevel)}
+                    onClick={() => {
+                      handleCheckboxChange(riskLevel);
+                      //   handleDoneClick();
+                    }}
+                  />
+                )
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                }}
+              >
+                <Button onClick={handleDoneClick}>Apply</Button>
+              </div>
+            </Menu>
+          }
+        >
+          <Button>Filter (Risk)</Button>
+        </Popover>
+
+        <Popover
+          placement="bottom"
+          minimal={true}
+          content={
+            <div
+              style={{
+                padding: "1em",
+              }}
+            >
+              <ControlGroup>
+                <InputGroup
+                  placeholder="min value"
+                  value={minValue}
+                  onChange={(e) => setMinValue(e.target.value)}
+                  small={true}
+                />
+                <InputGroup
+                  placeholder="max value"
+                  small={true}
+                  onChange={(e) => setMaxValue(e.target.value)}
+                />
+              </ControlGroup>
+              <div style={{ display: "flex", justifyContent: "right" }}>
+                <Button
+                  intent="primary"
+                  onClick={handleApplyFilterByValueRange}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          }
+        >
+          <Button>Filter (Values)</Button>
+        </Popover>
+
+        <Popover
+          placement="bottom"
+          minimal={true}
+          content={
+            <div
+              style={{
+                padding: "1em",
+              }}
+            >
+              <ControlGroup>
+                <InputGroup
+                  placeholder="min weight"
+                  value={minValue}
+                  onChange={(e) => setMinValue(e.target.value)}
+                  small={true}
+                />
+                <InputGroup
+                  placeholder="max weight"
+                  small={true}
+                  onChange={(e) => setMaxValue(e.target.value)}
+                />
+              </ControlGroup>
+              <div style={{ display: "flex", justifyContent: "right" }}>
+                <Button
+                  intent="primary"
+                  onClick={handleApplyFilterbyWeightRange}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          }
+        >
+          <Button>Filter (Values)</Button>
+        </Popover>
+
+        {/* 
         <div className="main-dropdown">
           <button className="dropbtn">Filter</button>
           <div className="main-dropdown-content">
-            {/* Sub-button for Filter by Risk Levels */}
             <div className="sub-dropdown">
               <span className="dropbtn">Filter (Risk Levels)</span>
               <div className="sub-dropdown-content">
@@ -349,7 +477,6 @@ export default function PageTransfer(props) {
               </div>
             </div>
 
-            {/* Sub-button for Filter by Values Range */}
             <div className="sub-dropdown">
               <span
                 className="dropbtn"
@@ -358,7 +485,6 @@ export default function PageTransfer(props) {
                 Filter (Values Range)
               </span>
             </div>
-            {/* Custom Modal */}
             {isFilterRangeOpen && (
               <div className="custom-modal">
                 <div className="modal-content">
@@ -386,7 +512,6 @@ export default function PageTransfer(props) {
               </div>
             )}
 
-            {/* Sub-button for Filter by Weights Range */}
             <div className="sub-dropdown">
               <span
                 className="dropbtn"
@@ -395,7 +520,6 @@ export default function PageTransfer(props) {
                 Filter (Weights Range)
               </span>
             </div>
-            {/* Custom Modal */}
             {isWeightFilterRangeOpen && (
               <div className="custom-modal">
                 <div className="modal-content">
@@ -423,10 +547,10 @@ export default function PageTransfer(props) {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Layout Options Dropdown */}
-        <div className="dropdown">
+        {/* <div className="dropdown">
           <span className="dropbtn">Layout Options</span>
           <div className="dropdown-content">
             <button className="layout-btn-doing" onClick={setTreeLayout}>
@@ -436,11 +560,18 @@ export default function PageTransfer(props) {
               List
             </button>
           </div>
-        </div>
+        </div> */}
+        <ToggleButton
+          items={["tree", "list"]}
+          defaultItem="tree"
+          itemText={(item) => (item === "tree" ? "Tree" : "List")}
+          selectedItem={layout}
+          onChange={setLayout}
+        />
 
-        <div className="dropdown">
-          {/* <span className="dropbtn" onClick={() => handleFilterByRange()}>Filter (Range)</span> */}
-        </div>
+        {/* <div className="dropdown"> */}
+        {/* <span className="dropbtn" onClick={() => handleFilterByRange()}>Filter (Range)</span> */}
+        {/* </div> */}
 
         {/* <div className="dropdown">
           <span className="dropbtn" onClick={() => handleReset()}>
