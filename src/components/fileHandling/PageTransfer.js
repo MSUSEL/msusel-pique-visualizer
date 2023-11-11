@@ -250,48 +250,21 @@ export default function PageTransfer(props) {
     }
   }, [reset]);
 
+  const [isMenuVisible, setMenuVisible] = useState(false);
+  const toggleMenu = () => {
+    setMenuVisible(!isMenuVisible);
+  };
+
   console.log("Current listSortedData:", listSortedData);
   console.log("PageTransfer fileData: ", fileData);
 
   return (
     <div className="unselectableText">
-      {/* Descriptive Statistics Panel Button */}
-      <button
-        className="statistics-button"
-        onClick={() => setShowStatistics(!showStatistics)}
-      >
-        Descriptive Statistics
-      </button>
+      <button className="statistics-button" onClick={toggleMenu}>Descriptive Statistics</button>
+      <div className={`statistics-panel ${isMenuVisible ? 'visible' : 'invisible'}`}>
+        <DSSide data = {fileData}/>
+      </div>
 
-      {/* Descriptive Statistics Panel Content */}
-      {showStatistics && (
-        <div className="statistics-panel">
-          {/* <h3>Descriptive Statistics</h3> */}
-          {/* Quality Characteristics */}
-          <h4>Quality Characteristics</h4>
-          <p>Severe: {0}</p>
-          <p>High: {0}</p>
-          <p>Medium: {0}</p>
-          <p>Low: {0}</p>
-          <p>Insignificant: {6}</p>
-
-          {/* Quality Factors */}
-          <h4>Quality Factors</h4>
-          <p>Severe: {1}</p>
-          <p>High: {1}</p>
-          <p>Medium: {0}</p>
-          <p>Low: {0}</p>
-          <p>Insignificant: {34}</p>
-
-          {/* Quality Factors Measures */}
-          <h4>Measures for Quality Factors</h4>
-          <p>Severe: {3}</p>
-          <p>High: {0}</p>
-          <p>Medium: {1}</p>
-          <p>Low: {0}</p>
-          <p>Insignificant: {161}</p>
-        </div>
-      )}
 
       <div>
         {/* Reset Display */}
@@ -513,14 +486,14 @@ export default function PageTransfer(props) {
             )}
 
             <div>
-                {/* Reset Display */}
+                {/* Reset Display }
                 <div className="dropdown">
                     <span className="dropbtn" onClick={() => handleReset()}>
                         Reset Sorting & Filtering
                     </span>
                 </div>
 
-                {/* Sort Dropdown */}
+                {/* Sort Dropdown }
                 <div className="dropdown">
                     <span className="dropbtn">Sort</span>
                     <div className="dropdown-content">
@@ -539,7 +512,7 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter Dropdown */}
+                {/* Filter Dropdown }
                 <div className="dropdown">
                     <span className="dropbtn">Filter (One Category)</span>
                     <div className="dropdown-content">
@@ -556,7 +529,7 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter Dropdown - multiple categories */}
+                {/* Filter Dropdown - multiple categories }
                 <div className="dropdown">
                     <span className="dropbtn">Filter (Categories) </span>
                     <div className="dropdown-content">
@@ -569,14 +542,14 @@ export default function PageTransfer(props) {
                     </div>
                 </div>
 
-                {/* Filter by Range of values */}
+                {/* Filter by Range of values }
                 <div className="dropdown">
                     <span className="dropbtn" onClick={() => handleFilterByRange()}>
                         Filter (Values Range)
                     </span>
                 </div>
 
-                {/* Custom Modal */}
+                {/* Custom Modal }
                 {
                     isFilterRangeOpen && (
                         <div className="custom-modal">
@@ -606,13 +579,13 @@ export default function PageTransfer(props) {
 
 
 
-                {/* Filter by Range of weights */}
+                {/* Filter by Range of weights }
                 <div className="dropdown">
                     <span className="dropbtn" onClick={() => handleFilterByWeightRange()}>
                         Filter (Weights Range)
                     </span>
                 </div>
-                {/* Custom Modal */}
+                {/* Custom Modal }
                 {
                     isWeightFilterRangeOpen && (
                         <div className="custom-modal">
@@ -640,7 +613,7 @@ export default function PageTransfer(props) {
                     )
                 }
 
-                {/* Layout Options Dropdown */}
+                {/* Layout Options Dropdown }
                 <div className="dropdown">
                     <span className="dropbtn">Layout Options</span>
                     <div className="dropdown-content">
@@ -648,14 +621,14 @@ export default function PageTransfer(props) {
                         <button className="layout-btn-doing" onClick={openListLayoutModal}>List</button>
                     </div>
                 </div>
-                {/* List Layout Modal */}
+                {/* List Layout Modal }
                 <Modal
                     isOpen={isListLayoutModalOpen}
                     onRequestClose={closeListLayoutModal}
                     contentLabel="List Layout Modal"
                 >
                     <h2>List Layout</h2>
-                    {/* Sort based on node values */}
+                    {/* Sort based on node values }
                     <button className="sort-button" onClick={() => setShowSortOptions(!showSortOptions)}>Sort - Node Values</button>
                     {showSortOptions && (
                         <div className="sort-dropdown">
@@ -664,7 +637,7 @@ export default function PageTransfer(props) {
                         </div>
                     )}
 
-                    {/* Filter based on node categories*/}
+                    {/* Filter based on node categories}
                     <button className="sort-button" onClick={() => setShowFilterOptions(!showFilterOptions)}>Filter - Risk Category</button>
                     {showFilterOptions && (
                         <div className="sort-dropdown">
@@ -676,7 +649,7 @@ export default function PageTransfer(props) {
                         </div>
                     )}
 
-                    {/* Close panel of list */}
+                    {/* Close panel of list }
                     <button className="sort-button" onClick={closeListLayoutModal}>Close</button>
 
                     {renderNestedData(currentData)}
@@ -689,7 +662,7 @@ export default function PageTransfer(props) {
 
             </div >
 
-            {/* Legend Display */}
+            {/* Legend Display }
             < div className="legend-container" >
                 <div className="legend">
                     <h3 className="legend-title">Risk Level</h3>
@@ -795,7 +768,6 @@ export default function PageTransfer(props) {
           <TreeDisplay fileData={dataToUse} reset={reset} />
         )}
         {layout === "list" && <ListDisplay fileData={dataToUse} />}
-        <DSSide data={fileData} />
       </div>
     </div>
   );

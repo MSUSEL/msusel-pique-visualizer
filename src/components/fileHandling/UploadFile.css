@@ -471,85 +471,92 @@
   margin: 0;
 }
 
-/* Risk level categories for color */
+/* Risk level categories for color
 .statistics-panel p:nth-child(2),
 .statistics-panel p:nth-child(8),
 .statistics-panel p:nth-child(14),
 .statistics-panel p:nth-child(20) {
   background-color: rgba(255, 0, 0, 0.497);
-}
+} */
 .dsSevereLevelCard {
-  background-color: #cb0033a8;
+  background-color: rgba(255, 0, 0, 0.497);
   /* red */
 }
 .dsSevLevelDrop {
-  background-color: #cb00332f;
+  background-color: rgba(255, 0, 0, 0.192);
 }
 
-.statistics-panel p:nth-child(3),
+/* .statistics-panel p:nth-child(3),
 .statistics-panel p:nth-child(9),
 .statistics-panel p:nth-child(15),
 .statistics-panel p:nth-child(21) {
   background-color: rgba(255, 166, 0, 0.715);
-}
+} */
 .dsHighLevelCard {
-  background-color: #ff66009f;
+  background-color: rgba(255, 166, 0, 0.715);
   /* orange */
 }
 .dsHighLevelDrop {
-  background-color: #ff660033;
+  background-color: rgba(255, 166, 0, 0.315);
 }
 
-.statistics-panel p:nth-child(4),
+/* .statistics-panel p:nth-child(4),
 .statistics-panel p:nth-child(10),
 .statistics-panel p:nth-child(16),
 .statistics-panel p:nth-child(22) {
   background-color: #f3ec669c;
-}
+} */
 
 .dsModerateLevelCard {
-  background-color: #fde001a5;
+  background-color: rgba(243, 236, 102, 0.61);
   /* yellow */
 }
-.dsModLevelDrop {
-  background-color: #fde00133;
+
+.dsModLevelDrop
+{
+  display: block;
+  box-sizing: border-box;
+  background-color: rgba(243, 236, 102, 0.212);
 }
 
-.statistics-panel p:nth-child(5),
+/* .statistics-panel p:nth-child(5),
 .statistics-panel p:nth-child(11),
 .statistics-panel p:nth-child(17),
 .statistics-panel p:nth-child(23) {
   background-color: rgba(0, 136, 255, 0.4);
-  }
+  } */
 .dsMinorLevelCard {
-  background-color: #3565cd95;
-  /* light green */
+  background-color: rgba(0, 136, 255, 0.4);
+  /* blue */
 }
-.dsMinLevelDrop {
-  background-color: #3565cd34;
+.dsMinLevelDrop
+{
+  background-color: rgba(0, 136, 255, 0.199);
 }
 
-.statistics-panel p:nth-child(6),
+/* .statistics-panel p:nth-child(6),
 .statistics-panel p:nth-child(12),
 .statistics-panel p:nth-child(18),
 .statistics-panel p:nth-child(24) {
   background-color: rgba(0, 128, 0, 0.437);
-}
+} */
 .dsInsignificantLevelCard {
-  background-color: #009a679b;
+  background-color: rgba(0, 128, 0, 0.437);
   /* green */
 }
-.dsInsigLevelDrop {
-  background-color: #009a671f;
-}
 
+.dsInsigLevelDrop
+{
+  background-color: rgba(0, 128, 0, 0.178);
+}
 
 .statistics-panel.visible button {
   border:none;
   border-radius:5px;
   cursor:pointer;
   float:right;
-  padding:0px 7px;
+  padding:0px 5px;
+  margin: 0px;
 
   background-color: #cb003300;
 }
