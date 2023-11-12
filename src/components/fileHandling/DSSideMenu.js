@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {countChars, displayDSList} from "./descriptiveStats";
+import {countChars, DisplayDSList} from "./DescriptiveStats";
 
 
 const DSSide = ({data}) => {
@@ -22,7 +22,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[0] && displayDSList('quality_aspects', 'severe', DescStats)
+            cDropStates[0] && <DisplayDSList section='quality_aspects' riskLvl='severe' DescStats={DescStats}/>
         }
 
         <p class = "dsHighLevelCard">High: {DescStats.qChar[1]} 
@@ -34,7 +34,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[1] && displayDSList('quality_aspects', 'high', DescStats)
+            cDropStates[1] && <DisplayDSList section='quality_aspects' riskLvl='high' DescStats={DescStats}/>
         }
 
         <p class = "dsModerateLevelCard">Moderate: {DescStats.qChar[2]}
@@ -46,7 +46,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[2] && displayDSList('quality_aspects', 'moderate', DescStats)
+            cDropStates[2] && <DisplayDSList section='quality_aspects' riskLvl='moderate' DescStats={DescStats}/>
         }
 
         <p class = "dsMinorLevelCard">Minor: {DescStats.qChar[3]}
@@ -56,7 +56,7 @@ const DSSide = ({data}) => {
             setCDropStates(updatedDropStates);
             }}>&or;</button></p>
         {
-            cDropStates[3] && displayDSList('quality_aspects', 'minor', DescStats)
+            cDropStates[3] && <DisplayDSList section='quality_aspects' riskLvl='minor' DescStats={DescStats}/>
         }
         
         <p class = "dsInsignificantLevelCard">Insignificant: {DescStats.qChar[4]}
@@ -68,7 +68,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[4] && displayDSList('quality_aspects', 'insignificant', DescStats)
+            cDropStates[4] && <DisplayDSList section='quality_aspects' riskLvl='insignificant' DescStats={DescStats}/>
         }
 
 
@@ -83,7 +83,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[5] && displayDSList('product_factors', 'severe', DescStats)
+            cDropStates[5] && <DisplayDSList section='product_factors' riskLvl='severe' DescStats={DescStats}/>
         }
         
         <p class = "dsHighLevelCard">High: {DescStats.qFact[1]}
@@ -95,7 +95,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[6] && displayDSList('product_factors', 'high', DescStats)
+            cDropStates[6] && <DisplayDSList section='product_factors' riskLvl='high' DescStats={DescStats}/>
         }
         
         <p class = "dsModerateLevelCard">Moderate: {DescStats.qFact[2]}
@@ -107,7 +107,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[7] && displayDSList('product_factors', 'moderate', DescStats)
+            cDropStates[7] && <DisplayDSList section='product_factors' riskLvl='moderate' DescStats={DescStats}/>
         }
         
         <p class = "dsMinorLevelCard">Minor: {DescStats.qFact[3]}
@@ -119,7 +119,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[8] && displayDSList('product_factors', 'minor', DescStats)
+            cDropStates[8] && <DisplayDSList section='product_factors' riskLvl='minor' DescStats={DescStats}/>
         }
         
         <p class = "dsInsignificantLevelCard">Insignificant: {DescStats.qFact[4]}
@@ -131,7 +131,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[9] && displayDSList('product_factors', 'insignificant', DescStats)
+            cDropStates[9] && <DisplayDSList section='product_factors' riskLvl='insignificant' DescStats={DescStats}/>
         }
 
         {/* Quality Factors Measures */}
@@ -145,7 +145,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[10] && displayDSList('measures', 'severe', DescStats)
+            cDropStates[10] && <DisplayDSList section='measures' riskLvl='severe' DescStats={DescStats}/>
         }
         
         <p class = "dsHighLevelCard">High: {DescStats.qfMeas[1]}
@@ -157,7 +157,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[11] && displayDSList('measures', 'high', DescStats)
+            cDropStates[11] && <DisplayDSList section='measures' riskLvl='high' DescStats={DescStats}/>
         }
         
         <p class = "dsModerateLevelCard">Moderate: {DescStats.qfMeas[2]}
@@ -169,7 +169,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[12] && displayDSList('measures', 'moderate', DescStats)
+            cDropStates[12] && <DisplayDSList section='measures' riskLvl='moderate' DescStats={DescStats}/>
         }
         
         <p class = "dsMinorLevelCard">Minor: {DescStats.qfMeas[3]}
@@ -181,7 +181,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[13] && displayDSList('measures', 'minor', DescStats)
+            cDropStates[13] && <DisplayDSList section='measures' riskLvl='minor' DescStats={DescStats}/>
         }
         
         <p class = "dsInsignificantLevelCard">Insignificant: {DescStats.qfMeas[4]}
@@ -193,7 +193,7 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[14] && displayDSList('measures', 'insignificant', DescStats)
+            cDropStates[14] && <DisplayDSList section='measures' riskLvl='insignificant' DescStats={DescStats}/>
         }            
         </div>
     );

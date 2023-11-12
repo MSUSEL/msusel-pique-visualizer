@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import { findObjectsWithValue } from "../features/Filter";
+import { update } from "lodash";
 
 export function countChars(fileData)
 {
@@ -66,27 +67,49 @@ export function getRelatedArray(section, riskLvl, DescStats) {
     return finalArray;
 }
 
-export function displayDSList(section, riskLvl, DescStats)
-{
-    let targetArray = getRelatedArray(section,riskLvl,DescStats);
-    const childClass = getChildClass(riskLvl);
-
-    if (targetArray.length == 0)
-    {
-        return <div className = {childClass}><p>No nodes match this risk level</p></div>
+export class DisplayDSList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {isAddnlDetVisible: Array(getRelatedArray(this.props.section, this.props.riskLvl, this.props.DescStats).length).fill(false)};
     }
-    else
-    {
-        const items = targetArray.map((item, index) => (
-            <div className = {childClass}>
-                <React.Fragment key = {index}>
-                    <dt>{item.name}</dt>
-                    <dd>{"Value: " + item.value}</dd>
-                    {item.description && (<dd>{"Description: " + item.description}</dd>)}
-                </React.Fragment>
-            </div>
-        ));
-        return <div className = {childClass}><dl>{items}</dl></div>
+
+    toggleAddnlDet = (index) => {
+        const updatedState = [...this.state.isAddnlDetVisible];
+        updatedState[index] = !updatedState[index];
+        this.setState({isAddnlDetVisible: updatedState});
+    };
+
+    render() {
+        let targetArray = getRelatedArray(this.props.section, this.props.riskLvl, this.props.DescStats);
+        const childClass = getChildClass(this.props.riskLvl);
+
+        if (targetArray.length == 0)
+        {
+            return <div className = {childClass}><p>No nodes match this risk level</p></div>
+        }
+        else
+        {
+            const items = targetArray.map((item, index) => (
+                <div className = {childClass} key={index}>
+                        <dt>{item.name}</dt>
+                        <dd>{"Value: " + item.value}</dd>
+                        {item.description && (<dd>{"Description: " + item.description}</dd>)}
+                        <dd><button className="additionalDetailsBtn" onClick={() => this.toggleAddnlDet(index)}>Additional Details &or;</button></dd>
+                        {this.state.isAddnlDetVisible[index] && (
+                            <div className="additionalDetailsList">
+                                <dd>{"Evaluation Strategy: " + item.eval_strategy}</dd>
+                                <dd>{"Normalizer: " + item.normalizer}</dd>
+                                <dd>{"Utility Function: " + item.utility_function}</dd>
+                            </div>
+                        )}
+                </div>
+            ));
+            return (
+                <div className = {childClass}>
+                    <dl>{items}</dl>
+                </div>
+            );
+        }
     }
 }
 

@@ -14,7 +14,7 @@ import {
   filterByWeightRange,
 } from "../features/Filter";
 import cloneDeep from "lodash/cloneDeep";
-import { countChars, displayDSList } from "./descriptiveStats";
+import { countChars, displayDSList } from "./DescriptiveStats.js";
 import DSSide from "./DSSideMenu";
 import {
   resetTreeDisplay,

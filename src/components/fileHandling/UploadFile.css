@@ -552,7 +552,6 @@
 
 .statistics-panel.visible button {
   border:none;
-  border-radius:5px;
   cursor:pointer;
   float:right;
   padding:0px 5px;
@@ -563,6 +562,30 @@
 
 .statistics-panel.visible button:hover{
   background-color: #00000031;
+}
+
+.additionalDetailsBtn{
+  display: inline-block;
+}
+.statistics-panel.visible .additionalDetailsBtn{
+  
+  border-radius:5px;
+  cursor:pointer;
+  padding:0px;
+  margin: 0px;
+
+  float: left;
+
+  font-weight: bold;
+  font-size: 0.9em;
+
+  background-color: #cb003300;
+}
+
+.additionalDetailsList{
+  margin-left: 15px;
+  text-wrap: wrap;
+  word-wrap: break-word;
 }
 
 /* Descriptive Statistics Button */
