@@ -1,0 +1,185 @@
+/*Descriptive Statistics Toggle Button */
+
+/* Wraps the tree canvas, buttons, and Descriptive Statistics panel together */
+#canvas-DS-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+/* Descriptive Statistics Toggle Button */
+.statistics-button {
+    background-color: #4CAF50;
+    position: absolute;
+    top: 3vh;
+    right: 1vw;
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+.statistics-button:hover {
+    background-color: #285e2a;
+}
+  
+/* Descriptive Statistics Panel */
+.statistics-panel.visible {
+    padding: 16px;
+    padding-top: 8px;
+    bottom: 0;
+    width: 20vw;
+    height: 83.3vh;
+    background-color: #f9f9f9;
+    border: black solid 3px;
+    border-left: none;
+    box-shadow: none;
+    overflow-y: scroll;
+    z-index: 1;
+}
+
+.statistics-panel.invisible {
+    display: none;
+}
+
+.statistics-panel.visible h4 {
+    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-size: 18px;
+    background-color: lightgray;
+}
+
+.statistics-panel.visible p {
+    margin: 0;
+    font-size: 14px;
+    padding: 8px 12px;
+}
+
+.statistics-panel.visible button {
+    border:none;
+    cursor:pointer;
+    float:right;
+    padding:0px 5px;
+    margin: 0px;
+
+    background-color: #cb003300;
+}
+
+.statistics-panel.visible button:hover{
+    background-color: #00000031;
+}
+
+.statistics-panel.visible .additionalDetailsBtn{
+    border-radius:5px;
+    cursor:pointer;
+    padding:0px;
+    margin: 0px;
+
+    float: left;
+
+    text-decoration-line: none;
+
+    font-weight: bold;
+    font-size: 0.9em;
+
+    background-color: #cb003300;
+}
+
+.additionalDetailsList{
+    margin-left: 15px;
+    text-wrap: wrap;
+    word-wrap: break-word;
+}
+
+/* Colors for each risk level */
+.SevereLevelCard {
+    background-color: rgba(255, 0, 0, 0.497);
+}
+.Severe-Level-Droplist {
+    background-color: rgba(255, 0, 0, 0.321);
+}
+
+.HighLevelCard {
+    background-color: rgba(255, 166, 0, 0.715);
+}
+.High-Level-Droplist {
+    background-color: rgba(255, 166, 0, 0.422);
+}
+
+.ModerateLevelCard {
+    background-color: rgba(243, 236, 102, 0.61);
+}
+.Moderate-Level-Droplist{
+    background-color: rgba(243, 236, 102, 0.411);
+}
+
+.MinorLevelCard {
+    background-color: rgba(0, 136, 255, 0.4);
+}
+.Minor-Level-Droplist{
+    background-color: rgba(0, 136, 255, 0.297);
+}
+
+.InsignificantLevelCard {
+    background-color: rgba(0, 128, 0, 0.437);
+}
+.Insignificant-Level-Droplist{
+    background-color: rgba(0, 128, 0, 0.308);
+}
+
+.dropBox {
+    padding-top: 5px;
+    padding-bottom: 10px;
+    
+    border-bottom: black dashed 1px;
+
+}
+
+.Severe-Level-Droplist dt,
+.High-Level-Droplist dt,
+.Moderate-Level-Droplist dt,
+.Minor-Level-Droplist dt,
+.Insignificant-Level-Droplist dt{  
+    font-size: 16px;
+    margin-left: 5px;
+    margin-top: 0px;
+
+    display: flex;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+    word-wrap: break-word;
+}
+
+.Severe-Level-Droplist button,
+.High-Level-Droplist button,
+.Moderate-Level-Droplist button,
+.Minor-Level-Droplist button,
+.Insignificant-Level-Droplist button {
+    font-size:smaller;
+    text-decoration-line: underline;
+    float:right;
+}
+
+.Severe-Level-Droplist dd,
+.High-Level-Droplist dd,
+.Moderate-Level-Droplist dd,
+.Minor-Level-Droplist dd,
+.Insignificant-Level-Droplist dd{
+    display: list-item;
+    list-style-type: disc;
+    margin-left: 25px;
+    margin-bottom: 0px;
+    text-wrap: balance;
+}
+
+.Severe-Level-Droplist p,
+.High-Level-Droplist p,
+.Moderate-Level-Droplist p,
+.Minor-Level-Droplist p,
+.Insignificant-Level-Droplist p {
+    padding-left: 5px;
+}

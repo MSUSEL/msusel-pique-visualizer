@@ -596,6 +596,8 @@ export default function TreeDisplay(props) {
         .attr("text-anchor", "middle");
     }
 
+
+    /* Marker - System may be useful */
     const findProductFactor = (name) => {
       for (let pf in p_factors) {
         if (p_factors[pf].name === name) return p_factors[pf];
@@ -1263,7 +1265,7 @@ export default function TreeDisplay(props) {
   };
 
   return (
-    <>
+    <div id="tree_display_container">
       <div id={"canvas_container"}>
         <div id={"tree_canvas"} ref={tree_canvas}></div>
         {nodesForPanelBoxes.length > 0 ? (
@@ -1284,6 +1286,6 @@ export default function TreeDisplay(props) {
           </button>
         ) : null}
       </div>
-    </>
+    </div>
   );
 }

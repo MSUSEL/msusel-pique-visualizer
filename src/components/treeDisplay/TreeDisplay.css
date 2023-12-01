@@ -1,6 +1,19 @@
 #tree_canvas {
     margin: 0;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#tree_display_container {
+    display: flex;
+    flex-direction: column;
+    width: 75vw;
+    background-color: beige;
+    border-bottom: black solid 3px;
+    border-right: black solid 3px;
+    flex: 1;
+    height: 100%;
 }
 
 .unselectableText {

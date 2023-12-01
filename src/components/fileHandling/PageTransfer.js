@@ -14,8 +14,7 @@ import {
   filterByWeightRange,
 } from "../features/Filter";
 import cloneDeep from "lodash/cloneDeep";
-import { countChars, displayDSList } from "./DescriptiveStats.js";
-import DSSide from "./DSSideMenu";
+import DescriptiveStatistics from "./DescriptiveStatistics";
 import {
   resetTreeDisplay,
   resetTreeView,
@@ -23,6 +22,7 @@ import {
   clearSidePanel,
 } from "../treeDisplay/TreeDisplay";
 import "./UploadFile.css";
+import "./DescriptiveStatistics/DescriptiveStats.css";
 import "../treeDisplay/TreeDisplay.css";
 import "../top_header/TopHeader.css";
 import { ListDisplay } from "../layouts/List.js";
@@ -260,11 +260,8 @@ export default function PageTransfer(props) {
 
   return (
     <div className="unselectableText">
+      {/*DS Toggle Button*/}
       <button className="statistics-button" onClick={toggleMenu}>Descriptive Statistics</button>
-      <div className={`statistics-panel ${isMenuVisible ? 'visible' : 'invisible'}`}>
-        <DSSide data = {fileData}/>
-      </div>
-
 
       <div>
         {/* Reset Display */}
@@ -765,7 +762,12 @@ export default function PageTransfer(props) {
       {/* Tree Display */}
       <div className="layout-container">
         {layout === "tree" && (
-          <TreeDisplay fileData={dataToUse} reset={reset} />
+          <div id="canvas-DS-wrapper">
+            <TreeDisplay fileData={dataToUse} reset={reset} />
+            <div className={`statistics-panel ${isMenuVisible ? 'visible' : 'invisible'}`}>
+              <DescriptiveStatistics.DSSide data = {fileData}/>
+            </div>
+          </div>
         )}
         {layout === "list" && <ListDisplay fileData={dataToUse} />}
       </div>
