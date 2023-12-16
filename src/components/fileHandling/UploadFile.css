@@ -14,6 +14,12 @@
   height: 5vh;
 }
 
+.layout-container {
+  display: flex;
+  flex-direction: row;
+  /* border: black solid 3px; */
+}
+
 /* Legend container in terms of risk level: color category, risk level name, and scale */
 .legend-container {
   display: flex;

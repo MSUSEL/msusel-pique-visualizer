@@ -6,6 +6,11 @@
     border-left: 1px solid #ccc;
     padding: 16px;
     z-index: 1;
+    margin-top: 50px;
+}
+
+.list-container {
+    display: flex;
 }
 
 .list-layout-button {

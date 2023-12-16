@@ -1,23 +1,26 @@
-import React, { Component } from "react";
+import React, { Component, ReactNode } from "react";
+import { descriptiveStatisticData, listProps, addDetState, listNode } from './index.ts';
 
-export class DisplayDSList extends Component {
-    constructor(props) {
+
+
+export class DisplayDSList extends Component<listProps, addDetState> {
+    constructor(props: listProps) {
         super(props);
-        this.state = {isAddnlDetVisible: Array(getRelatedArray(this.props.section, this.props.riskLvl, this.props.NodeCount).length).fill(false)};
+        this.state = {isAddDetVisible: Array(getRelatedArray(this.props.section, this.props.riskLvl, this.props.descriptiveStatisticData).length).fill(false)};
     }
 
-    toggleAdditionalDetailsList = (index) => {
-        const updatedState = [...this.state.isAddnlDetVisible];
+    toggleAdditionalDetailsList = (index: number) => {
+        const updatedState = [...this.state.isAddDetVisible];
         updatedState[index] = !updatedState[index];
-        this.setState({isAddnlDetVisible: updatedState});
+        this.setState({isAddDetVisible: updatedState});
     };
 
-    render() {
+    render(): ReactNode {
         /* Creates a new array of all nodes matching the given classification and risk level */
-        let targetArray = getRelatedArray(this.props.section, this.props.riskLvl, this.props.NodeCount);
+        const targetArray: listNode[] = getRelatedArray(this.props.section, this.props.riskLvl, this.props.descriptiveStatisticData);
 
         /* Finds suitable class name for css styling */
-        const childClass = getChildClass(this.props.riskLvl);
+        const childClass: string = getChildClass(this.props.riskLvl);
 
         if (targetArray.length == 0)
         {
@@ -30,20 +33,19 @@ export class DisplayDSList extends Component {
         }
         else
         {
-            const items = targetArray.map((item, index) => (
+            const items = targetArray.map((item, index:number) => (
                 <div className = {childClass} key={index}>
                     <div className="dropBox">
                         <dt>{item.name}
-                            <button onClick={() => zoomToNode(item.name)}>View Node</button>
+                            { /* Zooms tree graph to given node */ }
+                            <button>View Node</button>
                         </dt>
                         
-                        { /* Zooms tree graph to given node */ }
-                        {/* <button onClick={() => zoomToNode(item.name)}>View Node</button> */}
 
                         <dd>{"Value: " + item.value}</dd>
                         {item.description && (<dd>{"Description: " + item.description}</dd>)}
                         <dd><button className="additionalDetailsBtn" onClick={() => this.toggleAdditionalDetailsList(index)}>Additional Details &or;</button></dd>
-                        {this.state.isAddnlDetVisible[index] && (
+                        {this.state.isAddDetVisible[index] && (
                             /* Writes additional details; Lines below may be temporary to make way for
                                 desired information */
                             <div className="additionalDetailsList">
@@ -62,19 +64,19 @@ export class DisplayDSList extends Component {
     }
 }
 
-function getPositionX (item) {
-    return item.node_center_x;
-}
-function getPositionY (item) {
-    return item.node_center_y;
-}
+// function getPositionX (item) {
+//     return item.node_center_x;
+// }
+// function getPositionY (item) {
+//     return item.node_center_y;
+// }
 
-function zoomToNode(item)
-{
-    console.log(getPositionX(item), " ", getPositionY(item));
-};
+// function zoomToNode(item)
+// {
+//     console.log(getPositionX(item), " ", getPositionY(item));
+// };
 
-function getChildClass(riskLvl)
+function getChildClass(riskLvl: string): string
 {
     switch (riskLvl){
         case 'severe': return 'Severe-Level-Droplist';
@@ -82,20 +84,21 @@ function getChildClass(riskLvl)
         case 'moderate': return 'Moderate-Level-Droplist';
         case 'minor': return 'Minor-Level-Droplist';
         case 'insignificant': return 'Insignificant-Level-Droplist';
+        default: return 'getChildClass-error';
     }
 }
 
-function getRelatedArray(section, riskLvl, NodeCount) {
-    let tempArr = [], finalArray = [];
-    if (section == "quality_aspects") {tempArr = NodeCount.qAspectsArr}
-    else if (section == "product_factors") {tempArr = NodeCount.pFactorsArr}
-    else if (section == "measures") {tempArr = NodeCount.fMeasuresArr}
+function getRelatedArray(section: string, riskLvl: string, descriptiveStatisticData: descriptiveStatisticData): listNode[] {
+    var tempArr:listNode[] = [], finalArray:listNode[] = [];
+    if (section == "quality_aspects") {tempArr = descriptiveStatisticData.qualityAspectNodes}
+    else if (section == "product_factors") {tempArr = descriptiveStatisticData.qualityFactorNodes}
+    else if (section == "measures") {tempArr = descriptiveStatisticData.measureNodes}
     else console.log
         ("DescriptiveStatistics function getRelatedArray error: node is not a quality aspect, product factor or measure.");
 
-    for (let iter of tempArr)
+    for (const iter of tempArr)
     {
-        let value = iter.value;
+        const value: number = iter.value;
         if (riskLvl == "severe" && value < 0.2) {finalArray.push(iter);}
         else if (riskLvl == "high" && (value >= 0.2 && value < 0.4)) {finalArray.push(iter);}
         else if (riskLvl == "moderate" && (value >= 0.4 && value < 0.6)) {finalArray.push(iter);}

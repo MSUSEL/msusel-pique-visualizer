@@ -14,7 +14,7 @@ import {
   filterByWeightRange,
 } from "../features/Filter";
 import cloneDeep from "lodash/cloneDeep";
-import DescriptiveStatistics from "./DescriptiveStatistics";
+import {DSSide} from "./DescriptiveStatistics/index.ts";
 import {
   resetTreeDisplay,
   resetTreeView,
@@ -250,9 +250,9 @@ export default function PageTransfer(props) {
     }
   }, [reset]);
 
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const toggleMenu = () => {
-    setMenuVisible(!isMenuVisible);
+  const [isDSPanelVisible, setDSPanelVisible] = useState(false);
+  const toggleDSPanel = () => {
+    setDSPanelVisible(!isDSPanelVisible);
   };
 
   console.log("Current listSortedData:", listSortedData);
@@ -261,7 +261,7 @@ export default function PageTransfer(props) {
   return (
     <div className="unselectableText">
       {/*DS Toggle Button*/}
-      <button className="statistics-button" onClick={toggleMenu}>Descriptive Statistics</button>
+      <button className="statistics-button" onClick={toggleDSPanel}>Descriptive Statistics</button>
 
       <div>
         {/* Reset Display */}
@@ -761,15 +761,15 @@ export default function PageTransfer(props) {
 
       {/* Tree Display */}
       <div className="layout-container">
-        {layout === "tree" && (
-          <div id="canvas-DS-wrapper">
-            <TreeDisplay fileData={dataToUse} reset={reset} />
-            <div className={`statistics-panel ${isMenuVisible ? 'visible' : 'invisible'}`}>
-              <DescriptiveStatistics.DSSide data = {fileData}/>
-            </div>
-          </div>
-        )}
-        {layout === "list" && <ListDisplay fileData={dataToUse} />}
+        {layout === "tree" && 
+          <TreeDisplay fileData={dataToUse} reset={reset} />
+        }
+        {layout === "list" && 
+          <ListDisplay fileData={dataToUse} />
+        }
+        <div className={`statistics-panel ${isDSPanelVisible ? 'visible' : 'invisible'}`}>
+          <DSSide data = {fileData}/>
+        </div>
       </div>
     </div>
   );

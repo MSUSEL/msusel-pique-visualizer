@@ -1,20 +1,21 @@
 import React, {useState} from "react";
 import "./DescriptiveStats.css";
-import DescriptiveStatistics from "./index.js";
+import {nodeRiskTally, DisplayDSList, dropDownState, descriptiveStatisticData} from './index.ts';
 
+interface DSSideProps {data: undefined;}
 
-const DSSide = ({data}) => {
-    const [cDropStates, setCDropStates] = useState(Array(15).fill(false));
+export const DSSide: React.FC<DSSideProps> = ({data}) => {
+    const [cDropStates, setCDropStates] = useState<Array<boolean>>(Array(15).fill(false));
 
     { /* Creates the array of tallies for each risk level */ }
-    const NodeCount = DescriptiveStatistics.nodeRiskTally(data);
+    const descriptiveStatisticData = nodeRiskTally(data);
 
     return (            
         <div>
         {/* Quality Characteristics */}
         <h4>Quality Characteristics</h4>
         
-        <p class = "SevereLevelCard">Severe: {NodeCount.qChar[0]}
+        <p className = "SevereLevelCard">Severe: {descriptiveStatisticData.qualityCharacteristicsCount[0]}
         <button onClick={() => {
             { /* Swaps visibility state for given index */ }
             setCDropStates(prevStates => {
@@ -24,10 +25,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[0] && <DescriptiveStatistics.DisplayDSList section='quality_aspects' riskLvl='severe' NodeCount={NodeCount}/>
+            cDropStates[0] && <DisplayDSList section='quality_aspects' riskLvl='severe' descriptiveStatisticData={descriptiveStatisticData}/>
         }
 
-        <p class = "HighLevelCard">High: {NodeCount.qChar[1]} 
+        <p className = "HighLevelCard">High: {descriptiveStatisticData.qualityCharacteristicsCount[1]} 
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -36,10 +37,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[1] && <DescriptiveStatistics.DisplayDSList section='quality_aspects' riskLvl='high' NodeCount={NodeCount}/>
+            cDropStates[1] && <DisplayDSList section='quality_aspects' riskLvl='high' descriptiveStatisticData={descriptiveStatisticData}/>
         }
 
-        <p class = "ModerateLevelCard">Moderate: {NodeCount.qChar[2]}
+        <p className = "ModerateLevelCard">Moderate: {descriptiveStatisticData.qualityCharacteristicsCount[2]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -48,20 +49,20 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[2] && <DescriptiveStatistics.DisplayDSList section='quality_aspects' riskLvl='moderate' NodeCount={NodeCount}/>
+            cDropStates[2] && <DisplayDSList section='quality_aspects' riskLvl='moderate' descriptiveStatisticData={descriptiveStatisticData}/>
         }
 
-        <p class = "MinorLevelCard">Minor: {NodeCount.qChar[3]}
+        <p className = "MinorLevelCard">Minor: {descriptiveStatisticData.qualityCharacteristicsCount[3]}
         <button onClick={() => {
             const updatedDropStates = [...cDropStates];
             updatedDropStates[3] = !cDropStates[3];
             setCDropStates(updatedDropStates);
             }}>&or;</button></p>
         {
-            cDropStates[3] && <DescriptiveStatistics.DisplayDSList section='quality_aspects' riskLvl='minor' NodeCount={NodeCount}/>
+            cDropStates[3] && <DisplayDSList section='quality_aspects' riskLvl='minor' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "InsignificantLevelCard">Insignificant: {NodeCount.qChar[4]}
+        <p className = "InsignificantLevelCard">Insignificant: {descriptiveStatisticData.qualityCharacteristicsCount[4]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -70,13 +71,13 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[4] && <DescriptiveStatistics.DisplayDSList section='quality_aspects' riskLvl='insignificant' NodeCount={NodeCount}/>
+            cDropStates[4] && <DisplayDSList section='quality_aspects' riskLvl='insignificant' descriptiveStatisticData={descriptiveStatisticData}/>
         }
 
 
         {/* Quality Factors */}
         <h4>Quality Factors</h4>
-        <p class = "SevereLevelCard">Severe: {NodeCount.qFact[0]}
+        <p className = "SevereLevelCard">Severe: {descriptiveStatisticData.qualityFactorsCount[0]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -85,10 +86,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[5] && <DescriptiveStatistics.DisplayDSList section='product_factors' riskLvl='severe' NodeCount={NodeCount}/>
+            cDropStates[5] && <DisplayDSList section='product_factors' riskLvl='severe' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "HighLevelCard">High: {NodeCount.qFact[1]}
+        <p className = "HighLevelCard">High: {descriptiveStatisticData.qualityFactorsCount[1]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -97,10 +98,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[6] && <DescriptiveStatistics.DisplayDSList section='product_factors' riskLvl='high' NodeCount={NodeCount}/>
+            cDropStates[6] && <DisplayDSList section='product_factors' riskLvl='high' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "ModerateLevelCard">Moderate: {NodeCount.qFact[2]}
+        <p className = "ModerateLevelCard">Moderate: {descriptiveStatisticData.qualityFactorsCount[2]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -109,10 +110,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[7] && <DescriptiveStatistics.DisplayDSList section='product_factors' riskLvl='moderate' NodeCount={NodeCount}/>
+            cDropStates[7] && <DisplayDSList section='product_factors' riskLvl='moderate' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "MinorLevelCard">Minor: {NodeCount.qFact[3]}
+        <p className = "MinorLevelCard">Minor: {descriptiveStatisticData.qualityFactorsCount[3]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -121,10 +122,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[8] && <DescriptiveStatistics.DisplayDSList section='product_factors' riskLvl='minor' NodeCount={NodeCount}/>
+            cDropStates[8] && <DisplayDSList section='product_factors' riskLvl='minor' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "InsignificantLevelCard">Insignificant: {NodeCount.qFact[4]}
+        <p className = "InsignificantLevelCard">Insignificant: {descriptiveStatisticData.qualityFactorsCount[4]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -133,12 +134,12 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[9] && <DescriptiveStatistics.DisplayDSList section='product_factors' riskLvl='insignificant' NodeCount={NodeCount}/>
+            cDropStates[9] && <DisplayDSList section='product_factors' riskLvl='insignificant' descriptiveStatisticData={descriptiveStatisticData}/>
         }
 
         {/* Quality Factors Measures */}
         <h4>Measures for Quality Factors</h4>
-        <p class = "SevereLevelCard">Severe: {NodeCount.qfMeas[0]}
+        <p className = "SevereLevelCard">Severe: {descriptiveStatisticData.measuresCount[0]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -147,10 +148,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[10] && <DescriptiveStatistics.DisplayDSList section='measures' riskLvl='severe' NodeCount={NodeCount}/>
+            cDropStates[10] && <DisplayDSList section='measures' riskLvl='severe' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "HighLevelCard">High: {NodeCount.qfMeas[1]}
+        <p className = "HighLevelCard">High: {descriptiveStatisticData.measuresCount[1]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -159,10 +160,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[11] && <DescriptiveStatistics.DisplayDSList section='measures' riskLvl='high' NodeCount={NodeCount}/>
+            cDropStates[11] && <DisplayDSList section='measures' riskLvl='high' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "ModerateLevelCard">Moderate: {NodeCount.qfMeas[2]}
+        <p className = "ModerateLevelCard">Moderate: {descriptiveStatisticData.measuresCount[2]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -171,10 +172,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[12] && <DescriptiveStatistics.DisplayDSList section='measures' riskLvl='moderate' NodeCount={NodeCount}/>
+            cDropStates[12] && <DisplayDSList section='measures' riskLvl='moderate' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "MinorLevelCard">Minor: {NodeCount.qfMeas[3]}
+        <p className = "MinorLevelCard">Minor: {descriptiveStatisticData.measuresCount[3]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -183,10 +184,10 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[13] && <DescriptiveStatistics.DisplayDSList section='measures' riskLvl='minor' NodeCount={NodeCount}/>
+            cDropStates[13] && <DisplayDSList section='measures' riskLvl='minor' descriptiveStatisticData={descriptiveStatisticData}/>
         }
         
-        <p class = "InsignificantLevelCard">Insignificant: {NodeCount.qfMeas[4]}
+        <p className = "InsignificantLevelCard">Insignificant: {descriptiveStatisticData.measuresCount[4]}
         <button onClick={() => {
             setCDropStates(prevStates => {
                 const updatedDropStates = [...prevStates];
@@ -195,10 +196,8 @@ const DSSide = ({data}) => {
             });
             }}>&or;</button></p>
         {
-            cDropStates[14] && <DescriptiveStatistics.DisplayDSList section='measures' riskLvl='insignificant' NodeCount={NodeCount}/>
+            cDropStates[14] && <DisplayDSList section='measures' riskLvl='insignificant' descriptiveStatisticData={descriptiveStatisticData}/>
         }            
         </div>
     );
 };
-
-export default DSSide;

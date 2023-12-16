@@ -89,26 +89,28 @@ export const ListDisplay = ({ fileData }) => {
 
     try {
         return (
-            <div className="list-panel" style={{ display: 'flex', flexDirection: 'column' }}>
-                <button className={`list-layout-button section-button ${showTQI ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('TQI')}>
-                    Total Quality Index (TQI)
-                </button>
-                {showTQI && renderSection(fileData.factors.tqi)}
+            <div className="list-container">
+                <div className="list-panel" style={{ display: 'flex', flexDirection: 'column' }}>
+                    <button className={`list-layout-button section-button ${showTQI ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('TQI')}>
+                        Total Quality Index (TQI)
+                    </button>
+                    {showTQI && renderSection(fileData.factors.tqi)}
 
-                <button className={`list-layout-button section-button ${showQualityAspects ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('QualityAspects')}>
-                    Quality Characteristics
-                </button>
-                {showQualityAspects && renderSection(fileData.factors.quality_aspects)}
+                    <button className={`list-layout-button section-button ${showQualityAspects ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('QualityAspects')}>
+                        Quality Characteristics
+                    </button>
+                    {showQualityAspects && renderSection(fileData.factors.quality_aspects)}
 
-                <button className={`list-layout-button section-button ${showProductFactors ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('ProductFactors')}>
-                    Quality Factors
-                </button>
-                {showProductFactors && renderSection(fileData.factors.product_factors)}
+                    <button className={`list-layout-button section-button ${showProductFactors ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('ProductFactors')}>
+                        Quality Factors
+                    </button>
+                    {showProductFactors && renderSection(fileData.factors.product_factors)}
 
-                <button className={`list-layout-button section-button ${showMeasures ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('Measures')}>
-                    Measures for Quality Factors
-                </button>
-                {showMeasures && renderSection(fileData.measures)}
+                    <button className={`list-layout-button section-button ${showMeasures ? 'expanded-main-section' : ''}`} onClick={() => toggleSection('Measures')}>
+                        Measures for Quality Factors
+                    </button>
+                    {showMeasures && renderSection(fileData.measures)}
+                </div>
             </div>
         );
     } catch (error) {

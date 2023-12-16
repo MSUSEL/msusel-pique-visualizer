@@ -1,12 +1,3 @@
-/*Descriptive Statistics Toggle Button */
-
-/* Wraps the tree canvas, buttons, and Descriptive Statistics panel together */
-#canvas-DS-wrapper {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
 /* Descriptive Statistics Toggle Button */
 .statistics-button {
     background-color: #4CAF50;
@@ -99,6 +90,7 @@
     background-color: rgba(255, 0, 0, 0.497);
 }
 .Severe-Level-Droplist {
+    padding: 5px;
     background-color: rgba(255, 0, 0, 0.321);
 }
 
@@ -106,6 +98,7 @@
     background-color: rgba(255, 166, 0, 0.715);
 }
 .High-Level-Droplist {
+    padding: 5px;
     background-color: rgba(255, 166, 0, 0.422);
 }
 
@@ -113,6 +106,7 @@
     background-color: rgba(243, 236, 102, 0.61);
 }
 .Moderate-Level-Droplist{
+    padding: 5px;
     background-color: rgba(243, 236, 102, 0.411);
 }
 
@@ -120,6 +114,7 @@
     background-color: rgba(0, 136, 255, 0.4);
 }
 .Minor-Level-Droplist{
+    padding: 5px;
     background-color: rgba(0, 136, 255, 0.297);
 }
 
@@ -127,6 +122,7 @@
     background-color: rgba(0, 128, 0, 0.437);
 }
 .Insignificant-Level-Droplist{
+    padding: 5px;
     background-color: rgba(0, 128, 0, 0.308);
 }
 
