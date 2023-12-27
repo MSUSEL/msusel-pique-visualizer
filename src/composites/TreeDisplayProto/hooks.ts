@@ -13,8 +13,8 @@ export const useDagre = (options?: Dagre.GraphLabel) => {
   return { graph };
 };
 
-export function* iterGraphData(sampleData: Record<string, any>) {
-  for (const [_, factorData] of Object.entries(sampleData)) {
+export function* iterGraphData(graphData: Record<string, any>) {
+  for (const [_, factorData] of Object.entries(graphData)) {
     for (const [_, nodeData] of Object.entries(factorData)) {
       const edges = Object.entries(nodeData.weights).map(([key, value]) => ({
         target: key,
@@ -32,7 +32,7 @@ export function createGraphLayout(
   nodeWidth: number = 150
 ) {
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
-  g.setGraph({ rankdir: "TB" });
+  g.setGraph({ rankdir: "TB", nodesep: 2, ranksep: 200 });
   const nodes = [];
   const edges = [];
   for (const [nodeData, outgoingEdges] of iterGraphData(data)) {
@@ -55,6 +55,7 @@ export function createGraphLayout(
       edges.push({
         source: nodeData.name,
         target: edge.target,
+        id: `${nodeData.name}-${edge.target}`,
       });
     }
   }
