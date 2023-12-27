@@ -1,4 +1,3 @@
-import Dagre from "@dagrejs/dagre";
 import { useMemo } from "react";
 import ReactFlow, {
   useNodesState,
@@ -8,13 +7,16 @@ import ReactFlow, {
   Controls,
   BackgroundVariant,
 } from "reactflow";
-import sampleData from "../../../public/PIQUE_json_files/compact_output.json";
 import "reactflow/dist/style.css";
 import { createGraphLayout } from "./hooks";
 
-export const TreeDisplayProto = () => {
+interface TreeDisplayProtoProps {
+  data: any;
+}
+
+export const TreeDisplayProto = (props: TreeDisplayProtoProps) => {
   const { edges: initialEdges, nodes: initialNodes } = useMemo(
-    () => createGraphLayout(sampleData.factors),
+    () => createGraphLayout(props.data),
     []
   );
 

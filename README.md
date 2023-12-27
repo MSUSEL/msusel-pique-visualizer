@@ -52,10 +52,15 @@ With the repository in your working directory, use the following commands:
 ### `npm install`
 This will install all of the packages necessary for the visualizer. *Only need to use this command **one time***
 
-### `npm start`
+### `npm run dev`
 
 Runs the visualizer and opens it in your browser.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+### `npm run storybook`
+Start storybook and open browser.
 
 Funding Agency: [<img src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg" width="20%" height="20%">](https://www.cisa.gov/)
+
+
+
