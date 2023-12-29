@@ -1,7 +1,8 @@
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
 import { TreeDisplay } from "./TreeDisplay";
-import { Box } from "@radix-ui/themes";
+import { ListDisplay } from "../ListDisplay/ListDisplay";
+import { Box, Tabs } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
 
 export const Wrapper = () => {
@@ -15,13 +16,43 @@ export const Wrapper = () => {
         <h1>PIQUE Visualizer</h1>
       </div>
 
+      {/* button bar */}
       <Box width={"100%"}>
         <ButtonContainer />
       </Box>
 
-      <Box width="100%">
-        <TreeDisplay fileData={dataset} />
-      </Box>
+      {/* legend - risk level */}
+
+      {/* layout tabs */}
+      <Tabs.Root defaultValue="tree">
+        <Tabs.List>
+          <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
+          <Tabs.Trigger value="list">List</Tabs.Trigger>
+          <Tabs.Trigger value="others">Others</Tabs.Trigger>
+        </Tabs.List>
+
+        <Box px="4" pt="3" pb="2">
+          <Tabs.Content value="tree">
+            <Box width="100%">
+              <TreeDisplay fileData={dataset} />
+            </Box>
+          </Tabs.Content>
+
+          <Tabs.Content value="list">
+          <Box width="100%">
+              <ListDisplay />
+            </Box>
+
+          </Tabs.Content>
+
+          <Tabs.Content value="others">
+
+          </Tabs.Content>
+        </Box>
+      </Tabs.Root>
+
+
+
     </div>
   );
 };
