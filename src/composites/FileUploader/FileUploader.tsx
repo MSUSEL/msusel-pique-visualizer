@@ -1,4 +1,5 @@
-import { Box, Button } from "@radix-ui/themes";
+import { Box, Button, Callout } from "@radix-ui/themes";
+import { InfoCircledIcon, FileTextIcon, ButtonIcon } from "@radix-ui/react-icons";
 import { useFileUpload } from "./use-file-uploader";
 import * as schema from "../../data/schema";
 import { useSetAtom } from "jotai";
@@ -17,39 +18,47 @@ export const FileUploader = () => {
         <img src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg" alt="CISA Logo" width="100" height="100" style={{ marginRight: '20px' }} />
         <h1>PIQUE Visualizer</h1>
       </div>
-      <p>Please upload the PIQUE JSON file to visualize the results</p>
 
-      <Box position={"relative"}>
-        <Button
-          size="4"
-          variant="surface"
-          radius="large"
-          onClick={() => {
-            selectFile({ accept: "json", multiple: false }, ({ file }) => {
-              const fileReader = new FileReader();
-              fileReader.onload = (e) => {
-                const result = e.target?.result;
+      <Callout.Root
+        size="2">
+        <Callout.Icon>
+          <InfoCircledIcon />
+        </Callout.Icon>
+        <Callout.Text>
+          Please upload the PIQUE JSON file to visualize the results
+        </Callout.Text>
+      </Callout.Root>
 
-                try {
-                  const parsed = JSON.parse(result as string);
-                  const validationResult = schema.base.dataset.safeParse(parsed);
+      <Button
+        size="4"
+        variant="surface"
+        radius="large"
+        onClick={() => {
+          selectFile({ accept: "json", multiple: false }, ({ file }) => {
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+              const result = e.target?.result;
 
-                  if (validationResult.success) {
-                    setDataset(validationResult.data);
-                  } else {
-                    // error
-                  }
-                } catch (e) {
-                  //error
+              try {
+                const parsed = JSON.parse(result as string);
+                const validationResult = schema.base.dataset.safeParse(parsed);
+
+                if (validationResult.success) {
+                  setDataset(validationResult.data);
+                } else {
+                  // error
                 }
-              };
-              fileReader.readAsText(file);
-            });
-          }}
-        >
-          Select File
-        </Button>
-      </Box>
+              } catch (e) {
+                //error
+              }
+            };
+            fileReader.readAsText(file);
+          });
+        }}
+      >
+        <FileTextIcon/> Select File
+      </Button>
+
     </div>
   );
 };
