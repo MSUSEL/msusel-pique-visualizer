@@ -9,7 +9,7 @@ PIQUE Visualizer accepts the compact json version of PIQUE results. These compac
 original PIQUE results through an algorithm that reduces parent-child relationship redundancy, and significantly\
 reduces the size of the json file while preserving the results.
 
-<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/file_upload.png" width="60%">
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/refactorZiyi/src/assets/PIQUE-Visualizer-Pictures/refactored_file_upload.png" width="60%">
 
 ---
 
