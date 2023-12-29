@@ -4,24 +4,28 @@ import { TreeDisplay } from "./TreeDisplay";
 import { ListDisplay } from "../ListDisplay/ListDisplay";
 import { Box, Tabs } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
+import { LegendContainer } from "../LegendContainer/Legend";
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
 
   return (
     <div>
+      {/* button bar */}
+      <Box width={"100%"}>
+        <ButtonContainer />
+      </Box>
+      
       {/* Title and Icon Centered */}
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
         <img src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg" alt="CISA Logo" width="100" height="100" style={{ marginRight: '20px' }} />
         <h1>PIQUE Visualizer</h1>
       </div>
 
-      {/* button bar */}
-      <Box width={"100%"}>
-        <ButtonContainer />
-      </Box>
-
       {/* legend - risk level */}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <LegendContainer />
+      </div>
 
       {/* layout tabs */}
       <Tabs.Root defaultValue="tree">
@@ -39,7 +43,7 @@ export const Wrapper = () => {
           </Tabs.Content>
 
           <Tabs.Content value="list">
-          <Box width="100%">
+            <Box width="100%">
               <ListDisplay />
             </Box>
 
