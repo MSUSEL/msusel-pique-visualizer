@@ -984,11 +984,11 @@ export default function TreeDisplay(props) {
         0
       ) {
         nfpa = nfpa.filter((e) => e.name !== clicked_id_name);
-      } else if (nodesForPanelBoxes.length < 5) {
+      } else if (nodesForPanelBoxes.length < 10) {
         nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
       } else {
         alert(
-          "Max amount of descriptions in side panel (5).\n" +
+          "Max amount of descriptions in side panel (10).\n" +
             "Remove nodes from side panel to add more."
         );
       }
