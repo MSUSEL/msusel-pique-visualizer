@@ -32,7 +32,7 @@ export const Wrapper = () => {
         <Tabs.List>
           <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
           <Tabs.Trigger value="list">List</Tabs.Trigger>
-          <Tabs.Trigger value="others">Others</Tabs.Trigger>
+   
         </Tabs.List>
 
         <Box px="4" pt="3" pb="2">
