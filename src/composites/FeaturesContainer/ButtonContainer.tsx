@@ -6,6 +6,7 @@ import { FilterButton } from "./FilterButton";
 import { ResetButton } from "./ResetButton";
 import { DesStatButton } from "./DescriptiveStatisticButton";
 import { QuickActionButton } from "./QuickActionButton";
+import { HideZeroWeights } from "./HideZeroWeightsSwitch";
 
 
 export const ButtonContainer = () => {
@@ -32,8 +33,11 @@ export const ButtonContainer = () => {
         <Separator orientation="vertical" />
         {/*  descriptive statisitcs*/}
         <DesStatButton />
+        <Separator orientation="vertical" />
 
         {/* Others */}
+        <HideZeroWeights/>
+        
       </Flex>
 
 
