@@ -31,7 +31,6 @@ export const NestedListDisplay = () => {
             const details = isWeight ? mapWeightsToData(value, path) : value;
             return renderAccordionItem(key, details, isWeight, path);
           } else {
-            // Render primitive values directly
             return <div key={key}>{key}: {value.toString()}</div>;
           }
         })}
@@ -75,7 +74,7 @@ export const NestedListDisplay = () => {
     <div>
       <Text weight="medium" align="center" size="5" as="div">{dataset?.name}</Text>
       {dataset?.factors?.tqi ? renderAccordion(dataset.factors.tqi, 'tqi') : <p>No TQI data available.</p>}
-      {/* Similarly for quality_aspects, product_factors, measures, diagnostics */}
+      
     </div>
   );
 };

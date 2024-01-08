@@ -3,9 +3,11 @@ import { State } from "../../state";
 import { TreeDisplay } from "./TreeDisplay";
 import { ListDisplay } from "../ListDisplay/ListDisplay";
 import { NestedListDisplay } from "../ListDisplay/NestedListLayout";
+import { TreeDisplayRefactored } from "./TreeDisplayRefactored";
 import { Box, Tabs } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
 import { LegendContainer } from "../LegendContainer/Legend";
+import { ViewVerticalIcon } from "@radix-ui/react-icons";
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
@@ -32,8 +34,10 @@ export const Wrapper = () => {
       <Tabs.Root defaultValue="tree">
         <Tabs.List>
           <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
+          <Tabs.Trigger value="treeRefactored">Tree-v2</Tabs.Trigger>
           <Tabs.Trigger value="list">List</Tabs.Trigger>
           <Tabs.Trigger value="nestedList">Nested List</Tabs.Trigger>
+          
 
         </Tabs.List>
 
@@ -41,6 +45,12 @@ export const Wrapper = () => {
           <Tabs.Content value="tree">
             <Box width="100%">
               <TreeDisplay fileData={dataset} />
+            </Box>
+          </Tabs.Content>
+
+          <Tabs.Content value="treeRefactored">
+            <Box width="100%">
+              <TreeDisplayRefactored />
             </Box>
           </Tabs.Content>
 
@@ -56,9 +66,6 @@ export const Wrapper = () => {
             </Box>
           </Tabs.Content>
 
-          <Tabs.Content value="others">
-
-          </Tabs.Content>
         </Box>
       </Tabs.Root>
 
