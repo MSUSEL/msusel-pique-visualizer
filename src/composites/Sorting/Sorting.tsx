@@ -67,6 +67,6 @@ const sortObject = <T extends Record<string, SortableItem>>(
 };
 
 
-const dataset = useAtom(State.dataset);
-const sortedMeasuresByValue = sortObject(dataset.measures, 'value', true); // Sort measures by value ascending
-const sortedMeasuresByWeight = sortObject(dataset.measures, 'weights', false); // Sort measures by weight descending
+// const dataset = useAtom(State.dataset);
+// const sortedMeasuresByValue = sortObject(dataset.measures, 'value', true); // Sort measures by value ascending
+// const sortedMeasuresByWeight = sortObject(dataset.measures, 'weights', false); // Sort measures by weight descending
