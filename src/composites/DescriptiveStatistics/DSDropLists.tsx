@@ -1,6 +1,8 @@
 // import { Component, ReactNode } from "react";
 import { descriptiveStatisticData, listNode } from './index.ts';
 import * as Accordion from "@radix-ui/react-accordion";
+import { Button, Theme, Box, Text, Strong } from '@radix-ui/themes';
+import { DotFilledIcon } from '@radix-ui/react-icons';
 
 // export class DisplayDSList extends Component<listProps, addDetState> {
 //     constructor(props: listProps) {
@@ -73,31 +75,36 @@ export function DisplayDSList(risk:string, section:string, props:descriptiveStat
     if (targetArray.length === 0) {
         /* Returns a paragraph in place of a descriptive list */
         return ( 
-            <Accordion.Root type='single'>
-                <Accordion.Item value = 'noNodes'>
-                    No nodes match this risk level
-                </Accordion.Item>
-            </Accordion.Root>
+            <Accordion.Item value = 'noNodes'>
+                No nodes match this risk level
+            </Accordion.Item>
         );
     }
     else {
         const items = targetArray.map((item, index:number) => (
-            <div className = {childClass} key={index}>
-                <div className="dropBox">
-                    <dt>{item.name}
-                        { /* Zooms tree graph to given node */ }
-                        <button>View Node</button>
-                    </dt>
-                    <dd>{"Value: " + item.value}</dd>
-                    {item.description && (<dd>{"Description: " + item.description}</dd>)}
-                    <dd>{"Evaluation Strategy: " + item.eval_strategy}</dd>
-                    <dd>{"Normalizer: " + item.normalizer}</dd>
-                    <dd>{"Utility Function: " + item.utility_function}</dd>
-                </div>
-            </div>
+            <Box className = {childClass} key={index}>
+                <Text as='p'><Strong>{item.name}</Strong>
+                    { /* Zooms tree graph to given node */ }
+                    <Button className='Button'>View Node</Button>
+                </Text>
+                <Text as='p'><DotFilledIcon/>{"Value: " + item.value}</Text>
+                {item.description && (<Text as='p'><DotFilledIcon/>{"Description: " + item.description}</Text>)}
+                <Text as='p'><DotFilledIcon/>{"Evaluation Strategy: " + item.eval_strategy}</Text>
+                <Text as='p'><DotFilledIcon/>{"Normalizer: " + item.normalizer}</Text>
+                <Text as='p'><DotFilledIcon/>{"Utility Function: " + item.utility_function}</Text>
+            </Box>
         ));
         return (
-            <Accordion.Root type='multiple'>{items}</Accordion.Root>
+            <Box>
+                <Theme
+                    accentColor="gray"
+                    grayColor="gray"
+                    panelBackground="solid"
+                    scaling="100%"
+                    radius="full">
+                    {items}
+                </Theme>
+            </Box>
         );
     }
 }
