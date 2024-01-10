@@ -1,3 +1,5 @@
+![PIQUE Logo](./src/assets/PIQUE_svg.svg)
+
 # PIQUE Visualizer
 A React app used to visualize PIQUE results. In a hierachical tree display, the quality scores from\
 PIQUE results are much easier to understand than trying to parse through complicated json files.
