@@ -17,7 +17,9 @@ export const FileUploader = () => {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <img src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg" alt="CISA Logo" width="100" height="100" style={{ marginRight: '20px' }} />
         <h1>PIQUE Visualizer</h1>
+        <img src="https://raw.githubusercontent.com/MSUSEL/msusel-pique-visualizer/refactorZiyi/src/assets/PIQUE_svg.svg" alt="PIQUE Logo" width="100" height="100" style={{ marginLeft: '20px' }} />
       </div>
+
 
       <Callout.Root
         size="2">
@@ -56,7 +58,7 @@ export const FileUploader = () => {
           });
         }}
       >
-        <FileTextIcon/> Select File
+        <FileTextIcon /> Select File
       </Button>
 
     </div>
