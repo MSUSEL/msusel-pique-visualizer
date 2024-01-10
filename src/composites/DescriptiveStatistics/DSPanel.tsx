@@ -1,201 +1,145 @@
-import { useState } from "react";
+import React from "react";
 import "./DescriptiveStats.css";
 import {nodeRiskTally, DisplayDSList} from './index.ts';
+import { ScrollArea, Theme, Heading, Text, Button } from "@radix-ui/themes";
+import { ChevronDownIcon } from '@radix-ui/react-icons';
+import * as Accordion from "@radix-ui/react-accordion";
+import classNames from 'classnames';
 
 export function DSSide(): JSX.Element {
-    const [cDropStates, setCDropStates] = useState<Array<boolean>>(Array(15).fill(false));
-
     { /* Creates the array of tallies for each risk level */ }
     const descriptiveStatisticData = nodeRiskTally();
 
-    return (            
-        <div>
-        {/* Quality Characteristics */}
-        <h4>Quality Characteristics</h4>
-        
-        <p className = "SevereLevelCard">Severe: {descriptiveStatisticData.qualityAspectsCount[0]}
-        <button onClick={() => {
-            { /* Swaps visibility state for given index */ }
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[0] = !prevStates[0];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[0] && DisplayDSList('severe', 'quality_aspects', descriptiveStatisticData)
-        }
-
-        <p className = "HighLevelCard">High: {descriptiveStatisticData.qualityAspectsCount[1]} 
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[1] = !prevStates[1];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[1] && DisplayDSList('high', 'quality_aspects', descriptiveStatisticData)
-        }
-
-        <p className = "ModerateLevelCard">Moderate: {descriptiveStatisticData.qualityAspectsCount[2]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[2] = !prevStates[2];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[2] && DisplayDSList('moderate', 'quality_aspects', descriptiveStatisticData)
-        }
-
-        <p className = "MinorLevelCard">Minor: {descriptiveStatisticData.qualityAspectsCount[3]}
-        <button onClick={() => {
-            const updatedDropStates = [...cDropStates];
-            updatedDropStates[3] = !cDropStates[3];
-            setCDropStates(updatedDropStates);
-            }}>&or;</button></p>
-        {
-            cDropStates[3] && DisplayDSList('minor', 'quality_aspects', descriptiveStatisticData)
-        }
-        
-        <p className = "InsignificantLevelCard">Insignificant: {descriptiveStatisticData.qualityAspectsCount[4]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[4] = !prevStates[4];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[4] && DisplayDSList('insignificant', 'quality_aspects', descriptiveStatisticData)
-        }
+    return (        
+        <ScrollArea 
+            className="ScrollArea"
+            type="always" 
+            scrollbars="vertical" 
+            style={{width: 400, height: 500}} 
+            radius="full"
+            size="1">
+            <Theme
+                accentColor="gray"
+                grayColor="gray"
+                panelBackground="solid"
+                scaling="100%"
+                radius="full">
 
 
-        {/* Quality Factors */}
-        <h4>Quality Factors</h4>
-        <p className = "SevereLevelCard">Severe: {descriptiveStatisticData.qualityFactorsCount[0]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[5] = !prevStates[5];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[5] && DisplayDSList('severe', 'product_factors', descriptiveStatisticData)
-        }
-        
-        <p className = "HighLevelCard">High: {descriptiveStatisticData.qualityFactorsCount[1]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[6] = !prevStates[6];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[6] && DisplayDSList('high', 'product_factors', descriptiveStatisticData)
-        }
-        
-        <p className = "ModerateLevelCard">Moderate: {descriptiveStatisticData.qualityFactorsCount[2]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[7] = !prevStates[7];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[7] && DisplayDSList('high', 'product_factors', descriptiveStatisticData)
-        }
-        
-        <p className = "MinorLevelCard">Minor: {descriptiveStatisticData.qualityFactorsCount[3]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[8] = !prevStates[8];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[8] && DisplayDSList('minor', 'product_factors', descriptiveStatisticData)
-        }
-        
-        <p className = "InsignificantLevelCard">Insignificant: {descriptiveStatisticData.qualityFactorsCount[4]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[9] = !prevStates[9];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[9] && DisplayDSList('insignificant', 'product_factors', descriptiveStatisticData)
-        }
+                {/* Quality Characteristics */}
+                <Heading>Quality Characteristics</Heading>
+                
+                <Accordion.Root className="AccordionRoot" type="multiple" defaultValue={[]}>
+                    <Accordion.Item className="AccordionItem" value="item-1">
+                        <AccordionTrigger>Severe: {descriptiveStatisticData.qualityAspectsCount[0]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('severe', 'quality_aspects', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
 
-        {/* Quality Factors Measures */}
-        <h4>Measures for Quality Factors</h4>
-        <p className = "SevereLevelCard">Severe: {descriptiveStatisticData.measuresCount[0]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[10] = !prevStates[10];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[10] && DisplayDSList('severe', 'measures', descriptiveStatisticData)
-        }
-        
-        <p className = "HighLevelCard">High: {descriptiveStatisticData.measuresCount[1]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[11] = !prevStates[11];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[11] && DisplayDSList('high', 'measures', descriptiveStatisticData)
-        }
-        
-        <p className = "ModerateLevelCard">Moderate: {descriptiveStatisticData.measuresCount[2]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[12] = !prevStates[12];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[12] && DisplayDSList('moderate', 'measures', descriptiveStatisticData)
-        }
-        
-        <p className = "MinorLevelCard">Minor: {descriptiveStatisticData.measuresCount[3]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[13] = !prevStates[13];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[13] && DisplayDSList('minor', 'measures', descriptiveStatisticData)
-        }
-        
-        <p className = "InsignificantLevelCard">Insignificant: {descriptiveStatisticData.measuresCount[4]}
-        <button onClick={() => {
-            setCDropStates(prevStates => {
-                const updatedDropStates = [...prevStates];
-                updatedDropStates[14] = !prevStates[14];
-                return updatedDropStates;
-            });
-            }}>&or;</button></p>
-        {
-            cDropStates[14] && DisplayDSList('insignificant', 'measures', descriptiveStatisticData)
-        }            
-        </div>
+                    <Accordion.Item className="AccordionItem" value="item-2">
+                        <AccordionTrigger>High: {descriptiveStatisticData.qualityAspectsCount[1]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('high', 'quality_aspects', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-3">
+                        <AccordionTrigger>Moderate: {descriptiveStatisticData.qualityAspectsCount[2]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('moderate', 'quality_aspects', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-4">
+                        <AccordionTrigger>Minor: {descriptiveStatisticData.qualityAspectsCount[3]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('minor', 'quality_aspects', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-5">
+                        <AccordionTrigger>Insignificant: {descriptiveStatisticData.qualityAspectsCount[4]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('insignificant', 'quality_aspects', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+                </Accordion.Root>
+
+
+                {/* Quality Factors */}
+                <Heading>Quality Factors</Heading>
+                <Accordion.Root className="AccordionRoot" type="multiple" defaultValue={[]}>
+                    <Accordion.Item className="AccordionItem" value="item-1">
+                        <AccordionTrigger>Severe: {descriptiveStatisticData.qualityFactorsCount[0]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('severe', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-2">
+                        <AccordionTrigger>High: {descriptiveStatisticData.qualityFactorsCount[1]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('high', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-3">
+                        <AccordionTrigger>Moderate: {descriptiveStatisticData.qualityFactorsCount[2]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('moderate', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-4">
+                        <AccordionTrigger>Minor: {descriptiveStatisticData.qualityFactorsCount[3]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('minor', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-5">
+                        <AccordionTrigger>Insignificant: {descriptiveStatisticData.qualityFactorsCount[4]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('insignificant', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+                </Accordion.Root>
+                
+                {/* Quality Factors Measures */}
+                <Heading>Measures for Quality Factors</Heading>
+                <Accordion.Root className="AccordionRoot" type="multiple" defaultValue={[]}>
+                    <Accordion.Item className="AccordionItem" value="item-1">
+                        <AccordionTrigger>Severe: {descriptiveStatisticData.measuresCount[0]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('severe', 'measures', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-2">
+                        <AccordionTrigger>High: {descriptiveStatisticData.measuresCount[1]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('high', 'measures', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-3">
+                        <AccordionTrigger>Moderate: {descriptiveStatisticData.measuresCount[2]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('moderate', 'measures', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-4">
+                        <AccordionTrigger>Minor: {descriptiveStatisticData.measuresCount[3]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('minor', 'measures', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+
+                    <Accordion.Item className="AccordionItem" value="item-5">
+                        <AccordionTrigger>Insignificant: {descriptiveStatisticData.measuresCount[4]}</AccordionTrigger>
+                        <AccordionContent>{DisplayDSList('insignificant', 'measures', descriptiveStatisticData)}</AccordionContent>
+                    </Accordion.Item>
+                </Accordion.Root>            
+            </Theme>
+        </ScrollArea>
     );
 };
+
+
+/* Taken from Radix UI docs */
+const AccordionTrigger = React.forwardRef(({ children, className, ...props }, forwardedRef) => (
+    <Accordion.Header className="AccordionHeader">
+      <Accordion.Trigger
+        className={classNames('AccordionTrigger', className)}
+        {...props}
+        ref={forwardedRef}
+      >
+        {children}
+        <ChevronDownIcon className="AccordionChevron" aria-hidden />
+      </Accordion.Trigger>
+    </Accordion.Header>
+));
+  
+const AccordionContent = React.forwardRef(({ children, className, ...props }, forwardedRef) => (
+<Accordion.Content
+    className={classNames('AccordionContent', className)}
+    {...props}
+    ref={forwardedRef}>
+
+    <div className="AccordionContentText">{children}</div>
+</Accordion.Content>
+));

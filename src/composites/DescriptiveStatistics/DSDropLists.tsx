@@ -1,5 +1,6 @@
 // import { Component, ReactNode } from "react";
 import { descriptiveStatisticData, listNode } from './index.ts';
+import * as Accordion from "@radix-ui/react-accordion";
 
 // export class DisplayDSList extends Component<listProps, addDetState> {
 //     constructor(props: listProps) {
@@ -72,9 +73,11 @@ export function DisplayDSList(risk:string, section:string, props:descriptiveStat
     if (targetArray.length === 0) {
         /* Returns a paragraph in place of a descriptive list */
         return ( 
-        <div className = {childClass}>
-            <dd>No nodes match this risk level</dd>
-        </div>
+            <Accordion.Root type='single'>
+                <Accordion.Item value = 'noNodes'>
+                    No nodes match this risk level
+                </Accordion.Item>
+            </Accordion.Root>
         );
     }
     else {
@@ -94,7 +97,7 @@ export function DisplayDSList(risk:string, section:string, props:descriptiveStat
             </div>
         ));
         return (
-            <dl>{items}</dl>
+            <Accordion.Root type='multiple'>{items}</Accordion.Root>
         );
     }
 }
