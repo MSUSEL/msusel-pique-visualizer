@@ -36,7 +36,7 @@ export const FileUploader = () => {
         variant="surface"
         radius="large"
         onClick={() => {
-          selectFile({ accept: "json", multiple: false }, ({ file }) => {
+          selectFile({ accept: ".json", multiple: false }, ({ file }) => {
             const fileReader = new FileReader();
             fileReader.onload = (e) => {
               const result = e.target?.result;
