@@ -1,4 +1,4 @@
-![PIQUE Logo](./src/assets/PIQUE_svg.svg)
+<img src="./src/assets/PIQUE_svg.svg" width="100" height="100" alt="PIQUE Logo">
 
 # PIQUE Visualizer
 A React app used to visualize PIQUE results. In a hierachical tree display, the quality scores from\
