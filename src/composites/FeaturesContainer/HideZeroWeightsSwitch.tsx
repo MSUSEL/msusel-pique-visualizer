@@ -16,7 +16,7 @@ export const HideZeroWeightsSwitch = () => {
             <Text as="label" size="2">
                 <Flex gap="2">
                     <Switch checked={hideZeroWeightEdgeState === "hidding"} onCheckedChange={handleToggle} />
-                    Hide Weight = 0 Edges
+                    Hide Weight = 0 Edges 
                 </Flex>
             </Text>
         </Flex>
