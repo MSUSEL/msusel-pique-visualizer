@@ -1,6 +1,7 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
 import { Select, DropdownMenu, Separator, Flex, Text } from "@radix-ui/themes";
+import { HideZeroWeightsSwitch } from "./HideZeroWeightsSwitch";
 
 
 export const QuickActionButton = () => {
@@ -17,7 +18,8 @@ export const QuickActionButton = () => {
           <Select.Content>
             <Select.Group>
               <Select.Label>Options</Select.Label>
-              <Select.Item value="remove 0s">Remove weight = 0</Select.Item>
+              {/* <Select.Item value="remove 0s">Remove weight = 0</Select.Item> */}
+              <HideZeroWeightsSwitch/>
             </Select.Group>
 
        

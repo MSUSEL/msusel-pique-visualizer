@@ -36,7 +36,7 @@ export const ButtonContainer = () => {
         <Separator orientation="vertical" />
 
         {/* Others */}
-        <HideZeroWeightsSwitch/>
+        {/* <HideZeroWeightsSwitch/>*/}
         
       </Flex>
 
