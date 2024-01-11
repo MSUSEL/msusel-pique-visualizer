@@ -5,11 +5,18 @@ import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDownIcon, EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import "./ListDisplay.css"
 import { useState } from 'react';
+import { sort } from "../Sorting/Sorting";
+// import { filter } from '../Filtering/Filtering';
+// import { removeZeroWeights } from '../Filtering/Filtering';
 
 
 
 export const ListDisplay = () => {
   const dataset = useAtomValue(State.dataset);
+  const sortState = useAtomValue(State.sortingState);
+  // const filterState = useAtomValue(State.filteringState);
+
+  const processedData = sort(sortState);//sort(filter(Data, filterState), sortState);  
 
   const renderDetails = (Data: { [key: string]: any }) => {
     return (
@@ -50,12 +57,6 @@ export const ListDisplay = () => {
   };
 
 
-
-  const getFirstKeyValue = (obj: { [key: string]: any }) => {
-    const firstKey = Object.keys(obj)[0];
-    return obj[firstKey]?.value;
-  };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       {/* Title */}
@@ -77,8 +78,8 @@ export const ListDisplay = () => {
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
-            {dataset?.factors?.tqi
-              ? renderDetails(dataset.factors.tqi)
+            {processedData?.factors?.tqi
+              ? renderDetails(processedData.factors.tqi)
               : <p>No TQI data available.</p>}
           </Accordion.Content>
         </Accordion.Item>
@@ -92,8 +93,8 @@ export const ListDisplay = () => {
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
-            {dataset?.factors?.tqi
-              ? renderDetails(dataset.factors.quality_aspects)
+            {processedData?.factors?.quality_aspects
+              ? renderDetails(processedData.factors.quality_aspects)
               : <p>No characteristics data available.</p>}
           </Accordion.Content>
         </Accordion.Item>
@@ -107,9 +108,39 @@ export const ListDisplay = () => {
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
-            {dataset?.factors?.tqi
-              ? renderDetails(dataset.factors.product_factors)
+            {processedData?.factors?.product_factors
+              ? renderDetails(processedData.factors.product_factors)
               : <p>No factors data available.</p>}
+          </Accordion.Content>
+        </Accordion.Item>
+
+        {/* 4th level: measures */}
+        <Accordion.Item value="measures" className="AccordionItem">
+          <Accordion.Header>
+            <Accordion.Trigger className="AccordionTrigger">
+              Measures
+              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+            </Accordion.Trigger>
+          </Accordion.Header>
+          <Accordion.Content>
+            {processedData?.measures
+              ? renderDetails(processedData.measures)
+              : <p>No measures data available.</p>}
+          </Accordion.Content>
+        </Accordion.Item>
+
+        {/* 5th level: factors (product_factors) */}
+        <Accordion.Item value="diagnostics" className="AccordionItem">
+          <Accordion.Header>
+            <Accordion.Trigger className="AccordionTrigger">
+              Diagnostics
+              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+            </Accordion.Trigger>
+          </Accordion.Header>
+          <Accordion.Content>
+            {processedData?.diagnostics
+              ? renderDetails(processedData.diagnostics)
+              : <p>No diagnostics data available.</p>}
           </Accordion.Content>
         </Accordion.Item>
 
