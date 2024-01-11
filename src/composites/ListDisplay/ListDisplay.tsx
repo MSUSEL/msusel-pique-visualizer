@@ -1,4 +1,4 @@
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
 import { Text } from "@radix-ui/themes";
 import * as Accordion from '@radix-ui/react-accordion';
@@ -16,13 +16,15 @@ export const ListDisplay = () => {
   const dataset = useAtomValue(State.dataset);
   const sortState = useAtomValue(State.sortingState);
   const filterState = useAtomValue(State.filteringState);
+  const [checkboxStates] = useAtom(State.filteringByRiskLevelCheckboxStates);
+
 
   let processedData = dataset;
 
   // Check if dataset is not undefined before trying to process it
   if (dataset) {
     const sortedData = sort(sortState);
-    processedData = filterByRiskLevels(sortedData);
+    processedData = filterByRiskLevels(sortedData, checkboxStates);
   }
 
 

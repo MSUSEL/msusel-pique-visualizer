@@ -8,8 +8,9 @@ interface FilterableItem {
     [key: string]: any;
 }
 
-export function filterByRiskLevels(dataset: schema.base.Schema | undefined): schema.base.Schema | undefined {
-    const [checkboxStates] = useAtom(State.filteringByRiskLevelCheckboxStates);
+// export function filterByRiskLevels(dataset: schema.base.Schema | undefined): schema.base.Schema | undefined {
+export function filterByRiskLevels(dataset: schema.base.Schema | undefined, checkboxStates: Record<string, boolean>): schema.base.Schema | undefined {
+    // const [checkboxStates] = useAtom(State.filteringByRiskLevelCheckboxStates);
     if (!dataset) return undefined;
 
     // Helper function to classify risk level
