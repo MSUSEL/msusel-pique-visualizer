@@ -6,17 +6,25 @@ import { ChevronDownIcon, EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-ico
 import "./ListDisplay.css"
 import { useState } from 'react';
 import { sort } from "../Sorting/Sorting";
-// import { filter } from '../Filtering/Filtering';
-// import { removeZeroWeights } from '../Filtering/Filtering';
+import { filterByRiskLevels } from '../Filtering/Filtering';
+import { hideZeroWeightEdges } from "../Filtering/hideZeroWeightEdges";
+
 
 
 
 export const ListDisplay = () => {
   const dataset = useAtomValue(State.dataset);
   const sortState = useAtomValue(State.sortingState);
-  // const filterState = useAtomValue(State.filteringState);
+  const filterState = useAtomValue(State.filteringState);
 
-  const processedData = sort(sortState);//sort(filter(Data, filterState), sortState);  
+  let processedData = dataset;
+
+  // Check if dataset is not undefined before trying to process it
+  if (dataset) {
+    const sortedData = sort(sortState);
+    processedData = filterByRiskLevels(sortedData);
+  }
+
 
   const renderDetails = (Data: { [key: string]: any }) => {
     return (

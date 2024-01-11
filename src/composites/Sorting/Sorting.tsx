@@ -62,6 +62,7 @@ function sortWeightsAndChildren(children: Record<string, any>, weights: Record<s
 
 export function sort(sortState: string): schema.base.Schema | undefined {
     const dataset = useAtomValue(State.dataset);
+    //const sortState = useAtomValue(State.sortingState);
     if (!dataset) return undefined;
 
     // Clone the dataset
