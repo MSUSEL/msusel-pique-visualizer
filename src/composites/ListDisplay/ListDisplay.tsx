@@ -17,7 +17,7 @@ export const ListDisplay = () => {
   const sortState = useAtomValue(State.sortingState);
   const filterState = useAtomValue(State.filteringState);
   const [checkboxStates] = useAtom(State.filteringByRiskLevelCheckboxStates);
-
+  const hideZeroWeightEdgeState = useAtomValue(State.hideZeroWeightEdgeState);
 
   let processedData = dataset;
 
@@ -25,6 +25,8 @@ export const ListDisplay = () => {
   if (dataset) {
     const sortedData = sort(sortState);
     processedData = filterByRiskLevels(sortedData, checkboxStates);
+    processedData = hideZeroWeightEdges(processedData)
+
   }
 
 

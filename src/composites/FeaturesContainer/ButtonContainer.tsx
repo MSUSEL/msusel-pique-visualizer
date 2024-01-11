@@ -1,12 +1,12 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Select, DropdownMenu, Separator, Flex, Text } from "@radix-ui/themes";
+import { Separator, Flex } from "@radix-ui/themes";
 import { SortButton} from "./SortButton";
 import { FilterButton } from "./FilterButton";
 import { ResetButton } from "./ResetButton";
 import { DesStatButton } from "./DescriptiveStatisticButton";
 import { QuickActionButton } from "./QuickActionButton";
-import { HideZeroWeights } from "./HideZeroWeightsSwitch";
+import { HideZeroWeightsSwitch } from "./HideZeroWeightsSwitch";
 
 
 export const ButtonContainer = () => {
@@ -36,7 +36,7 @@ export const ButtonContainer = () => {
         <Separator orientation="vertical" />
 
         {/* Others */}
-        <HideZeroWeights/>
+        <HideZeroWeightsSwitch/>
         
       </Flex>
 
