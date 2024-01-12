@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { State } from "../../state";
-import { Select, Flex, HoverCard, Link, Text } from "@radix-ui/themes";
+import { DropdownMenu, Flex, HoverCard, Link, Text, Button } from "@radix-ui/themes";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 
 export const SortButton = () => {
@@ -10,8 +10,6 @@ export const SortButton = () => {
   const handleSortChange = (value: string) => {
     if (["no-sort", "value-asc", "value-desc", "weight-asc", "weight-desc"].includes(value)) {
       setSortState(value as "no-sort" | "value-asc" | "value-desc" | "weight-asc" | "weight-desc");
-      // For testing: Log the current sort state after it changes
-      // console.log("Sort State set to:", value);
     }
   };
 
@@ -20,12 +18,18 @@ export const SortButton = () => {
 
   return (
     <Flex gap="3" align="center">
-      <Select.Root onValueChange={handleSortChange}>
-        <Select.Trigger placeholder="No Sorting" variant="soft" />
-        <Select.Content>
-          <Select.Group>
-            <Select.Label>Based on Values</Select.Label>
-            <Select.Item value="value-asc"> Value - {' '}
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+        <Button variant="soft">
+            <CaretSortIcon />
+            {sortState === "no-sort" ? "No Sorting" : sortState}
+          </Button>
+        </DropdownMenu.Trigger>
+
+        <DropdownMenu.Content>
+          
+            <DropdownMenu.Label>Based on Values</DropdownMenu.Label>
+            <DropdownMenu.Item onSelect={() => handleSortChange("value-asc")}> Value - {' '}
               <HoverCard.Root>
                 <HoverCard.Trigger>
                   <Link href="#">Ascending</Link>
@@ -38,8 +42,9 @@ export const SortButton = () => {
 
               </HoverCard.Root>
               {' '}
-            </Select.Item>
-            <Select.Item value="value-desc">Value - {' '}
+            </DropdownMenu.Item>
+
+            <DropdownMenu.Item onSelect={() => handleSortChange("value-desc")}>Value - {' '}
               <HoverCard.Root>
                 <HoverCard.Trigger>
                   <Link href="#">Descending</Link>
@@ -51,14 +56,14 @@ export const SortButton = () => {
                 </HoverCard.Content>
 
               </HoverCard.Root>
-              {' '}</Select.Item>
-          </Select.Group>
+              {' '}</DropdownMenu.Item>
+          
 
-          <Select.Separator />
+          <DropdownMenu.Separator />
 
-          <Select.Group>
-            <Select.Label>Based on Weights</Select.Label>
-            <Select.Item value="weight-asc">Weight - {' '}
+          
+            <DropdownMenu.Label>Based on Weights</DropdownMenu.Label>
+            <DropdownMenu.Item onSelect={() => handleSortChange("weight-asc")}>Weight - {' '}
               <HoverCard.Root>
                 <HoverCard.Trigger>
                   <Link href="#">Ascending</Link>
@@ -70,21 +75,24 @@ export const SortButton = () => {
                 </HoverCard.Content>
 
               </HoverCard.Root>
-              {' '}</Select.Item>
-            <Select.Item value="weight-desc">Weight - <HoverCard.Root>
-              <HoverCard.Trigger>
-                <Link href="#">Descending</Link>
-              </HoverCard.Trigger>
-              <HoverCard.Content size="2">
-                <Text as="div" size="2" style={{ maxWidth: 325 }}>
-                  Descending: For the tree view, the descending sorting will sort the largest on the right and the smallest on the right.
-                </Text>
-              </HoverCard.Content>
+              {' '}</DropdownMenu.Item>
 
-            </HoverCard.Root></Select.Item>
-          </Select.Group>
-        </Select.Content>
-      </Select.Root>
+            <DropdownMenu.Item onSelect={() => handleSortChange("weight-desc")}>Weight - {' '}
+              <HoverCard.Root>
+                <HoverCard.Trigger>
+                  <Link href="#">Descending</Link>
+                </HoverCard.Trigger>
+                <HoverCard.Content size="2">
+                  <Text as="div" size="2" style={{ maxWidth: 325 }}>
+                    Descending: For the tree view, the descending sorting will sort the largest on the right and the smallest on the right.
+                  </Text>
+                </HoverCard.Content>
+
+              </HoverCard.Root>
+              {' '}</DropdownMenu.Item>
+          
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
     </Flex>
   );
 };

@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Select, TextField, Dialog, Button, Flex, Text } from "@radix-ui/themes";
-
+import { Select, TextField, Dialog, Button, Flex, Text, DropdownMenu } from "@radix-ui/themes";
+import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 
 export const FilterButton = () => {
   const dataset = useAtomValue(State.dataset);
@@ -16,28 +16,36 @@ export const FilterButton = () => {
   return (
 
     <Flex gap="3" align="center">
-      <Select.Root>
-        <Select.Trigger placeholder="No Filtering" variant="soft" />
-        <Select.Content>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger >
+          <Button variant="soft">
+            <MixerHorizontalIcon />
+            No Filtering
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
           {/* filter by risk level*/}
-          <Select.Group>
-            <Select.Label>Risk Level</Select.Label>
+          <DropdownMenu.Group>
+            <DropdownMenu.Label>Risk Level</DropdownMenu.Label>
             {["Insignificant", "Low", "Medium", "High", "Severe"].map((label) => (
-              <label key={label}>
-                <input
-                  type="checkbox"
-                  checked={checkboxStates[label]}
-                  onChange={handleCheckboxChange(label)}
-                />
-                {label}
-              </label>
+              <DropdownMenu.Item key={label}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={checkboxStates[label]}
+                    onChange={handleCheckboxChange(label)}
+                  />
+                  {label}
+                </label>
+              </DropdownMenu.Item>
             ))}
-          </Select.Group>
+          </DropdownMenu.Group>
 
-          <Select.Separator />
+          <DropdownMenu.Separator />
+
           {/* filter by objects value range*/}
-          <Select.Group>
-            <Select.Label>Value</Select.Label>
+          <DropdownMenu.Group>
+            <DropdownMenu.Label>Value</DropdownMenu.Label>
             <Dialog.Root>
               <Dialog.Trigger>
                 <Button>By value range</Button>
@@ -83,12 +91,13 @@ export const FilterButton = () => {
               </Dialog.Content>
             </Dialog.Root>
 
-          </Select.Group>
+          </DropdownMenu.Group>
 
-          <Select.Separator />
+          <DropdownMenu.Separator />
+
           {/* filter by objects weights range*/}
-          <Select.Group>
-            <Select.Label>Weight</Select.Label>
+          <DropdownMenu.Group>
+            <DropdownMenu.Label>Weight</DropdownMenu.Label>
             <Dialog.Root>
               <Dialog.Trigger>
                 <Button>By weight range</Button>
@@ -135,9 +144,9 @@ export const FilterButton = () => {
             </Dialog.Root>
 
 
-          </Select.Group>
-        </Select.Content>
-      </Select.Root>
+          </DropdownMenu.Group>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
 
     </Flex>
 
