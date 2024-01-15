@@ -8,9 +8,33 @@ import { useState } from 'react';
 import { sort } from "../Sorting/Sorting";
 import { filterByRiskLevels } from '../Filtering/Filtering';
 import { hideZeroWeightEdges } from "../Filtering/hideZeroWeightEdges";
+import { styled } from '@stitches/react';
 
 
+// Styled components to differentiate between different levels
+const StyledTrigger = styled(Accordion.Trigger, {
+  // Add your custom styles here
+  backgroundColor: '#f0f0f0',
+  padding: '10px',
+  borderRadius: '4px',
+  cursor: 'pointer',
+  fontWeight: 'bold',
+  margin: '5px 0',
+  '&[data-state="closed"]': { backgroundColor: '#e0e0e0' },
+  '&[data-state="open"]': { backgroundColor: '#d0d0d0' },
+});
 
+const StyledContent = styled(Accordion.Content, {
+  // Add your custom styles here
+  padding: '0 20px',
+  borderBottom: '1px solid #e0e0e0',
+  marginLeft: '20px', // Indentation for nested items
+});
+
+const StyledItem = styled('div', {
+  // Non-accordion items
+  padding: '4px 0',
+});
 
 export const ListDisplay = () => {
   const dataset = useAtomValue(State.dataset);
@@ -58,14 +82,39 @@ export const ListDisplay = () => {
   };
 
 
-  const renderAdditionalDetails = (details: { [key: string]: any }) => {
-    return Object.entries(details)
-      .filter(([key]) => key !== 'name' && key !== 'value')  // Exclude 'name' and 'value'
-      .map(([key, value]) => (
-        <div key={key} style={{ padding: '4px 0' }}>
-          <strong>{key}:</strong> {JSON.stringify(value, null, 2)}
-        </div>
-      ));
+  const renderAdditionalDetails = (details: { [key: string]: any }, depth: number = 0) => {
+    const renderDetailItem = (key: string, value: any, depth: number): JSX.Element => {
+      const isNestedObject = typeof value === 'object' && value !== null && !Array.isArray(value);
+
+      if (isNestedObject) {
+        // It's a nested object, render an accordion
+        return (
+          <Accordion.Item key={key} value={key}>
+            <StyledTrigger style={{ marginLeft: `${depth * 10}px` }}>{key}</StyledTrigger>
+            <StyledContent>
+              {Object.entries(value).map(([nestedKey, nestedValue]) =>
+                renderDetailItem(nestedKey, nestedValue, depth + 1)
+              )}
+            </StyledContent>
+          </Accordion.Item>
+        );
+      } else {
+        // It's a normal value or an array, render it inline
+        return (
+          <StyledItem key={key} style={{ marginLeft: `${depth * 10}px` }}>
+            <strong>{key}:</strong> {JSON.stringify(value, null, 2)}
+          </StyledItem>
+        );
+      }
+    };
+
+    return (
+      <Accordion.Root type="multiple">
+        {Object.entries(details).map(([key, value]) => {
+          return renderDetailItem(key, value, depth);
+        })}
+      </Accordion.Root>
+    );
   };
 
 
@@ -81,11 +130,6 @@ export const ListDisplay = () => {
           <Accordion.Header>
             <Accordion.Trigger className="AccordionTrigger">
               TQI
-              {/*
-              {typeof getFirstKeyValue(dataset?.factors?.tqi) !== 'undefined'
-                ? getFirstKeyValue(dataset.factors.tqi)
-                : <p>No TQI score available.</p>}
-              */}
               <ChevronDownIcon className="AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>

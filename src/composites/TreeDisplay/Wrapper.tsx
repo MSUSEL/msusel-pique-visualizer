@@ -7,7 +7,8 @@ import { TreeDisplayRefactored } from "./TreeDisplayRefactored";
 import { Box, Tabs } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
 import { LegendContainer } from "../LegendContainer/Legend";
-import { ViewVerticalIcon } from "@radix-ui/react-icons";
+import { ViewVerticalIcon, BarChartIcon } from "@radix-ui/react-icons";
+import { OverviewTab } from "../FeaturesContainer/OverviewTab";
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
@@ -32,17 +33,24 @@ export const Wrapper = () => {
       </div>
 
       {/* layout tabs */}
-      <Tabs.Root defaultValue="tree">
+      <Tabs.Root defaultValue="overview">
         <Tabs.List>
+          <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
           <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
           <Tabs.Trigger value="treeRefactored">Tree-v2</Tabs.Trigger>
           <Tabs.Trigger value="list">List</Tabs.Trigger>
           <Tabs.Trigger value="nestedList">Nested List</Tabs.Trigger>
-          
+
 
         </Tabs.List>
 
         <Box px="4" pt="3" pb="3">
+          <Tabs.Content  value="overview">
+            <Box width="100%">
+              <OverviewTab />
+            </Box>
+          </Tabs.Content>
+
           <Tabs.Content value="tree">
             <Box width="100%">
               <TreeDisplay fileData={dataset} />
