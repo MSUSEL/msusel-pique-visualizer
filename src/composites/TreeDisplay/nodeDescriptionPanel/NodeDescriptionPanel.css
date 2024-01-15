@@ -1,6 +1,7 @@
 #node_description_panel {
     background-color: lightcyan;
     border: black solid 3px;
+    border-right: none;
     width: 35vw;
 }
 
@@ -30,3 +31,8 @@
     height: 75%;
 }
 
+.scrollable-panel {
+    overflow-y: auto;
+    max-height: 100vh; 
+  }
+  
