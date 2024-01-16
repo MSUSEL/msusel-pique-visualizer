@@ -8,6 +8,11 @@ interface SortableItem {
     [key: string]: any;
 }
 
+interface NestedObject {
+    [key: string]: SortableItem;
+}
+
+
 // for sorting by value
 function sortObjectsByValue(obj: Record<string, SortableItem>, ascending: boolean = true): Record<string, SortableItem> {
     return Object.entries(obj)
@@ -15,50 +20,34 @@ function sortObjectsByValue(obj: Record<string, SortableItem>, ascending: boolea
         .reduce<Record<string, SortableItem>>((acc, [key, val]) => ({ ...acc, [key]: val }), {});
 }
 
-// for soring by weights
-function sortChildrenByWeights(children: Record<string, any>, weights: Record<string, number>, ascending: boolean = true): Record<string, any> {
-    // Sort the keys in weights, either in ascending or descending order
-    const sortedKeys = Object.entries(weights)
+
+// v2
+function sortWeights(weights: Record<string, number>, ascending: boolean): Record<string, number> {
+    return Object.entries(weights)
         .sort(([, a], [, b]) => ascending ? a - b : b - a)
-        .map(([key]) => key);
-
-    // Reorder children based on sorted keys
-    const sortedChildren: Record<string, any> = {};
-    sortedKeys.forEach(key => {
-        const child = children[key];
-        if (child !== undefined) {
-            sortedChildren[key] = child;
-        }
-    });
-
-    return sortedChildren;
+        .reduce<Record<string, number>>((acc, [key, val]) => ({ ...acc, [key]: val }), {});
 }
 
-function sortWeightsAndChildren(children: Record<string, any>, weights: Record<string, number>, ascending: boolean = true): { sortedWeights: Record<string, number>, sortedChildren: Record<string, any> } {
-    // Sort the keys in weights, either in ascending or descending order
-    const sortedKeys = Object.entries(weights)
-        .sort(([, a], [, b]) => ascending ? a - b : b - a)
-        .map(([key]) => key);
+function sortObjectsByWeights(referObj: NestedObject, sortObj: NestedObject, ascending: boolean = true): NestedObject {
+    // Step 1: Sort referObj weights and create an ordered dictionary
+    let orderDict: Record<string, number> = {};
+    for (const key in referObj) {
+        referObj[key].weights = sortWeights(referObj[key].weights, ascending);
+        Object.keys(referObj[key].weights).forEach((weightKey, index) => {
+            orderDict[weightKey] = index;
+        });
+    }
 
-    // Create a new weights object with sorted keys
-    const sortedWeights: Record<string, number> = {};
-    sortedKeys.forEach(key => {
-        sortedWeights[key] = weights[key];
-    });
+    // Step 2: Sort sortObj based on the orderDict
+    let sortedObj: NestedObject = JSON.parse(JSON.stringify(sortObj));
+    sortedObj = Object.entries(sortedObj)
+        .sort(([keyA, a], [keyB, b]) => {
+            return orderDict[a.name] - orderDict[b.name];
+        })
+        .reduce<NestedObject>((acc, [key, val]) => ({ ...acc, [key]: val }), {});
 
-    // Reorder children based on sorted weights keys
-    const sortedChildren: Record<string, any> = {};
-    sortedKeys.forEach(key => {
-        const child = children[key];
-        if (child !== undefined) {
-            sortedChildren[key] = child;
-        }
-    });
-
-    return { sortedWeights, sortedChildren };
+    return sortedObj;
 }
-
-
 
 export function sort(sortState: string): schema.base.Schema | undefined {
     const dataset = useAtomValue(State.dataset);
@@ -66,7 +55,7 @@ export function sort(sortState: string): schema.base.Schema | undefined {
     if (!dataset) return undefined;
 
     // Clone the dataset
-    const sortedDataset = JSON.parse(JSON.stringify(dataset));
+    var sortedDataset = JSON.parse(JSON.stringify(dataset));
 
     switch (sortState) {
         case 'value-asc':
@@ -84,39 +73,29 @@ export function sort(sortState: string): schema.base.Schema | undefined {
             sortedDataset.factors.tqi = sortObjectsByValue(sortedDataset.factors.tqi, false);
             sortedDataset.measures = sortObjectsByValue(sortedDataset.measures, false);
             sortedDataset.diagnostics = sortObjectsByValue(sortedDataset.diagnostics, false);
-            
+
             break;
         case 'weight-asc':
             // sorting by weight in ascending order
-            
-
-            
+            sortedDataset.factors.quality_aspects = sortObjectsByWeights(sortedDataset.factors.tqi, sortedDataset.factors.quality_aspects, true);
+            sortedDataset.factors.product_factors = sortObjectsByWeights(sortedDataset.factors.quality_aspects, sortedDataset.factors.product_factors, true);
+            sortedDataset.measures = sortObjectsByWeights(sortedDataset.factors.product_factors, sortedDataset.measures, true);
+            sortedDataset.diagnostics = sortObjectsByWeights(sortedDataset.measures, sortedDataset.diagnostics, true);
             break;
+
         case 'weight-desc':
             // sorting by weight in descending order
-            
-            /*
-            ['tqi', 'product_factors', 'quality_aspects', 'measures'].forEach(part => {
-                if (sortedDataset.factors && sortedDataset.factors[part]) {
-                    Object.entries(sortedDataset.factors[part]).forEach(([key, obj]) => {
-                        const parentObj = obj as SortableItem;
-                        if (parentObj.weights) {
-                            const result = sortWeightsAndChildren(sortedDataset.factors[part][key], parentObj.weights, false);
-                            sortedDataset.factors[part][key] = result.sortedChildren;
-                            // Update weights to reflect the new order
-                            parentObj.weights = result.sortedWeights;
-                        }
-                    });
-                }
-            });*/
-            
+            sortedDataset.factors.quality_aspects = sortObjectsByWeights(sortedDataset.factors.tqi, sortedDataset.factors.quality_aspects, false);
+            sortedDataset.factors.product_factors = sortObjectsByWeights(sortedDataset.factors.quality_aspects, sortedDataset.factors.product_factors, false);
+            sortedDataset.measures = sortObjectsByWeights(sortedDataset.factors.product_factors, sortedDataset.measures, false);
+            sortedDataset.diagnostics = sortObjectsByWeights(sortedDataset.measures, sortedDataset.diagnostics, false);
             break;
+
         default:
             // No sorting or unrecognized sort state
             return dataset;
     }
 
-    // Return the sorted dataset
-    // Placeholder return, replace with actual sorted dataset
+
     return sortedDataset;
 }
