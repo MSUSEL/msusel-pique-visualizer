@@ -6,7 +6,7 @@ import { ChevronDownIcon, EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-ico
 import "./ListDisplay.css"
 import { useState } from 'react';
 import { sort } from "../Sorting/Sorting";
-import { filterByRiskLevels } from '../Filtering/Filtering';
+import { filterByRiskLevels, filterByValueRange, filterByWeightRange } from '../Filtering/Filtering';
 import { hideZeroWeightEdges } from "../Filtering/hideZeroWeightEdges";
 import { styled } from '@stitches/react';
 
@@ -42,14 +42,20 @@ export const ListDisplay = () => {
   const filterState = useAtomValue(State.filteringState);
   const [checkboxStates] = useAtom(State.filteringByRiskLevelCheckboxStates);
   const hideZeroWeightEdgeState = useAtomValue(State.hideZeroWeightEdgeState);
+  const minValueState = useAtomValue(State.minValueState)
+  const maxValueState = useAtomValue(State.maxValueState)
+  const minWeightState = useAtomValue(State.minWeightState)
+  const maxWeightState = useAtomValue(State.maxWeightState)
 
   let processedData = dataset;
 
   // Check if dataset is not undefined before trying to process it
   if (dataset) {
     const sortedData = sort(sortState);
-    processedData = filterByRiskLevels(sortedData, checkboxStates);
-    processedData = hideZeroWeightEdges(processedData)
+    processedData = filterByRiskLevels(sortedData);
+    // processedData = filterByValueRange(processedData);
+    // processedData = filterByWeightRange(processedData);
+    processedData = hideZeroWeightEdges(processedData);
 
   }
 

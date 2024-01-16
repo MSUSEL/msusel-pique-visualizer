@@ -6,6 +6,7 @@ export function createState() {
   const sortingState = atom<"no-sort" | "value-asc" | "value-desc" | "weight-asc" | "weight-desc">("no-sort");
   const filteringState = atom<"no-filter" | "by-risk-level" | "by-range">("no-filter");
   const hideZeroWeightEdgeState = atom<"not-hidding" | "hidding">("not-hidding");
+  
 
   // when filteringState = by-risk-level, checkbox states
   const filteringByRiskLevelCheckboxStates = atom<Record<string, boolean>>({
@@ -16,12 +17,22 @@ export function createState() {
     Severe: true,
   });
 
+  // State for managing minimum and maximum values for value and weight ranges
+  const minValueState = atom<number>(-100000);
+  const maxValueState = atom<number>(100000);
+  const minWeightState = atom<number>(0);
+  const maxWeightState = atom<number>(1);
+
   return {
     dataset,
     sortingState,
     filteringState,
     filteringByRiskLevelCheckboxStates,
     hideZeroWeightEdgeState,
+    minValueState,
+    maxValueState,
+    minWeightState,
+    maxWeightState,
   };
 }
 
