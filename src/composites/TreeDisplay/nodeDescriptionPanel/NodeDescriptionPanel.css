@@ -30,3 +30,7 @@
     height: 75%;
 }
 
+.scrollable-panel {
+    overflow-y: auto;
+    max-height: 100vh; 
+  }
