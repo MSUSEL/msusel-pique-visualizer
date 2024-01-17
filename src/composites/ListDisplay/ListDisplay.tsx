@@ -4,37 +4,14 @@ import { Text } from "@radix-ui/themes";
 import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDownIcon, EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import "./ListDisplay.css"
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { sort } from "../Sorting/Sorting";
 import { filterByRiskLevels, filterByValueRange, filterByWeightRange } from '../Filtering/Filtering';
-import { hideZeroWeightEdges } from "../Filtering/hideZeroWeightEdges";
-import { styled } from '@stitches/react';
+import { hideZeroWeightEdges } from "../Filtering/HideZeroWeightEdges";
+import { StyledTrigger, StyledContent, StyledItem } from './StyledComponents'; 
+import AdditionalDetailsItem from './AdditionalDetailsItem';
 
 
-// Styled components to differentiate between different levels
-const StyledTrigger = styled(Accordion.Trigger, {
-  // Add your custom styles here
-  backgroundColor: '#f0f0f0',
-  padding: '10px',
-  borderRadius: '4px',
-  cursor: 'pointer',
-  fontWeight: 'bold',
-  margin: '5px 0',
-  '&[data-state="closed"]': { backgroundColor: '#e0e0e0' },
-  '&[data-state="open"]': { backgroundColor: '#d0d0d0' },
-});
-
-const StyledContent = styled(Accordion.Content, {
-  // Add your custom styles here
-  padding: '0 20px',
-  borderBottom: '1px solid #e0e0e0',
-  marginLeft: '20px', // Indentation for nested items
-});
-
-const StyledItem = styled('div', {
-  // Non-accordion items
-  padding: '4px 0',
-});
 
 export const ListDisplay = () => {
   const dataset = useAtomValue(State.dataset);
@@ -46,8 +23,9 @@ export const ListDisplay = () => {
   const maxValueState = useAtomValue(State.maxValueState)
   const minWeightState = useAtomValue(State.minWeightState)
   const maxWeightState = useAtomValue(State.maxWeightState)
+  
 
-
+  /*
   let processedData = dataset;
 
   // Check if dataset is not undefined before trying to process it
@@ -59,8 +37,19 @@ export const ListDisplay = () => {
     processedData = hideZeroWeightEdges(processedData);
 
   }
-
-
+  */
+  const processedData = useMemo(() => {
+    if (!dataset) return null;
+    let data = sort(sortState);
+    data = hideZeroWeightEdges(data);
+    // data = filterByRiskLevels(data);
+    // data = filterByValueRange(data);
+    // data = filterByWeightRange(data);
+    return data;
+  }, [dataset, sortState, filterState, checkboxStates, hideZeroWeightEdgeState,
+    minValueState, maxValueState, minWeightState, maxWeightState
+  ]); 
+  
   const renderDetails = (Data: { [key: string]: any }) => {
     return (
       <Accordion.Root type="multiple" className="AccordionRoot">
@@ -88,7 +77,7 @@ export const ListDisplay = () => {
     );
   };
 
-
+/*
   const renderAdditionalDetails = (details: { [key: string]: any }, depth: number = 0) => {
     const renderDetailItem = (key: string, value: any, depth: number): JSX.Element => {
       const isNestedObject = typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -123,11 +112,22 @@ export const ListDisplay = () => {
       </Accordion.Root>
     );
   };
-
+*/
+const renderAdditionalDetails = (details: { [key: string]: any }, depth: number = 0) => {
+  return (
+    <Accordion.Root type="multiple">
+      {Object.entries(details).map(([key, value]) => {
+        return <AdditionalDetailsItem key={key} value={value} depth={depth} />;
+      })}
+    </Accordion.Root>
+  );
+};
+  if (!processedData) {
+    return <div>Loading data...</div>;
+  }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      {/* Title */}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>  {/* Title */}
       <Text weight="medium" align="center" size="5" as="div">{dataset?.name}</Text>
 
       <Accordion.Root type="multiple" className="AccordionRoot">
