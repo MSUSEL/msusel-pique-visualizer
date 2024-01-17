@@ -4,29 +4,29 @@ import { StyledTrigger, StyledContent, StyledItem } from './StyledComponents'; /
 
 // Define a type for the props
 type AdditionalDetailsItemProps = {
-  key: string;
-  value: any;
+  itemKey: React.Key; // Changed from 'key' to 'itemKey' to avoid conflicts
+  value: any; // Keep as any or define a more specific type if possible
   depth: number;
 };
 
-const AdditionalDetailsItem: React.FC<AdditionalDetailsItemProps> = ({ key, value, depth }) => {
+const AdditionalDetailsItem: React.FC<AdditionalDetailsItemProps> = ({ itemKey, value, depth }) => {
   const isNestedObject = typeof value === 'object' && value !== null && !Array.isArray(value);
 
   if (isNestedObject) {
     return (
-      <Accordion.Item key={key} value={key}>
-        <StyledTrigger style={{ marginLeft: `${depth * 10}px` }}>{key}</StyledTrigger>
+      <Accordion.Item key={String(itemKey)} value={String(itemKey)}>
+        <StyledTrigger style={{ marginLeft: `${depth * 10}px` }}>{String(itemKey)}</StyledTrigger>
         <StyledContent>
           {Object.entries(value).map(([nestedKey, nestedValue]) =>
-            <AdditionalDetailsItem key={nestedKey} value={nestedValue} depth={depth + 1} />
+            <AdditionalDetailsItem key={nestedKey} itemKey={nestedKey} value={nestedValue} depth={depth + 1} />
           )}
         </StyledContent>
       </Accordion.Item>
     );
   } else {
     return (
-      <StyledItem key={key} style={{ marginLeft: `${depth * 10}px` }}>
-        <strong>{key}:</strong> {JSON.stringify(value, null, 2)}
+      <StyledItem key={String(itemKey)} style={{ marginLeft: `${depth * 10}px` }}>
+        <strong>{String(itemKey)}:</strong> {JSON.stringify(value, null, 2)}
       </StyledItem>
     );
   }

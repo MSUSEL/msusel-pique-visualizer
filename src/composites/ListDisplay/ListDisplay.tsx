@@ -8,7 +8,7 @@ import { useState, useMemo } from 'react';
 import { sort } from "../Sorting/Sorting";
 import { filterByRiskLevels, filterByValueRange, filterByWeightRange } from '../Filtering/Filtering';
 import { hideZeroWeightEdges } from "../Filtering/HideZeroWeightEdges";
-import { StyledTrigger, StyledContent, StyledItem } from './StyledComponents'; 
+import { StyledTrigger, StyledContent, StyledItem } from './StyledComponents';
 import AdditionalDetailsItem from './AdditionalDetailsItem';
 
 
@@ -23,33 +23,20 @@ export const ListDisplay = () => {
   const maxValueState = useAtomValue(State.maxValueState)
   const minWeightState = useAtomValue(State.minWeightState)
   const maxWeightState = useAtomValue(State.maxWeightState)
-  
 
-  /*
-  let processedData = dataset;
 
-  // Check if dataset is not undefined before trying to process it
-  if (dataset) {
-    const sortedData = sort(sortState);
-    processedData = filterByRiskLevels(sortedData);
-    // processedData = filterByValueRange(processedData);
-    // processedData = filterByWeightRange(processedData);
-    processedData = hideZeroWeightEdges(processedData);
-
-  }
-  */
   const processedData = useMemo(() => {
     if (!dataset) return null;
-    let data = sort(sortState);
-    data = hideZeroWeightEdges(data);
+    let data = dataset; //sort(sortState);
+    //data = hideZeroWeightEdges(data);
     // data = filterByRiskLevels(data);
     // data = filterByValueRange(data);
     // data = filterByWeightRange(data);
     return data;
   }, [dataset, sortState, filterState, checkboxStates, hideZeroWeightEdgeState,
     minValueState, maxValueState, minWeightState, maxWeightState
-  ]); 
-  
+  ]);
+
   const renderDetails = (Data: { [key: string]: any }) => {
     return (
       <Accordion.Root type="multiple" className="AccordionRoot">
@@ -77,51 +64,51 @@ export const ListDisplay = () => {
     );
   };
 
-/*
-  const renderAdditionalDetails = (details: { [key: string]: any }, depth: number = 0) => {
-    const renderDetailItem = (key: string, value: any, depth: number): JSX.Element => {
-      const isNestedObject = typeof value === 'object' && value !== null && !Array.isArray(value);
-
-      if (isNestedObject) {
-        // It's a nested object, render an accordion
-        return (
-          <Accordion.Item key={key} value={key}>
-            <StyledTrigger style={{ marginLeft: `${depth * 10}px` }}>{key}</StyledTrigger>
-            <StyledContent>
-              {Object.entries(value).map(([nestedKey, nestedValue]) =>
-                renderDetailItem(nestedKey, nestedValue, depth + 1)
-              )}
-            </StyledContent>
-          </Accordion.Item>
-        );
-      } else {
-        // It's a normal value or an array, render it inline
-        return (
-          <StyledItem key={key} style={{ marginLeft: `${depth * 10}px` }}>
-            <strong>{key}:</strong> {JSON.stringify(value, null, 2)}
-          </StyledItem>
-        );
-      }
-    };
-
+  const renderMeasuresDetails = (measuresData: { [key: string]: any }) => {
     return (
-      <Accordion.Root type="multiple">
-        {Object.entries(details).map(([key, value]) => {
-          return renderDetailItem(key, value, depth);
+      <Accordion.Root type="multiple" className="AccordionRoot">
+        {Object.entries(measuresData).map(([key, measure]) => {
+          const [isExpanded, setIsExpanded] = useState(false);
+          const toggleExpanded = () => setIsExpanded(!isExpanded);
+
+          // Use the key as a fallback if the name property is missing
+          const measureName = measure.name ?? key;
+          const measureValue = measure.value ?? 'N/A';
+
+          // console.log(`Measure Name: ${measureName}, Value: ${measureValue}`);
+
+          return (
+            <Accordion.Item key={key} value={key} className="AccordionItem">
+              <Accordion.Header className="AccordionHeader">
+                <Accordion.Trigger className="AccordionTrigger">
+                  {measureName}: {measureValue}
+                  <span onClick={toggleExpanded}>
+                    {isExpanded ? <EyeOpenIcon /> : <EyeClosedIcon />}
+                  </span>
+                </Accordion.Trigger>
+              </Accordion.Header>
+              <Accordion.Content className="AccordionContent">
+                {isExpanded && renderAdditionalDetails(measure)}
+              </Accordion.Content>
+            </Accordion.Item>
+          );
         })}
       </Accordion.Root>
     );
   };
-*/
-const renderAdditionalDetails = (details: { [key: string]: any }, depth: number = 0) => {
-  return (
-    <Accordion.Root type="multiple">
-      {Object.entries(details).map(([key, value]) => {
-        return <AdditionalDetailsItem key={key} value={value} depth={depth} />;
-      })}
-    </Accordion.Root>
-  );
-};
+
+
+  const renderAdditionalDetails = (details: { [key: string]: any }, depth: number = 0) => {
+    return (
+      <Accordion.Root type="multiple">
+        {Object.entries(details).map(([key, value]) => {
+          return <AdditionalDetailsItem key={key} itemKey={key} value={value} depth={depth} />;
+        })}
+      </Accordion.Root>
+    );
+  };
+
+
   if (!processedData) {
     return <div>Loading data...</div>;
   }
@@ -187,10 +174,11 @@ const renderAdditionalDetails = (details: { [key: string]: any }, depth: number 
           </Accordion.Header>
           <Accordion.Content>
             {processedData?.measures
-              ? renderDetails(processedData.measures)
+              ? renderMeasuresDetails(processedData.measures)
               : <p>No measures data available.</p>}
           </Accordion.Content>
         </Accordion.Item>
+
 
         {/* 5th level: diagnostics) */}
         <Accordion.Item value="diagnostics" className="AccordionItem">
