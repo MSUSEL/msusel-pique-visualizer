@@ -2,6 +2,8 @@ import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
 import { Select, TextField, Dialog, Button, Flex, Text, DropdownMenu } from "@radix-ui/themes";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import * as React from "react";
+
 
 export const FilterButton = () => {
   const dataset = useAtomValue(State.dataset);
@@ -12,6 +14,29 @@ export const FilterButton = () => {
   };
 
   console.log("Current filter checkboxes status", checkboxStates);
+
+  // user typed in min and max
+  // State for local form values
+  const [localMinValue, setLocalMinValue] = React.useState(0);
+  const [localMaxValue, setLocalMaxValue] = React.useState(1);
+  const [localMinWeight, setLocalMinWeight] = React.useState(0);
+  const [localMaxWeight, setLocalMaxWeight] = React.useState(1);
+
+  // Atoms from state.ts
+  const [, setMinValueState] = useAtom(State.minValueState);
+  const [, setMaxValueState] = useAtom(State.maxValueState);
+  const [, setMinWeightState] = useAtom(State.minWeightState);
+  const [, setMaxWeightState] = useAtom(State.maxWeightState);
+
+  const handleSaveValueRange = () => {
+    setMinValueState(localMinValue);
+    setMaxValueState(localMaxValue);
+  };
+
+  const handleSaveWeightRange = () => {
+    setMinWeightState(localMinWeight);
+    setMaxWeightState(localMaxWeight);
+  };
 
   return (
 
@@ -64,7 +89,8 @@ export const FilterButton = () => {
                     </Text>
                     <TextField.Input
                       defaultValue="0"
-                      placeholder="Enter your minimun range"
+                      placeholder="Enter your minimum range"
+                      onChange={(e) => setLocalMinValue(Number(e.target.value))}
                     />
                   </label>
                   <label>
@@ -74,6 +100,7 @@ export const FilterButton = () => {
                     <TextField.Input
                       defaultValue="1"
                       placeholder="Enter your maximum range"
+                      onChange={(e) => setLocalMaxValue(Number(e.target.value))}
                     />
                   </label>
                 </Flex>
@@ -84,7 +111,7 @@ export const FilterButton = () => {
                       Cancel
                     </Button>
                   </Dialog.Close>
-                  <Dialog.Close>
+                  <Dialog.Close onClick={handleSaveValueRange}>
                     <Button>Save</Button>
                   </Dialog.Close>
                 </Flex>
@@ -117,6 +144,7 @@ export const FilterButton = () => {
                     <TextField.Input
                       defaultValue="0"
                       placeholder="Enter your minimun range"
+                      onChange={(e) => setLocalMinWeight(Number(e.target.value))}
                     />
                   </label>
                   <label>
@@ -126,6 +154,7 @@ export const FilterButton = () => {
                     <TextField.Input
                       defaultValue="1"
                       placeholder="Enter your maximum range"
+                      onChange={(e) => setLocalMaxWeight(Number(e.target.value))}
                     />
                   </label>
                 </Flex>
@@ -136,7 +165,7 @@ export const FilterButton = () => {
                       Cancel
                     </Button>
                   </Dialog.Close>
-                  <Dialog.Close>
+                  <Dialog.Close onClick={handleSaveValueRange}>
                     <Button>Save</Button>
                   </Dialog.Close>
                 </Flex>

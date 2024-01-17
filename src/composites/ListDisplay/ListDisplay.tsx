@@ -47,6 +47,7 @@ export const ListDisplay = () => {
   const minWeightState = useAtomValue(State.minWeightState)
   const maxWeightState = useAtomValue(State.maxWeightState)
 
+
   let processedData = dataset;
 
   // Check if dataset is not undefined before trying to process it
@@ -191,7 +192,7 @@ export const ListDisplay = () => {
           </Accordion.Content>
         </Accordion.Item>
 
-        {/* 5th level: factors (product_factors) */}
+        {/* 5th level: diagnostics) */}
         <Accordion.Item value="diagnostics" className="AccordionItem">
           <Accordion.Header>
             <Accordion.Trigger className="AccordionTrigger">

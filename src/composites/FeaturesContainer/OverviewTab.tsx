@@ -1,44 +1,117 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useState } from 'react';
+import { useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Button, IconButton, Flex, Text } from "@radix-ui/themes";
-import { BarChartIcon } from "@radix-ui/react-icons";
+import { Flex, Text } from "@radix-ui/themes";
 import { classifyRiskLevel } from "../LegendContainer/ClassifyRiskLevel";
-import { base } from "../../data/schema";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
+interface FilterableItem {
+    value: number;
+    weights: Record<string, number>;
+    [key: string]: any;
+}
+
+interface CategoryRiskLevelData {
+    [riskLevel: string]: string[]; // Array of item keys
+}
 
 interface RiskLevelData {
-    Severe: string[];
-    High: string[];
-    Medium: string[];
-    Low: string[];
-    Insignificant: string[];
+    tqi: CategoryRiskLevelData;
+    quality_aspects: CategoryRiskLevelData;
+    product_factors: CategoryRiskLevelData;
 }
-
-interface Item {
-    name: string;
-    value: number;
-}
-
 
 export const OverviewTab = () => {
     const dataset = useAtomValue(State.dataset);
-    const parsedDataset = JSON.parse(JSON.stringify(dataset))
 
+    const initialRiskLevelData: RiskLevelData = {
+        tqi: {},
+        quality_aspects: {},
+        product_factors: {},
+    };
 
+    const [riskLevelData, setRiskLevelData] = useState<RiskLevelData>(initialRiskLevelData);
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
+
+    const parseAndClassifyData = (data: any) => {
+        let categorizedData: RiskLevelData = {
+            tqi: {},
+            quality_aspects: {},
+            product_factors: {},
+        };
+
+        Object.keys(categorizedData).forEach(category => {
+            const items = data[category];
+            if (items) {
+                Object.keys(items).forEach(itemKey => {
+                    const item = items[itemKey] as FilterableItem;
+                    if (item && typeof item.value === 'number') {
+                        if (item.value >= -1 && item.value <= 1) {
+                            const riskLevel = classifyRiskLevel(item.value);
+                            categorizedData[category][riskLevel] = categorizedData[category][riskLevel] || [];
+                            categorizedData[category][riskLevel].push(itemKey);
+                        }
+                    }
+                });
+            }
+        });
+
+        setRiskLevelData(categorizedData);
+    };
+
+    const createChartData = (categoryData: CategoryRiskLevelData) => {
+        return [
+            { name: 'Severe', count: categoryData['Severe']?.length || 0 },
+            { name: 'High', count: categoryData['High']?.length || 0 },
+            { name: 'Medium', count: categoryData['Medium']?.length || 0 },
+            { name: 'Low', count: categoryData['Low']?.length || 0 },
+            { name: 'Insignificant', count: categoryData['Insignificant']?.length || 0 },
+        ];
+    };
+
+    useEffect(() => {
+        if (dataset) {
+            parseAndClassifyData(dataset);
+        }
+    }, [dataset]);
 
     return (
+        <Flex gap="3" align="center" direction="column">
+            <Text>Overview information of the uploaded JSON file.</Text>
 
-        <Flex gap="3" align="center">
+            {/* Quality Aspects Chart */}
+            <BarChart width={600} height={300} data={createChartData(riskLevelData.quality_aspects)}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#82ca9d" />
+            </BarChart>
 
-            <Text>
-                Proview the overview information of the uploaded json fileData, remove the content in descriptive statistics button  to here.
-            </Text>
+            {/* Product Factors Chart */}
+            <BarChart width={600} height={300} data={createChartData(riskLevelData.product_factors)}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#ffc658" />
+            </BarChart>
 
+            {/* Interactive elements for selecting risk levels and displaying sub-object names */}
+            {
+                selectedCategory && (
+                    <Flex direction="column">
+                        <Text size="4">Sub-Objects in {selectedCategory} Risk Level:</Text>
+                        {
+                            // Assuming riskLevelData[selectedCategory] is an array of strings
+                            riskLevelData[selectedCategory]?.map((item, index) => (
+                                <Text key={index}>{item}</Text>
+                            ))
+                        }
+                    </Flex>
+                )
+            }
 
         </Flex>
-
-
-
-
     );
 };

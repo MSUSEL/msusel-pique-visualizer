@@ -37,9 +37,9 @@ export const Wrapper = () => {
         <Tabs.List>
           <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
           <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
-          <Tabs.Trigger value="treeRefactored">Tree-v2</Tabs.Trigger>
+          {/* <Tabs.Trigger value="treeRefactored">Tree-v2</Tabs.Trigger> */}
           <Tabs.Trigger value="list">List</Tabs.Trigger>
-          <Tabs.Trigger value="nestedList">Nested List</Tabs.Trigger>
+          {/* <Tabs.Trigger value="nestedList">Nested List</Tabs.Trigger> */}
 
 
         </Tabs.List>
