@@ -1,12 +1,17 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
 import { Select, TextField, Dialog, Button, Flex, Text, DropdownMenu } from "@radix-ui/themes";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { MixerHorizontalIcon, SliderIcon } from "@radix-ui/react-icons";
 import * as React from "react";
+import * as Slider from '@radix-ui/react-slider';
+import '@radix-ui/colors/black-alpha.css';
+import '@radix-ui/colors/violet.css';
+import './Slider.css'
 
 
 export const FilterButton = () => {
   const dataset = useAtomValue(State.dataset);
+
   const [checkboxStates, setCheckboxStates] = useAtom(State.filteringByRiskLevelCheckboxStates);
 
   const handleCheckboxChange = (label: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,14 +34,73 @@ export const FilterButton = () => {
   const [, setMaxWeightState] = useAtom(State.maxWeightState);
 
   const handleSaveValueRange = () => {
-    setMinValueState(localMinValue);
-    setMaxValueState(localMaxValue);
+    if (localMinValue <= localMaxValue) {
+      setMinValueState(localMinValue);
+      setMaxValueState(localMaxValue);
+    } else {
+      // Show an error message or handle the error appropriately
+      alert("Minimum value cannot be greater than maximum value.");
+    }
   };
+
 
   const handleSaveWeightRange = () => {
     setMinWeightState(localMinWeight);
     setMaxWeightState(localMaxWeight);
   };
+
+  const generateFilterSummary = () => {
+    // Selected risk levels
+    const selectedRiskLevels = Object.entries(checkboxStates)
+      .filter(([_, value]) => value)
+      .map(([key, _]) => key);
+
+    // Summary for value range
+    const isFullValueRange = localMinValue === -1 && localMaxValue === 1;
+    const valueFilterSummary = !isFullValueRange ? `Value: ${localMinValue.toFixed(1)} to ${localMaxValue.toFixed(1)}` : '';
+
+    // Summary for weight range
+    const isFullWeightRange = localMinWeight === 0 && localMaxWeight === 1;
+    const weightFilterSummary = !isFullWeightRange ? `Weight: ${localMinWeight.toFixed(1)} to ${localMaxWeight.toFixed(1)}` : '';
+
+    // Combine summaries
+    const filterSummaries = [
+      selectedRiskLevels.join(', '),
+      valueFilterSummary,
+      weightFilterSummary,
+    ].filter(Boolean); // Removes any empty strings
+
+    // Handling pluralization and localization (as an example)
+    const riskLevelText = selectedRiskLevels.length === 1 ? 'Risk Level' : 'Risk Levels';
+    const riskLevelSummary = selectedRiskLevels.length > 0 ? `${riskLevelText}: ${selectedRiskLevels.join(', ')}` : '';
+
+    if (filterSummaries.length === 0) {
+      return 'No Filtering';
+    }
+
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+        {selectedRiskLevels.length > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <SliderIcon /> <span style={{ marginLeft: '8px' }}>{`${riskLevelText}: ${selectedRiskLevels.join(', ')}`}</span>
+          </div>
+        )}
+        {!isFullValueRange && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <SliderIcon /> <span style={{ marginLeft: '8px' }}>{`Value: ${localMinValue.toFixed(1)} to ${localMaxValue.toFixed(1)}`}</span>
+          </div>
+        )}
+        {!isFullWeightRange && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <SliderIcon /> <span style={{ marginLeft: '8px' }}>{`Weight: ${localMinWeight.toFixed(1)} to ${localMaxWeight.toFixed(1)}`}</span>
+          </div>
+        )}
+        {selectedRiskLevels.length === 0 && isFullValueRange && isFullWeightRange && 'No Filtering'}
+      </div>
+    );
+  }
+
 
   return (
 
@@ -45,7 +109,7 @@ export const FilterButton = () => {
         <DropdownMenu.Trigger >
           <Button variant="soft">
             <MixerHorizontalIcon />
-            No Filtering
+            {generateFilterSummary()}
           </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
@@ -72,44 +136,43 @@ export const FilterButton = () => {
           <DropdownMenu.Group>
             <DropdownMenu.Label>Value</DropdownMenu.Label>
             <Dialog.Root>
-              <Dialog.Trigger>
-                <Button>By value range</Button>
+              <Dialog.Trigger >
+                <Button>Value range</Button>
               </Dialog.Trigger>
-
-              <Dialog.Content style={{ maxWidth: 450 }}>
+              <Dialog.Content style={{ maxWidth: '350px', width: '100%' }}>
                 <Dialog.Title>By value range</Dialog.Title>
                 <Dialog.Description size="2" mb="4">
-                  Type in the miniman and maximum range of values.
+                  Drag the slider to decide the minimum and maximum of value range.
                 </Dialog.Description>
 
                 <Flex direction="column" gap="3">
-                  <label>
-                    <Text as="div" size="2" mb="1" weight="bold">
-                      Min
-                    </Text>
-                    <TextField.Input
-                      defaultValue="-1"
-                      placeholder="Enter your minimum range"
-                      onChange={(e) => setLocalMinValue(Number(e.target.value))}
-                    />
-                  </label>
-                  <label>
-                    <Text as="div" size="2" mb="1" weight="bold">
-                      Max
-                    </Text>
-                    <TextField.Input
-                      defaultValue="1"
-                      placeholder="Enter your maximum range"
-                      onChange={(e) => setLocalMaxValue(Number(e.target.value))}
-                    />
-                  </label>
+                  <Flex justify="between" align="center">
+                    <Text size="2">Min: {localMinValue.toFixed(1)}</Text>
+                    <Text size="2">Max: {localMaxValue.toFixed(1)}</Text>
+                  </Flex>
+                  <Slider.Root
+                    className="SliderRoot"
+                    defaultValue={[0, 1]}
+                    min={-1}
+                    max={1}
+                    step={0.1}
+                    value={[localMinValue, localMaxValue]}
+                    onValueChange={([min, max]) => {
+                      setLocalMinValue(min);
+                      setLocalMaxValue(max);
+                    }}
+                  >
+                    <Slider.Track className="SliderTrack">
+                      <Slider.Range className="SliderRange" />
+                    </Slider.Track>
+                    <Slider.Thumb className="SliderThumb" />
+                    <Slider.Thumb className="SliderThumb" />
+                  </Slider.Root>
                 </Flex>
 
                 <Flex gap="3" mt="4" justify="end">
-                  <Dialog.Close>
-                    <Button variant="soft" color="gray">
-                      Cancel
-                    </Button>
+                  <Dialog.Close >
+                    <Button variant="soft" color="gray">Cancel</Button>
                   </Dialog.Close>
                   <Dialog.Close onClick={handleSaveValueRange}>
                     <Button>Save</Button>
@@ -117,6 +180,7 @@ export const FilterButton = () => {
                 </Flex>
               </Dialog.Content>
             </Dialog.Root>
+
 
           </DropdownMenu.Group>
 
@@ -127,36 +191,38 @@ export const FilterButton = () => {
             <DropdownMenu.Label>Weight</DropdownMenu.Label>
             <Dialog.Root>
               <Dialog.Trigger>
-                <Button>By weight range</Button>
+                <Button>Weight range</Button>
               </Dialog.Trigger>
 
-              <Dialog.Content style={{ maxWidth: 450 }}>
+              <Dialog.Content style={{ maxWidth: '350px', width: '100%' }}>
                 <Dialog.Title>By weight range</Dialog.Title>
                 <Dialog.Description size="2" mb="4">
-                  Type in the miniman and maximum range of weights.
+                  Drag the slider to decide the minimum and maximum of weight range.
                 </Dialog.Description>
 
                 <Flex direction="column" gap="3">
-                  <label>
-                    <Text as="div" size="2" mb="1" weight="bold">
-                      Min
-                    </Text>
-                    <TextField.Input
-                      defaultValue="0"
-                      placeholder="Enter your minimun range"
-                      onChange={(e) => setLocalMinWeight(Number(e.target.value))}
-                    />
-                  </label>
-                  <label>
-                    <Text as="div" size="2" mb="1" weight="bold">
-                      Max
-                    </Text>
-                    <TextField.Input
-                      defaultValue="1"
-                      placeholder="Enter your maximum range"
-                      onChange={(e) => setLocalMaxWeight(Number(e.target.value))}
-                    />
-                  </label>
+                  <Flex justify="between" align="center">
+                    <Text size="2">Min: {localMinWeight.toFixed(1)}</Text>
+                    <Text size="2">Max: {localMaxWeight.toFixed(1)}</Text>
+                  </Flex>
+                  <Slider.Root
+                    className="SliderRoot"
+                    defaultValue={[0, 1]}
+                    min={0}
+                    max={1}
+                    step={0.1}
+                    value={[localMinWeight, localMaxWeight]}
+                    onValueChange={([min, max]) => {
+                      setLocalMinWeight(min);
+                      setLocalMaxWeight(max);
+                    }}
+                  >
+                    <Slider.Track className="SliderTrack">
+                      <Slider.Range className="SliderRange" />
+                    </Slider.Track>
+                    <Slider.Thumb className="SliderThumb" />
+                    <Slider.Thumb className="SliderThumb" />
+                  </Slider.Root>
                 </Flex>
 
                 <Flex gap="3" mt="4" justify="end">
