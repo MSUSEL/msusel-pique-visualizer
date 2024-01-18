@@ -88,7 +88,7 @@ export const FilterButton = () => {
                       Min
                     </Text>
                     <TextField.Input
-                      defaultValue="0"
+                      defaultValue="-1"
                       placeholder="Enter your minimum range"
                       onChange={(e) => setLocalMinValue(Number(e.target.value))}
                     />
@@ -165,7 +165,7 @@ export const FilterButton = () => {
                       Cancel
                     </Button>
                   </Dialog.Close>
-                  <Dialog.Close onClick={handleSaveValueRange}>
+                  <Dialog.Close onClick={handleSaveWeightRange}>
                     <Button>Save</Button>
                   </Dialog.Close>
                 </Flex>

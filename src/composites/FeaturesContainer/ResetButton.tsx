@@ -9,6 +9,10 @@ export const ResetButton = () => {
     const setFilteringState = useSetAtom(State.filteringState);
     const setHideZeroWeightEdgeState = useSetAtom(State.hideZeroWeightEdgeState);
     const setFilteringByRiskLevelCheckboxStates = useSetAtom(State.filteringByRiskLevelCheckboxStates);
+    const setMinValueState = useSetAtom(State.minValueState);
+    const setmaxValueState = useSetAtom(State.maxValueState);
+    const setMinWeightState = useSetAtom(State.minWeightState);
+    const setMaxWeightState = useSetAtom(State.maxWeightState);
 
     // Define a function to handle the reset action
     const handleReset = () => {
@@ -22,6 +26,10 @@ export const ResetButton = () => {
             High: true,
             Severe: true,
         });
+        setMinValueState(-100000);
+        setmaxValueState(10000);
+        setMinWeightState(0);
+        setMaxWeightState(1);
     };
 
     return (
