@@ -5,9 +5,14 @@ import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDownIcon, EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import "./ListDisplay.css"
 import { useState, useMemo } from 'react';
+
 import { sort } from "../Sorting/Sorting";
-import { filterByRiskLevels, filterByValueRange, filterByWeightRange } from '../Filtering/Filtering';
+import { filterByWeightRange } from "../Filtering/FilterByWeightRange";
+import { filterByRiskLevels } from "../Filtering/FilterByRiskLevel";
+import { filterByValueRange } from "../Filtering/FilterByValueRange";
+
 import { hideZeroWeightEdges } from "../Filtering/HideZeroWeightEdges";
+
 import { StyledTrigger, StyledContent, StyledItem } from './StyledComponents';
 import AdditionalDetailsItem from './AdditionalDetailsItem';
 import * as schema from '../../data/schema';
@@ -40,9 +45,10 @@ export const ListDisplay = () => {
     data = hideZeroWeightEdges(data, isHiding);
 
     data = filterByRiskLevels(data, checkboxStates);
-    // 
-    // data = filterByValueRange(data, minValueState, maxValueState);
-    // data = filterByWeightRange(data, minWeightState, maxWeightState);
+     
+    data = filterByValueRange(data, minValueState, maxValueState);
+
+    data = filterByWeightRange(data, minWeightState, maxWeightState);
 
     return data;
   }, [dataset, sortState, filterState, checkboxStates, hideZeroWeightEdgeState,

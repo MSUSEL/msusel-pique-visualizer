@@ -28,7 +28,7 @@ function calculateFilterRanges(checkboxStates: Record<string, boolean>): [number
 }
 
 
-function filterByValue(obj: Record<string, FilterableItem>, ranges: [number, number][]): Record<string, FilterableItem> {
+function filterByValueForRiskLevel(obj: Record<string, FilterableItem>, ranges: [number, number][]): Record<string, FilterableItem> {
     const originalLength = Object.keys(obj).length;
     const filteredObj = Object.fromEntries(Object.entries(obj).filter(([_, item]) => {
         return !ranges.some(range => item.value >= range[0] && item.value <= range[1]);
@@ -39,6 +39,15 @@ function filterByValue(obj: Record<string, FilterableItem>, ranges: [number, num
 
     return filteredObj;
 }
+
+function filterByValue(obj: Record<string, FilterableItem>, range: [number, number]): Record<string, FilterableItem> {
+    const filteredObj = Object.fromEntries(Object.entries(obj).filter(([_, item]) => {
+        return item.value >= range[0] && item.value <= range[1];
+    }));
+
+    return filteredObj;
+}
+
 
 function filterWeightsByWeightKeys(obj: Record<string, FilterableItem>, dictionary: string[]): Record<string, FilterableItem> {
     const originalLength = Object.keys(obj).length;
@@ -65,7 +74,7 @@ function filterObjectsByRiskLevels(
     const filterRange = calculateFilterRanges(checkboxStates);
 
     // Filter filterValueObj
-    const filteredByValueObj = filterByValue(filterValueObj, filterRange);
+    const filteredByValueObj = filterByValueForRiskLevel(filterValueObj, filterRange);
 
     // Get the dictionary of names from filteredByValueObj
     const dictionary = Object.keys(filteredByValueObj);
@@ -87,7 +96,7 @@ function filterObjectsByValueRange(
     const filterRange: [number, number] = [minValue, maxValue];
 
     // Filter filterValueObj
-    const filteredByValueObj = filterByValue(filterValueObj, [filterRange]);
+    const filteredByValueObj = filterByValue(filterValueObj, filterRange);
 
     // Get the dictionary of names from filteredByValueObj
     const dictionary = Object.keys(filteredByValueObj);
@@ -97,6 +106,7 @@ function filterObjectsByValueRange(
 
     return [filteredByWeightsObj, filteredByValueObj];
 }
+
 
 // by weight range 
 
@@ -137,50 +147,84 @@ function filterObjectsByWeightRange(
 
 // exported functions: 
 export function filterByRiskLevels(
-    dataset: schema.base.Schema | undefined, 
+    dataset: schema.base.Schema | undefined,
     checkboxStates: Record<string, boolean>
 ): schema.base.Schema | undefined {
     if (!dataset) return undefined;
-    
+
     const filteredDataset = JSON.parse(JSON.stringify(dataset));
 
     // Apply filtering based on risk level
     [filteredDataset.factors.product_factors, filteredDataset.measures] = filterObjectsByRiskLevels(filteredDataset.factors.product_factors, filteredDataset.measures, checkboxStates);
     [filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors] = filterObjectsByRiskLevels(filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors, checkboxStates);
     [filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects] = filterObjectsByRiskLevels(filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects, checkboxStates);
-
-    return filteredDataset;
-}
-
-
-
-export function filterByValueRange(dataset: schema.base.Schema | undefined): schema.base.Schema | undefined {
-    if (!dataset) return undefined;
-
-    const filteredDataset = JSON.parse(JSON.stringify(dataset));
-    const minValue = useAtomValue(State.minValueState);
-    const maxValue = useAtomValue(State.maxValueState);
-
     
-    [filteredDataset.factors.product_factors, filteredDataset.measures] = filterObjectsByValueRange(filteredDataset.factors.product_factors, filteredDataset.measures, minValue, maxValue);
-    [filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors] = filterObjectsByValueRange(filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors, minValue, maxValue);
-    [filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects] = filterObjectsByValueRange(filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects, minValue, maxValue);
-
     return filteredDataset;
 }
 
-export function filterByWeightRange(dataset: schema.base.Schema | undefined): schema.base.Schema | undefined {
+
+
+export function filterByValueRange(
+    dataset: schema.base.Schema | undefined,
+    minValue: number,
+    maxValue: number
+): schema.base.Schema | undefined {
     if (!dataset) return undefined;
 
     const filteredDataset = JSON.parse(JSON.stringify(dataset));
-    const minWeight = useAtomValue(State.minWeightState);
-    const maxWeight = useAtomValue(State.maxWeightState);
 
-
-    [filteredDataset.factors.product_factors, filteredDataset.measures] = filterObjectsByWeightRange(filteredDataset.factors.product_factors, filteredDataset.measures, minWeight, maxWeight);
-    [filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors] = filterObjectsByWeightRange(filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors, minWeight, maxWeight);
-    [filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects] = filterObjectsByWeightRange(filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects, minWeight, maxWeight);
+    [filteredDataset.factors.product_factors, filteredDataset.measures] = filterObjectsByValueRange(
+        filteredDataset.factors.product_factors,
+        filteredDataset.measures,
+        minValue,
+        maxValue
+    );
+    [filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors] = filterObjectsByValueRange(
+        filteredDataset.factors.quality_aspects,
+        filteredDataset.factors.product_factors,
+        minValue,
+        maxValue
+    );
+    [filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects] = filterObjectsByValueRange(
+        filteredDataset.factors.tqi,
+        filteredDataset.factors.quality_aspects,
+        minValue,
+        maxValue
+    );
 
     return filteredDataset;
 }
+
+
+export function filterByWeightRange(
+    dataset: schema.base.Schema | undefined, 
+    minWeight: number, 
+    maxWeight: number
+): schema.base.Schema | undefined {
+    if (!dataset) return undefined;
+
+    const filteredDataset = JSON.parse(JSON.stringify(dataset));
+
+    [filteredDataset.factors.product_factors, filteredDataset.measures] = filterObjectsByWeightRange(
+        filteredDataset.factors.product_factors, 
+        filteredDataset.measures, 
+        minWeight, 
+        maxWeight
+    );
+    [filteredDataset.factors.quality_aspects, filteredDataset.factors.product_factors] = filterObjectsByWeightRange(
+        filteredDataset.factors.quality_aspects, 
+        filteredDataset.factors.product_factors, 
+        minWeight, 
+        maxWeight
+    );
+    [filteredDataset.factors.tqi, filteredDataset.factors.quality_aspects] = filterObjectsByWeightRange(
+        filteredDataset.factors.tqi, 
+        filteredDataset.factors.quality_aspects, 
+        minWeight, 
+        maxWeight
+    );
+
+    return filteredDataset;
+}
+
 
