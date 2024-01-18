@@ -3,7 +3,7 @@ import { State } from "../../state";
 import { Text } from "@radix-ui/themes";
 import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDownIcon, EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
-import "./ListDisplay.css"
+
 import { useState, useMemo } from 'react';
 
 import { sort } from "../Sorting/Sorting";
@@ -13,7 +13,7 @@ import { filterByValueRange } from "../Filtering/FilterByValueRange";
 
 import { hideZeroWeightEdges } from "../Filtering/HideZeroWeightEdges";
 
-import { StyledTrigger, StyledContent, StyledItem } from './StyledComponents';
+
 import AdditionalDetailsItem from './AdditionalDetailsItem';
 import * as schema from '../../data/schema';
 
@@ -45,7 +45,7 @@ export const ListDisplay = () => {
     data = hideZeroWeightEdges(data, isHiding);
 
     data = filterByRiskLevels(data, checkboxStates);
-     
+
     data = filterByValueRange(data, minValueState, maxValueState);
 
     data = filterByWeightRange(data, minWeightState, maxWeightState);
@@ -147,12 +147,11 @@ export const ListDisplay = () => {
           </Accordion.Content>
         </Accordion.Item>
 
-
         {/* 2nd level: quality_aspects */}
         <Accordion.Item value="quality_aspects" className="AccordionItem">
           <Accordion.Header>
             <Accordion.Trigger className="AccordionTrigger">
-              Characteristics
+              {Object.keys(processedData?.factors?.quality_aspects || {}).length} Characteristics
               <ChevronDownIcon className="AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
@@ -162,12 +161,11 @@ export const ListDisplay = () => {
           </Accordion.Content>
         </Accordion.Item>
 
-
         {/* 3rd level: product_factors */}
         <Accordion.Item value="product_factors" className="AccordionItem">
           <Accordion.Header>
             <Accordion.Trigger className="AccordionTrigger">
-              Factors
+              {Object.keys(processedData?.factors?.product_factors || {}).length}  Factors
               <ChevronDownIcon className="AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
@@ -177,12 +175,11 @@ export const ListDisplay = () => {
           </Accordion.Content>
         </Accordion.Item>
 
-
         {/* 4th level: measures */}
         <Accordion.Item value="measures" className="AccordionItem">
           <Accordion.Header>
             <Accordion.Trigger className="AccordionTrigger">
-              Measures
+              {Object.keys(processedData?.measures || {}).length} Measures
               <ChevronDownIcon className="AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
@@ -192,13 +189,11 @@ export const ListDisplay = () => {
           </Accordion.Content>
         </Accordion.Item>
 
-
-
         {/* 5th level: diagnostics */}
         <Accordion.Item value="diagnostics" className="AccordionItem">
           <Accordion.Header>
             <Accordion.Trigger className="AccordionTrigger">
-              Diagnostics
+              {Object.keys(processedData?.diagnostics || {}).length} Diagnostics
               <ChevronDownIcon className="AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
@@ -208,8 +203,8 @@ export const ListDisplay = () => {
           </Accordion.Content>
         </Accordion.Item>
 
-
       </Accordion.Root>
     </div>
   );
+
 };
