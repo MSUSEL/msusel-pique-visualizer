@@ -8,8 +8,9 @@ interface FilterableItem {
     [key: string]: any;
 }
 
-function hideWeightsKey(obj: Record<string, FilterableItem>, hiddingStatus: boolean = true): Record<string, FilterableItem> {
-    if (!hiddingStatus) return obj;
+function filterOutZeroWeights(obj: Record<string, FilterableItem>): Record<string, FilterableItem> {
+ 
+    //if (!hiddingStatus) return obj;
 
     let droppedPairsCount = 0; // Counter for dropped pairs
 
@@ -42,30 +43,20 @@ function hideWeightsKey(obj: Record<string, FilterableItem>, hiddingStatus: bool
 
 
 
-export function hideZeroWeightEdges(dataset: schema.base.Schema | undefined): schema.base.Schema | undefined {
-    const hideZeroWeightEdgeState = useAtomValue(State.hideZeroWeightEdgeState);
-
+export function hideZeroWeightEdges(dataset: schema.base.Schema | undefined, hideZeroWeightEdgeState: boolean): schema.base.Schema | undefined {
     if (!dataset) return undefined;
 
     // Clone the dataset
-    const quickFilteredData = JSON.parse(JSON.stringify(dataset));
+    const filteredDataset = JSON.parse(JSON.stringify(dataset));
 
-    // hide weights = 0
-    switch (hideZeroWeightEdgeState) {
-        case 'hidding':
-            // sorting by value in ascending order
-            quickFilteredData.factors.product_factors = hideWeightsKey(quickFilteredData.factors.product_factors, true);
-            quickFilteredData.factors.quality_aspects = hideWeightsKey(quickFilteredData.factors.quality_aspects, true);
-            quickFilteredData.factors.tqi = hideWeightsKey(quickFilteredData.factors.tqi, true);
-            quickFilteredData.measures = hideWeightsKey(quickFilteredData.measures, true);
-            quickFilteredData.diagnostics = hideWeightsKey(quickFilteredData.diagnostics, true);
-            break;
-        case 'not-hidding':
-            break
+    // Apply filtering based on hideZeroWeightEdgeState
+    if (hideZeroWeightEdgeState) {
+        filteredDataset.factors.product_factors = filterOutZeroWeights(filteredDataset.factors.product_factors);
+        filteredDataset.factors.quality_aspects = filterOutZeroWeights(filteredDataset.factors.quality_aspects);
+        filteredDataset.factors.tqi = filterOutZeroWeights(filteredDataset.factors.tqi);
+        filteredDataset.measures = filterOutZeroWeights(filteredDataset.measures);
+        filteredDataset.diagnostics = filterOutZeroWeights(filteredDataset.diagnostics);
     }
 
-    return quickFilteredData
-
-
-
+    return filteredDataset;
 }

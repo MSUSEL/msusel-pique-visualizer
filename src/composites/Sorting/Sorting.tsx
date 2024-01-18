@@ -49,9 +49,10 @@ function sortObjectsByWeights(referObj: NestedObject, sortObj: NestedObject, asc
     return sortedObj;
 }
 
-export function sort(sortState: string): schema.base.Schema | undefined {
-    const dataset = useAtomValue(State.dataset);
-    //const sortState = useAtomValue(State.sortingState);
+export function sort(sortState: string, dataset: schema.base.Schema): schema.base.Schema | undefined {
+    
+    // const dataset = useAtomValue(State.dataset);
+    // const sortState = useAtomValue(State.sortingState);
     if (!dataset) return undefined;
 
     // Clone the dataset

@@ -22,7 +22,7 @@ function calculateFilterRanges(checkboxStates: Record<string, boolean>): [number
         .filter(([key, value]) => !value && ranges.hasOwnProperty(key))
         .map(([key, _]) => ranges[key]);
 
-    console.log(needToFilterRange)
+    // console.log(needToFilterRange)
 
     return needToFilterRange
 }
@@ -35,7 +35,7 @@ function filterByValue(obj: Record<string, FilterableItem>, ranges: [number, num
     }));
     const filteredLength = Object.keys(filteredObj).length;
 
-    console.log(`filterByValue: Filtered out ${originalLength - filteredLength} objects`);
+    // console.log(`filterByValue: Filtered out ${originalLength - filteredLength} objects`);
 
     return filteredObj;
 }
@@ -50,7 +50,7 @@ function filterWeightsByWeightKeys(obj: Record<string, FilterableItem>, dictiona
     );
     const filteredLength = Object.keys(filteredObj).length;
 
-    console.log(`filterByWeights: Filtered out ${originalLength - filteredLength} objects`);
+    // console.log(`filterByWeights: Filtered out ${originalLength - filteredLength} objects`);
 
     return filteredObj;
 }
@@ -135,12 +135,13 @@ function filterObjectsByWeightRange(
 }
 
 
-
-
-
-export function filterByRiskLevels(dataset: schema.base.Schema | undefined): schema.base.Schema | undefined {
+// exported functions: 
+export function filterByRiskLevels(
+    dataset: schema.base.Schema | undefined, 
+    checkboxStates: Record<string, boolean>
+): schema.base.Schema | undefined {
     if (!dataset) return undefined;
-    const [checkboxStates] = useAtom(State.filteringByRiskLevelCheckboxStates);
+    
     const filteredDataset = JSON.parse(JSON.stringify(dataset));
 
     // Apply filtering based on risk level
@@ -150,6 +151,7 @@ export function filterByRiskLevels(dataset: schema.base.Schema | undefined): sch
 
     return filteredDataset;
 }
+
 
 
 export function filterByValueRange(dataset: schema.base.Schema | undefined): schema.base.Schema | undefined {
