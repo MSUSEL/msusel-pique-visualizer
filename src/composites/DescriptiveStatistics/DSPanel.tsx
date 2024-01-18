@@ -62,27 +62,27 @@ export function DSSide(): JSX.Element {
                 <Accordion.Root className="AccordionRoot" type="multiple" defaultValue={[]}>
                     <Accordion.Item className="AccordionItem" value="item-1" color="red">
                         <AccordionTrigger className="SevereTitleCard">Severe: {descriptiveStatisticData.qualityFactorsCount[0]}</AccordionTrigger>
-                        <AccordionContent>{DisplayDSList('severe', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                        <AccordionContent>{DisplayDSList('severe', 'product_factors', descriptiveStatisticData)}</AccordionContent>
                     </Accordion.Item>
 
                     <Accordion.Item className="AccordionItem" value="item-2" color="orange">
                         <AccordionTrigger className="HighTitleCard">High: {descriptiveStatisticData.qualityFactorsCount[1]}</AccordionTrigger>
-                        <AccordionContent>{DisplayDSList('high', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                        <AccordionContent>{DisplayDSList('high', 'product_factors', descriptiveStatisticData)}</AccordionContent>
                     </Accordion.Item>
 
                     <Accordion.Item className="AccordionItem" value="item-3" color="yellow">
                         <AccordionTrigger className="ModerateTitleCard">Moderate: {descriptiveStatisticData.qualityFactorsCount[2]}</AccordionTrigger>
-                        <AccordionContent>{DisplayDSList('moderate', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                        <AccordionContent>{DisplayDSList('moderate', 'product_factors', descriptiveStatisticData)}</AccordionContent>
                     </Accordion.Item>
 
                     <Accordion.Item className="AccordionItem" value="item-4" color="blue">
                         <AccordionTrigger className="MinorTitleCard">Minor: {descriptiveStatisticData.qualityFactorsCount[3]}</AccordionTrigger>
-                        <AccordionContent>{DisplayDSList('minor', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                        <AccordionContent>{DisplayDSList('minor', 'product_factors', descriptiveStatisticData)}</AccordionContent>
                     </Accordion.Item>
 
                     <Accordion.Item className="AccordionItem" value="item-5" color="green">
                         <AccordionTrigger className="InsignificantTitleCard">Insignificant: {descriptiveStatisticData.qualityFactorsCount[4]}</AccordionTrigger>
-                        <AccordionContent>{DisplayDSList('insignificant', 'quality_factors', descriptiveStatisticData)}</AccordionContent>
+                        <AccordionContent>{DisplayDSList('insignificant', 'product_factors', descriptiveStatisticData)}</AccordionContent>
                     </Accordion.Item>
                 </Accordion.Root>
                 
