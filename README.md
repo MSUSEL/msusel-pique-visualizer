@@ -1,3 +1,5 @@
+<img src="./src/assets/PIQUE_svg.svg" width="100" height="100" alt="PIQUE Logo">
+
 # PIQUE Visualizer
 A React app used to visualize PIQUE results. In a hierachical tree display, the quality scores from\
 PIQUE results are much easier to understand than trying to parse through complicated json files.
@@ -9,7 +11,7 @@ PIQUE Visualizer accepts the compact json version of PIQUE results. These compac
 original PIQUE results through an algorithm that reduces parent-child relationship redundancy, and significantly\
 reduces the size of the json file while preserving the results.
 
-<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/file_upload.png" width="60%">
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/refactorZiyi/src/assets/PIQUE-Visualizer-Pictures/refactored_file_upload.png" width="60%">
 
 ---
 
@@ -55,12 +57,9 @@ This will install all of the packages necessary for the visualizer. *Only need t
 ### `npm run dev`
 
 Runs the visualizer and opens it in your browser.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
 
 ### `npm run storybook`
 Start storybook and open browser.
 
 Funding Agency: [<img src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg" width="20%" height="20%">](https://www.cisa.gov/)
-
-
-

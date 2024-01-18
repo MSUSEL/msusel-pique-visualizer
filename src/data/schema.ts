@@ -1,4 +1,18 @@
 import { z } from "zod";
+// Define the new utility function structure
+const utilityFunctionNewStructure = z.object({
+  name: z.string(),
+  benchmarkTag: z.string(),
+  description: z.string(),
+  utilityFunctionImageURIs: z.record(z.string(), z.string()),
+  benchmarkQualityMetrics: z.record(z.string(), z.union([z.string(), z.number()])),
+  utilityFunctionQualityMetrics: z.record(z.string(), z.union([z.string(), z.number()])),
+  sensitivityAnalysisResults: z.record(z.string(), z.union([z.string(), z.number()])),
+});
+
+// Update the existing utility function schema to accept both the old and new format
+const utilityFunctionSchema = z.union([z.string(), utilityFunctionNewStructure]);
+
 
 export namespace base {
   export const measureSingle = z.object({
@@ -7,7 +21,7 @@ export namespace base {
     normalizer: z.string(),
     positive: z.boolean(),
     thresholds: z.tuple([z.number(), z.number()]),
-    utility_function: z.string(),
+    utility_function: utilityFunctionSchema,
     value: z.number(),
     weights: z.record(z.string(), z.number()),
   });
@@ -17,7 +31,7 @@ export namespace base {
     value: z.number(),
     eval_strategy: z.string(),
     normalizer: z.string(),
-    utility_function: z.string(),
+    utility_function: utilityFunctionSchema,
     description: z.string(),
     weights: z.record(z.string(), z.number()),
   });
@@ -28,7 +42,7 @@ export namespace base {
     name: z.string(),
     normalizer: z.string(),
     toolName: z.string(),
-    utility_function: z.string(),
+    utility_function: utilityFunctionSchema,
     value: z.number(),
     weights: z.record(z.string(), z.number()),
   });
