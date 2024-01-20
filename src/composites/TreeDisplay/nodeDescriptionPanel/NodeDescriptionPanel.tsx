@@ -5,6 +5,7 @@ import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
 export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
   const [nodes, setNodes] = useState<any[]>([]);
   const [orderBy, setOrderBy] = useState<string>("default");
+  const [orderDirection, setOrderDirection] = useState<string>("asc");
 
   // Rerender this component whenever the nodes prop from TreeDisplay changes.
   useEffect(() => {
@@ -16,13 +17,13 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
 
     switch (orderBy) {
       case "alphabetical":
-        orderedNodes.sort((a, b) => (a.name > b.name ? 1 : -1));
+        orderedNodes.sort((a, b) => (orderDirection === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
         break;
       case "nodeType":
         orderedNodes.sort((a, b) => (a.node_type > b.node_type ? 1 : -1));
         break;
       case "value":
-        orderedNodes.sort((a, b) => a.value - b.value);
+        orderedNodes.sort((a, b) => (orderDirection === "asc" ? a.value - b.value : b.value - a.value));
         break;
       default:
         break;
@@ -42,17 +43,32 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
 
   const handleOrderByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOrderBy(e.target.value);
+    setOrderDirection("asc");
+  };
+
+  const handleOrderDirectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrderDirection(e.target.value);
   };
 
   return (
     <div id="node_description_panel" className="scrollable-panel">
       <label htmlFor="orderBy">Order By: </label>
       <select id="orderBy" value={orderBy} onChange={handleOrderByChange}>
-        <option value="default">Default Order</option>
+        <option value="default">Insertion Order</option>
         <option value="alphabetical">Alphabetical Order</option>
-        <option value="nodeType">Node Type Order</option>
+        {/* <option value="nodeType">Node Type Order</option> */}
         <option value="value">Value Order</option>
       </select>
+
+      {(orderBy === "alphabetical" || orderBy === "value") && (
+        <>
+          <label htmlFor="orderDirection"> Order Direction: </label>
+          <select id="orderDirection" value={orderDirection} onChange={handleOrderDirectionChange}>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </>
+      )}
 
       {makeNodePanelRectangles()}
     </div>
