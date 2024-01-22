@@ -35,7 +35,7 @@ export const ResetButton = () => {
     return (
         <Flex gap="3" align="center">
             <Button size="2" variant="soft" highContrast onClick={handleReset}>
-                <ResetIcon width="18" height="18" /> Reset
+                <ResetIcon width="18" height="18" /> Reset all sorting and/or filtering
             </Button>
         </Flex>
     );
