@@ -970,7 +970,6 @@ export function TreeDisplay(props) {
         .attr("dominant-baseline", "middle")
         .attr("text-anchor", "middle");
     }
-
     const handleClickingNodeForDescriptionPanel = (e) => {
       let nfpa = nodesForPanelBoxes;
 

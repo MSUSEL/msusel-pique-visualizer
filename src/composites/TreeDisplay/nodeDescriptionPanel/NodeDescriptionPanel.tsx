@@ -1,6 +1,6 @@
-import "./NodeDescriptionPanel.css"
-import {useEffect, useState} from "react";
-import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
+import React, { useState, useEffect } from "react";
+import { determineNodeInfo } from "./NodeDescriptionPanelHelpers";
+import "./NodeDescriptionPanel.css";
 
 export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
   const [nodes, setNodes] = useState<any[]>([]);
