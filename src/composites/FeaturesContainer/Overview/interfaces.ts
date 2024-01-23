@@ -1,7 +1,7 @@
 export interface listProps {
     section: string;
     riskLvl: string;
-    descriptiveStatisticData: descriptiveStatisticData;
+    overviewData: overviewData;
 }
 
 export interface dropDownState {
@@ -21,7 +21,7 @@ export interface listNode {
     utility_function: string;
 }
 
-export interface descriptiveStatisticData {
+export interface overviewData {
     qualityAspectsCount: number[];
     qualityFactorsCount: number[];
     measuresCount: number[];

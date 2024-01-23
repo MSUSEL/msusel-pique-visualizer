@@ -1,10 +1,11 @@
 // import { Component, ReactNode } from "react";
-import { descriptiveStatisticData, listNode } from './index.ts';
+import { overviewData, listNode } from './index.ts';
 import * as Accordion from "@radix-ui/react-accordion";
 import { Button, Theme, Box, Text, Strong } from '@radix-ui/themes';
 import { DotFilledIcon } from '@radix-ui/react-icons';
+import "./Overview.css"
 
-export function DisplayDSList(risk:string, section:string, props:descriptiveStatisticData): JSX.Element {
+export function OverviewDropList(risk:string, section:string, props:overviewData): JSX.Element {
 
     /* Creates a new array of all nodes matching the given classification and risk level */
     const targetArray: listNode[] = getRelatedArray(section, risk, props);
@@ -52,20 +53,20 @@ export function DisplayDSList(risk:string, section:string, props:descriptiveStat
 function getChildClass(riskLvl: string): string
 {
     switch (riskLvl){
-        case 'severe': return 'Severe-Level-Droplist';
-        case 'high': return 'High-Level-Droplist';
-        case 'moderate': return 'Moderate-Level-Droplist';
-        case 'minor': return 'Minor-Level-Droplist';
-        case 'insignificant': return 'Insignificant-Level-Droplist';
+        case 'severe': return 'SevereTitleCard';
+        case 'high': return 'HighTitleCard';
+        case 'moderate': return 'ModerateTitleCard';
+        case 'minor': return 'MinorTitleCard';
+        case 'insignificant': return 'InsignificantTitleCard';
         default: return 'getChildClass-error';
     }
 }
 
-function getRelatedArray(section: string, riskLvl: string, descriptiveStatisticData: descriptiveStatisticData): listNode[] {
+function getRelatedArray(section: string, riskLvl: string, overviewData: overviewData): listNode[] {
     var tempArr:listNode[] = [], finalArray:listNode[] = [];
-    if (section === "quality_aspects") {tempArr = descriptiveStatisticData.qualityAspectNodes}
-    else if (section === "product_factors") {tempArr = descriptiveStatisticData.qualityFactorNodes}
-    else if (section === "measures") {tempArr = descriptiveStatisticData.measureNodes}
+    if (section === "quality_aspects") {tempArr = overviewData.qualityAspectNodes}
+    else if (section === "product_factors") {tempArr = overviewData.qualityFactorNodes}
+    else if (section === "measures") {tempArr = overviewData.measureNodes}
 
     for (const iter of tempArr) {
         const value: number = iter.value;

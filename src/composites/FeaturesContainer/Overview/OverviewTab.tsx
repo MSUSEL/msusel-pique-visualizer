@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useAtomValue } from "jotai";
 import { State } from "../../../state";
 import { Flex, Text, Box, Button } from "@radix-ui/themes";
-import { HamburgerMenuIcon, PinLeftIcon, PinRightIcon } from '@radix-ui/react-icons';
+import { HamburgerMenuIcon, Cross1Icon } from '@radix-ui/react-icons';
 import { classifyRiskLevel } from "../../LegendContainer/ClassifyRiskLevel";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { DSSide } from '.';
-import "./DescriptiveStats.css"
+import { OverviewList } from '.';
+import "./Overview.css"
 
 interface FilterableItem {
     value: number;
@@ -130,12 +130,12 @@ export const OverviewTab = () => {
             
             {/* Toggle Button */}
             <Button onClick={toggleDSSide} style={{}}>
-                Lists {isDSSideOpen ? <PinRightIcon /> : <PinLeftIcon />}
+                {isDSSideOpen ? <Cross1Icon /> : <HamburgerMenuIcon />}
             </Button>
 
             {/* DSSide panel */}
             <Box className='OverviewListContainer' style={{ flex: '0 0 auto', display: isDSSideOpen ? 'block' : 'none' }}>
-                <DSSide />
+                <OverviewList/>
             </Box>
 
         </Flex>
