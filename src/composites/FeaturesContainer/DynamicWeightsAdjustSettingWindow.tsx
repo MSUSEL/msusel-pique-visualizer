@@ -1,34 +1,74 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Button, DropdownMenu, Flex } from "@radix-ui/themes";
-import { GearIcon } from "@radix-ui/react-icons";
+import { CharacteristicsTableGenerator } from "../DynamicWeightsAdjustment/CharacteristicsTable"; 
+import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Callout, Box, Inset } from "@radix-ui/themes";
+import { InfoCircledIcon, GearIcon } from "@radix-ui/react-icons";
 
 export const DynamicWeightsButton = () => {
     return (
 
-        <Flex gap="3" align="center">
-            <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                    <Button size="2" variant="soft" highContrast>
-                        <GearIcon width="18" height="18" />  Weights Adjustment
-                    </Button>
-                </DropdownMenu.Trigger>
+        <Flex direction="column" gap="3" align="start">
 
-                <DropdownMenu.Content>
-                <DropdownMenu.Label>
-                    <Button size="2" variant="soft" highContrast>
-                        Characteristics Weights
-                    </Button>
-                </DropdownMenu.Label>
+            <Box>
+                <HoverCard.Root>
+                    <HoverCard.Trigger>
+                        <Link href="#" size='3' style={{ margin: '0px', }} > <GearIcon />  Dynamic Weights Adjustment</Link>
+                    </HoverCard.Trigger>
+                    <HoverCard.Content>
+                        <Text as="div" size="1" style={{ maxWidth: 325 }}>
 
+                            <Strong>Weights, </Strong> shown as numbers alonging on edges in the tree display,
+                            indicate the relative importance among the quality aspects in consideration.
+                            Since the industry requirements could be various,
+                            tuning the weights allows users to prioritize different aspects.
 
-                </DropdownMenu.Content>
-            </DropdownMenu.Root>
+                        </Text>
+                    </HoverCard.Content>
+                </HoverCard.Root>
 
+            </Box>
+
+            <Box>
+                <Callout.Root>
+                    <Callout.Icon>
+                        <InfoCircledIcon />
+                    </Callout.Icon>
+                    <Callout.Text>
+                        Currently, the adjsutment of weights is only applicable for Quality Characteristics (i.e., the 2nd level of the tree display).
+                    </Callout.Text>
+                </Callout.Root>
+
+            </Box>
+
+            <Box>
+                <Dialog.Root>
+                    <Dialog.Trigger>
+                        <Button size="1" variant="surface" >
+                            Adjust quality characheristics weights
+                        </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content>
+                        <Dialog.Title>Characteristics and corresponding weights</Dialog.Title>
+                        <Dialog.Description>
+                            
+                        </Dialog.Description>
+
+                        <Inset side="x" my="5">
+                            <CharacteristicsTableGenerator />
+                        </Inset>
+
+                        <Flex gap="3" justify="end">
+                            <Dialog.Close>
+                                <Button variant="soft" color="gray">
+                                    Close
+                                </Button>
+                            </Dialog.Close>
+                        </Flex>
+                    </Dialog.Content>
+                </Dialog.Root>
+            </Box>
 
         </Flex>
-
-
 
 
     );
