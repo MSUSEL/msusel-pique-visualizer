@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from "jotai";
 import React, { useMemo, useState } from 'react';
 import { State } from "../../state";
 import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Table, Callout, Box, Inset, Grid, Card, Avatar } from "@radix-ui/themes";
-import { InfoCircledIcon, GearIcon, UpdateIcon, ResetIcon } from "@radix-ui/react-icons";
+import { InfoCircledIcon, GearIcon, UpdateIcon, ResetIcon, DownloadIcon } from "@radix-ui/react-icons";
 import * as Slider from '@radix-ui/react-slider';
 import "../FeaturesContainer/Slider.css";
 import * as schema from '../../data/schema';
@@ -220,15 +220,21 @@ export const CharacteristicsTableGenerator = () => {
             </Flex>
           </Card>
         </Box>
-        <Box style={{ flexBasis: '20%' }}>
-          <Button variant={"surface"} onClick={resetAllAdjustments}>
-            <ResetIcon width="16" height="16" />Reset
-          </Button>
-        </Box>
+        <Flex direction={"column"} style={{ width: '20%' }}>
+          <Box> {/* Add some spacing between buttons */}
+            <Button variant={"surface"} onClick={resetAllAdjustments} style={{ width: '100%', height: '30px' }}>
+              <ResetIcon width="16" height="16" />
+              Reset
+            </Button>
+          </Box>
+          <Box>
+            <Button variant={"surface"} style={{ width: '100%', height: '30px' }}>
+              <DownloadIcon width="16" height="16" />
+              Download
+            </Button>
+          </Box>
+        </Flex>
       </Flex>
-
-
-
     </Flex>
   );
 }
