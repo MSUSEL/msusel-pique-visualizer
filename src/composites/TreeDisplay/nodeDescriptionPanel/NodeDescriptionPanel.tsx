@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { determineNodeInfo } from "./NodeDescriptionPanelHelpers";
-import "./NodeDescriptionPanel.css";
+import "./NodeDescriptionPanel.css"
+import {useEffect, useState} from "react";
+import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
 
 export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
   const [nodes, setNodes] = useState<any[]>([]);
@@ -50,6 +50,10 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
     setOrderDirection(e.target.value);
   };
 
+  const handleOrderDirectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrderDirection(e.target.value);
+  };
+
   return (
     <div id="node_description_panel" className="scrollable-panel">
       <label htmlFor="orderBy">Order By: </label>
@@ -59,7 +63,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
         {/* <option value="nodeType">Node Type Order</option> */}
         <option value="value">Value Order</option>
       </select>
-
+  
       {(orderBy === "alphabetical" || orderBy === "value") && (
         <>
           <label htmlFor="orderDirection"> Order Direction: </label>
@@ -69,7 +73,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
           </select>
         </>
       )}
-
+  
       {makeNodePanelRectangles()}
     </div>
   );
