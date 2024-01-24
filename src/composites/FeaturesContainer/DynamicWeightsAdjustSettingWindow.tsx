@@ -43,7 +43,7 @@ export const DynamicWeightsButton = () => {
             <Box>
                 <Dialog.Root>
                     <Dialog.Trigger>
-                        <Button size="1" variant="surface" >
+                        <Button size="2" variant="surface" >
                             Adjust quality characheristics weights
                         </Button>
                     </Dialog.Trigger>
