@@ -1,8 +1,8 @@
 import { useAtom, useAtomValue } from "jotai";
 import React, { useMemo, useState } from 'react';
 import { State } from "../../state";
-import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Table, Callout, Box, Inset, Grid } from "@radix-ui/themes";
-import { InfoCircledIcon, GearIcon } from "@radix-ui/react-icons";
+import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Table, Callout, Box, Inset, Grid, Card, Avatar } from "@radix-ui/themes";
+import { InfoCircledIcon, GearIcon, UpdateIcon, ResetIcon } from "@radix-ui/react-icons";
 import * as Slider from '@radix-ui/react-slider';
 import "../FeaturesContainer/Slider.css";
 import * as schema from '../../data/schema';
@@ -21,6 +21,7 @@ interface SingleTableRowProps {
   tqiKey: string;
   name: string;
   qualityAspectValue: number;
+  qualityAspectDescription: string;
   weightValue: number; // Original weight before adjustment
   sliderValue: number; // Current slider value after adjustment
   maxSliderValue: number; // Maximum value for the slider
@@ -28,10 +29,21 @@ interface SingleTableRowProps {
 }
 
 
-const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAspectValue, weightValue, sliderValue, maxSliderValue, onSliderChange }) => {
+const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAspectValue, qualityAspectDescription, weightValue, sliderValue, maxSliderValue, onSliderChange }) => {
   return (
     <Table.Row>
-      <Table.RowHeaderCell>{name}</Table.RowHeaderCell>
+      <Table.RowHeaderCell>
+        <HoverCard.Root>
+          <HoverCard.Trigger>
+            <Link href="#">{name}</Link>
+          </HoverCard.Trigger>
+          <HoverCard.Content>
+            <Text as="div" style={{ maxWidth: 325 }}>
+              <Strong>Meaning of {name}</Strong> : {qualityAspectDescription}
+            </Text>
+          </HoverCard.Content>
+        </HoverCard.Root>
+      </Table.RowHeaderCell>
       <Table.Cell>{qualityAspectValue.toFixed(4)}</Table.Cell>
       <Table.Cell>{weightValue.toFixed(4)}</Table.Cell> {/* Original weight value */}
       <Table.Cell>
@@ -111,10 +123,34 @@ export const CharacteristicsTableGenerator = () => {
         <Table.Root variant='surface'>
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeaderCell>Characteristics</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>
+                <HoverCard.Root>
+                  <HoverCard.Trigger>
+                    <Link href="#">Characteristics</Link>
+                  </HoverCard.Trigger>
+                  <HoverCard.Content>
+                    <Text as="div" style={{ maxWidth: 325 }}>
+                      These are the Quality Characteristics that have impacts towards the TQI (Total Quality Index).
+                    </Text>
+                  </HoverCard.Content>
+                </HoverCard.Root>
+              </Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Current Value</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Current Weight</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Weight Adjustment Slider</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>
+                <HoverCard.Root>
+                  <HoverCard.Trigger>
+                    <Link href="#">Weight Adjustment Slider</Link>
+                  </HoverCard.Trigger>
+                  <HoverCard.Content>
+                    <Text as="div" style={{ maxWidth: 325 }}>
+                      Please drag the thumb on the slider to adjust the weights.
+                      The sum of all weights is 1.
+                      The next column <Strong>Adjusted Weight</Strong> renders the updated weight values while adjustment.
+                      The <Strong>Updated TQI</Strong> value is updated while adjustment immediately.
+                    </Text>
+                  </HoverCard.Content>
+                </HoverCard.Root></Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Adjusted Weight</Table.ColumnHeaderCell>
             </Table.Row>
           </Table.Header>
@@ -138,6 +174,7 @@ export const CharacteristicsTableGenerator = () => {
                     tqiKey={tqiKey}
                     name={name}
                     qualityAspectValue={adjustedDataset.factors.quality_aspects[name]?.value || 0}
+                    qualityAspectDescription={adjustedDataset.factors.quality_aspects[name]?.description || ''}
                     weightValue={weightValue as number}
                     sliderValue={sliderValues[`${tqiKey}-${name}`]}
                     maxSliderValue={maxSliderValue}
@@ -152,15 +189,44 @@ export const CharacteristicsTableGenerator = () => {
         </Table.Root>
       </Box>
 
-      <Flex direction={"row"} align={"center"} gap={"3"}>
-        <Box>
-          <Text> <Strong>Current TQI: </Strong> {currentTQI.toFixed(4)} </Text>
+      <Flex direction={"row"} align={"center"} justify="between" style={{ width: '100%' }}>
+        <Box style={{ flexBasis: '40%' }}>
+          <Card size="1">
+            <Flex gap="3" align="center">
+              <Avatar size="3" radius="full" fallback="Ini" color="indigo" />
+              <Box>
+                <Text as="div" size="2" weight="bold">
+                  Initial TQI
+                </Text>
+                <Text as="div" size="2" color="gray">
+                  {currentTQI.toFixed(4)}
+                </Text>
+              </Box>
+            </Flex>
+          </Card>
         </Box>
-        <Box>
-          <Text> <Strong>Updated TQI: </Strong> {updatedTQI.toFixed(4)} </Text>
+        <Box style={{ flexBasis: '40%' }}>
+          <Card size="1">
+            <Flex gap="3" align="center">
+              <Avatar size="3" radius="full" fallback="New" color="indigo" />
+              <Box>
+                <Text as="div" size="2" weight="bold">
+                  Updated TQI
+                </Text>
+                <Text as="div" size="2" color="gray">
+                  {updatedTQI.toFixed(4)}
+                </Text>
+              </Box>
+            </Flex>
+          </Card>
         </Box>
-        <Box><Button variant={"surface"} onClick={resetAllAdjustments}>Reset All Adjustments</Button></Box>
+        <Box style={{ flexBasis: '20%' }}>
+          <Button variant={"surface"} onClick={resetAllAdjustments}>
+            <ResetIcon width="16" height="16" />Reset
+          </Button>
+        </Box>
       </Flex>
+
 
 
     </Flex>
