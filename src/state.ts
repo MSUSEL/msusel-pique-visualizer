@@ -18,8 +18,8 @@ export function createState() {
   });
 
   // State for managing minimum and maximum values for value and weight ranges
-  const minValueState = atom<number>(-100000);
-  const maxValueState = atom<number>(100000);
+  const minValueState = atom<number>(0);
+  const maxValueState = atom<number>(1);
   const minWeightState = atom<number>(0);
   const maxWeightState = atom<number>(1);
 
