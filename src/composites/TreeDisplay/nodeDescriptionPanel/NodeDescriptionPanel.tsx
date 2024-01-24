@@ -43,11 +43,6 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
 
   const handleOrderByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOrderBy(e.target.value);
-    setOrderDirection("asc");
-  };
-
-  const handleOrderDirectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setOrderDirection(e.target.value);
   };
 
   const handleOrderDirectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -63,7 +58,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
         {/* <option value="nodeType">Node Type Order</option> */}
         <option value="value">Value Order</option>
       </select>
-  
+
       {(orderBy === "alphabetical" || orderBy === "value") && (
         <>
           <label htmlFor="orderDirection"> Order Direction: </label>
@@ -73,7 +68,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
           </select>
         </>
       )}
-  
+
       {makeNodePanelRectangles()}
     </div>
   );
