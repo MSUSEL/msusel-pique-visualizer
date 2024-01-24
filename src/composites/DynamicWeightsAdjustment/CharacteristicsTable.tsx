@@ -1,36 +1,121 @@
 import { useAtom, useAtomValue } from "jotai";
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { State } from "../../state";
 import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Table, Callout, Box, Inset, Grid } from "@radix-ui/themes";
 import { InfoCircledIcon, GearIcon } from "@radix-ui/react-icons";
 import * as Slider from '@radix-ui/react-slider';
 import "../FeaturesContainer/Slider.css";
+import * as schema from '../../data/schema';
 
 
-const SingleTableRowContent = () => {
-  return (
-    <Table.Row>
-      <Table.RowHeaderCell>1</Table.RowHeaderCell>
-      <Table.Cell>2</Table.Cell>
-      <Table.Cell>3</Table.Cell>
-      <Table.Cell>
-        <Box>
-        <Slider.Root min={0} max={1} step={0.05} className="SliderRoot">
-          <Slider.Track className="SliderTrack">
-            <Slider.Range className="SliderRange"/>
-          </Slider.Track>
-          <Slider.Thumb className="SliderThumb" />
-        </Slider.Root>
-        </Box>
-      </Table.Cell>
-    </Table.Row>
-  )
+interface AdjustableCharacteristicItem {
+  name: string;
+  value: number;
+  weights: Record<string, number>;
+  [key: string]: any;
 }
 
-export const CharacteristicsTableGenerator = () => {
-  const currentTQI = 0.5;
-  const updatedTQI = 0.6;
+interface Weights {
+  [key: string]: number;
+}
 
+interface TQIEntry {
+  weights: Weights;
+}
+
+interface TQIObject {
+  [key: string]: TQIEntry;
+}
+
+interface SingleTableRowProps {
+  tqiKey: string;
+  name: string;
+  qualityAspectValue: number;
+  weightValue: number; // Original weight before adjustment
+  sliderValue: number; // Current slider value after adjustment
+  onSliderChange: (tqiKey: string, name: string, newWeight: number) => void;
+}
+
+
+const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAspectValue, weightValue, sliderValue, onSliderChange }) => {
+  return (
+    <Table.Row>
+      <Table.RowHeaderCell>{name}</Table.RowHeaderCell>
+      <Table.Cell>{qualityAspectValue.toFixed(4)}</Table.Cell>
+      <Table.Cell>{weightValue.toFixed(4)}</Table.Cell> {/* Original weight value */}
+      <Table.Cell>
+        <Box>
+          <Slider.Root value={[sliderValue]} onValueChange={value => onSliderChange(tqiKey, name, value[0])} min={0} max={1} step={0.05} className="SliderRoot">
+            <Slider.Track className="SliderTrack">
+              <Slider.Range className="SliderRange" />
+            </Slider.Track>
+            <Slider.Thumb className="SliderThumb" />
+          </Slider.Root>
+        </Box>
+      </Table.Cell>
+      <Table.Cell>{sliderValue.toFixed(4)}</Table.Cell> {/* Adjusted weight value */}
+    </Table.Row>
+  );
+};
+
+
+
+export const CharacteristicsTableGenerator = () => {
+  const dataset = useAtomValue(State.dataset);
+  if (!dataset) return null
+  var adjustedDataset = JSON.parse(JSON.stringify(dataset));
+  const currentTQI = Object.values(dataset.factors.tqi)[0]?.value || 0;
+
+
+  // State to track slider values
+  const [sliderValues, setSliderValues] = useState(() => {
+    const initialSliderValues: Record<string, number> = {};
+    Object.entries(adjustedDataset.factors.tqi).forEach(([tqiKey, tqiEntry]) => {
+      const entry = tqiEntry as TQIEntry; // Type assertion here
+      Object.keys(entry.weights).forEach(name => {
+        initialSliderValues[`${tqiKey}-${name}`] = entry.weights[name];
+      });
+    });
+    return initialSliderValues;
+  });
+
+  // Function to reset all sliders
+  const resetAllAdjustments = () => {
+    setSliderValues(() => {
+      const resetValues: Record<string, number> = {};
+      Object.entries(adjustedDataset.factors.tqi).forEach(([tqiKey, tqiEntry]) => {
+        const entry = tqiEntry as TQIEntry; // Type assertion here
+        Object.keys(entry.weights).forEach(name => {
+          resetValues[`${tqiKey}-${name}`] = entry.weights[name];
+        });
+      });
+      return resetValues;
+    });
+  };
+
+
+  // Function to handle slider change
+  const handleSliderChange = (tqiKey: string, name: string, newWeight: number) => {
+    setSliderValues(prevValues => ({
+      ...prevValues,
+      [`${tqiKey}-${name}`]: newWeight
+    }));
+    adjustedDataset.factors.tqi[tqiKey].weights[name] = newWeight; // Update adjusted dataset
+  };
+
+
+  const updatedTQI = useMemo(() => {
+    let totalTQI = 0;
+    Object.entries(adjustedDataset.factors.tqi).forEach(([_, tqiEntry]) => {
+      const entry = tqiEntry as TQIEntry; // Type assertion for tqiEntry
+      Object.keys(entry.weights).forEach(name => {
+        const aspectValue = adjustedDataset.factors.quality_aspects[name]?.value || 0;
+        const sliderValue = sliderValues[`${Object.keys(dataset.factors.tqi)[0]}-${name}`];
+        totalTQI += aspectValue * sliderValue;
+      });
+    });
+    return totalTQI;
+  }, [sliderValues, adjustedDataset]);
   return (
     <Flex direction={"column"} align={"center"}>
       <Box>
@@ -39,27 +124,41 @@ export const CharacteristicsTableGenerator = () => {
             <Table.Row>
               <Table.ColumnHeaderCell>Characteristics</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Current Value</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Current Weights</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Adjusted Weights</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>Current Weight</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>Weight Adjustment Slider</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>Adjusted Weight</Table.ColumnHeaderCell>
             </Table.Row>
           </Table.Header>
 
           <Table.Body>
-            <SingleTableRowContent />
-
+            {Object.entries(adjustedDataset.factors.tqi).map(([tqiKey, tqiEntry]) => {
+              const tqiValue = tqiEntry as TQIEntry; // Type assertion for tqiEntry
+              return Object.entries(tqiValue.weights).map(([name, weightValue]) => (
+                <SingleTableRow
+                  key={`${tqiKey}-${name}`}
+                  tqiKey={tqiKey}
+                  name={name}
+                  qualityAspectValue={adjustedDataset.factors.quality_aspects[name]?.value || 0}
+                  weightValue={weightValue as number} // Type assertion for weightValue
+                  sliderValue={sliderValues[`${tqiKey}-${name}`]} // Current slider value
+                  onSliderChange={handleSliderChange}
+                />
+              ));
+            })}
           </Table.Body>
         </Table.Root>
       </Box>
 
       <Flex direction={"row"} align={"center"} gap={"3"}>
         <Box>
-          <Text> <Strong>Current TQI: </Strong> {currentTQI} </Text>
+          <Text> <Strong>Current TQI: </Strong> {currentTQI.toFixed(4)} </Text>
         </Box>
         <Box>
-          <Text> <Strong>Updated TQI: </Strong> {updatedTQI} </Text>
+          <Text> <Strong>Updated TQI: </Strong> {updatedTQI.toFixed(4)} </Text>
         </Box>
-
+        <Box><Button variant={"surface"} onClick={resetAllAdjustments}>Reset All Adjustments</Button></Box>
       </Flex>
+      
 
     </Flex>
   );
