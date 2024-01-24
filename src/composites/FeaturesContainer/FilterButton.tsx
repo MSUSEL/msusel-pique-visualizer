@@ -22,32 +22,25 @@ export const FilterButton = () => {
   console.log("Current filter checkboxes status", checkboxStates);
 
   // user typed in min and max
-  // State for local form values
-  const [localMinValue, setLocalMinValue] = React.useState(0);
-  const [localMaxValue, setLocalMaxValue] = React.useState(1);
-  const [localMinWeight, setLocalMinWeight] = React.useState(0);
-  const [localMaxWeight, setLocalMaxWeight] = React.useState(1);
+  const [minValue, setMinValue] = useAtom(State.minValueState);
+  const [maxValue, setMaxValue] = useAtom(State.maxValueState);
+  const [minWeight, setMinWeight] = useAtom(State.minWeightState);
+  const [maxWeight, setMaxWeight] = useAtom(State.maxWeightState);
 
-  // Atoms from state.ts
-  const [, setMinValueState] = useAtom(State.minValueState);
-  const [, setMaxValueState] = useAtom(State.maxValueState);
-  const [, setMinWeightState] = useAtom(State.minWeightState);
-  const [, setMaxWeightState] = useAtom(State.maxWeightState);
 
   const handleSaveValueRange = () => {
-    if (localMinValue <= localMaxValue) {
-      setMinValueState(localMinValue);
-      setMaxValueState(localMaxValue);
+    if (minValue <= maxValue) {
+      setMinValue(minValue);
+      setMaxValue(maxValue);
     } else {
-      // Show an error message or handle the error appropriately
       alert("Minimum value cannot be greater than maximum value.");
     }
   };
 
 
   const handleSaveWeightRange = () => {
-    setMinWeightState(localMinWeight);
-    setMaxWeightState(localMaxWeight);
+    setMinWeight(minWeight);
+    setMaxWeight(maxWeight);
   };
 
   const generateFilterSummary = () => {
@@ -57,12 +50,12 @@ export const FilterButton = () => {
       .map(([key, _]) => key);
 
     // Summary for value range
-    const isFullValueRange = localMinValue === -1 && localMaxValue === 1;
-    const valueFilterSummary = !isFullValueRange ? `Value: ${localMinValue.toFixed(1)} to ${localMaxValue.toFixed(1)}` : '';
+    const isFullValueRange = minValue === -1 && maxValue === 1;
+    const valueFilterSummary = !isFullValueRange ? `Value: ${minValue.toFixed(1)} to ${maxValue.toFixed(1)}` : '';
 
     // Summary for weight range
-    const isFullWeightRange = localMinWeight === 0 && localMaxWeight === 1;
-    const weightFilterSummary = !isFullWeightRange ? `Weight: ${localMinWeight.toFixed(1)} to ${localMaxWeight.toFixed(1)}` : '';
+    const isFullWeightRange = minWeight === 0 && maxWeight === 1;
+    const weightFilterSummary = !isFullWeightRange ? `Weight: ${minWeight.toFixed(1)} to ${maxWeight.toFixed(1)}` : '';
 
     // Combine summaries
     const filterSummaries = [
@@ -89,11 +82,11 @@ export const FilterButton = () => {
           </div>
         )}
         {<div style={{ display: 'flex', alignItems: 'left' }}>
-          <span style={{ marginLeft: '0px' }}>{`Value: ${localMinValue.toFixed(1)} to ${localMaxValue.toFixed(1)}`}</span>
+          <span style={{ marginLeft: '0px' }}>{`Value: ${minValue.toFixed(1)} to ${maxValue.toFixed(1)}`}</span>
         </div>
         }
         {<div style={{ display: 'flex', alignItems: 'left' }}>
-          <span style={{ marginLeft: '0px' }}>{`Weight: ${localMinWeight.toFixed(1)} to ${localMaxWeight.toFixed(1)}`}</span>
+          <span style={{ marginLeft: '0px' }}>{`Weight: ${minWeight.toFixed(1)} to ${maxWeight.toFixed(1)}`}</span>
         </div>
         }
         {selectedRiskLevels.length === 0 && isFullValueRange && isFullWeightRange && 'No Filtering'}
@@ -122,150 +115,150 @@ export const FilterButton = () => {
       </Box>
 
       {/* Filter summary */}
-      <Box style={{width:'100%'}} >
+      <Box style={{ width: '100%' }} >
         <Callout.Root>
           <Callout.Icon><CheckCircledIcon /></Callout.Icon>
           <Callout.Text align={"left"}>
-            <Strong>Current Filtering Criteria: </Strong> {generateFilterSummary()} 
+            <Strong>Current Filtering Criteria: </Strong> {generateFilterSummary()}
           </Callout.Text>
         </Callout.Root>
       </Box>
 
-      {/* Filter by risk level */}
       <Flex direction={"column"} align={"start"}>
-      <Box style={{width:'100%'}}>
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger >
-            <Button variant="surface" style={{ width: '100%', margin: '0 15px' }} >
-              <MixerHorizontalIcon /> Filter by Risk Level
-            </Button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
-            {/* filter by risk level*/}
-            <DropdownMenu.Group >
-              <DropdownMenu.Label>Risk Level</DropdownMenu.Label>
-              {["Insignificant", "Low", "Medium", "High", "Severe"].map((label) => (
-                <DropdownMenu.Item key={label} >
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={checkboxStates[label]}
-                      onChange={handleCheckboxChange(label)}
-                    />
-                    {label}
-                  </label>
-                </DropdownMenu.Item>
-              ))}
-            </DropdownMenu.Group>
+        {/* Filter by risk level */}
+        <Box style={{ width: '100%' }}>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger >
+              <Button variant="surface" style={{ width: '100%', margin: '0 15px' }} >
+                <MixerHorizontalIcon /> Filter by Risk Level
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content>
+              {/* filter by risk level*/}
+              <DropdownMenu.Group >
+                <DropdownMenu.Label>Risk Level</DropdownMenu.Label>
+                {["Insignificant", "Low", "Medium", "High", "Severe"].map((label) => (
+                  <DropdownMenu.Item key={label} >
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={checkboxStates[label]}
+                        onChange={handleCheckboxChange(label)}
+                      />
+                      {label}
+                    </label>
+                  </DropdownMenu.Item>
+                ))}
+              </DropdownMenu.Group>
 
-          </DropdownMenu.Content>
-        </DropdownMenu.Root>
-      </Box>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+        </Box>
 
-      {/* filter by objects value range*/}
-      <Box style={{width:'100%'}}>
-        <Dialog.Root>
-          <Dialog.Trigger >
-            <Button variant="surface" style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
-              <SliderIcon /> Filter by Value Range
-            </Button>
-          </Dialog.Trigger>
-          <Dialog.Content style={{ maxWidth: '350px', width: '100%' }}>
-            <Dialog.Title>By value range</Dialog.Title>
-            <Dialog.Description size="2" mb="4">
-              Drag the slider to decide the minimum and maximum of value range.
-            </Dialog.Description>
+        {/* filter by objects value range*/}
+        <Box style={{ width: '100%' }}>
+          <Dialog.Root>
+            <Dialog.Trigger >
+              <Button variant="surface" style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
+                <SliderIcon /> Filter by Value Range
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content style={{ maxWidth: '350px', width: '100%' }}>
+              <Dialog.Title>By value range</Dialog.Title>
+              <Dialog.Description size="2" mb="4">
+                Drag the slider to decide the minimum and maximum of value range.
+              </Dialog.Description>
 
-            <Flex direction="column" gap="3">
-              <Flex justify="between" align="center">
-                <Text size="2">Min: {localMinValue.toFixed(1)}</Text>
-                <Text size="2">Max: {localMaxValue.toFixed(1)}</Text>
+              <Flex direction="column" gap="3">
+                <Flex justify="between" align="center">
+                  <Text size="2">Min: {minValue.toFixed(1)}</Text>
+                  <Text size="2">Max: {maxValue.toFixed(1)}</Text>
+                </Flex>
+                <Slider.Root
+                  className="SliderRoot"
+                  defaultValue={[0, 1]}
+                  min={-1}
+                  max={1}
+                  step={0.1}
+                  value={[minValue, maxValue]}
+                  onValueChange={([min, max]) => {
+                    setMinValue(min);
+                    setMaxValue(max);
+                  }}
+                >
+                  <Slider.Track className="SliderTrack">
+                    <Slider.Range className="SliderRange" />
+                  </Slider.Track>
+                  <Slider.Thumb className="SliderThumb" />
+                  <Slider.Thumb className="SliderThumb" />
+                </Slider.Root>
               </Flex>
-              <Slider.Root
-                className="SliderRoot"
-                defaultValue={[0, 1]}
-                min={-1}
-                max={1}
-                step={0.1}
-                value={[localMinValue, localMaxValue]}
-                onValueChange={([min, max]) => {
-                  setLocalMinValue(min);
-                  setLocalMaxValue(max);
-                }}
-              >
-                <Slider.Track className="SliderTrack">
-                  <Slider.Range className="SliderRange" />
-                </Slider.Track>
-                <Slider.Thumb className="SliderThumb" />
-                <Slider.Thumb className="SliderThumb" />
-              </Slider.Root>
-            </Flex>
 
-            <Flex gap="3" mt="4" justify="end">
-              <Dialog.Close >
-                <Button variant="soft" color="gray">Cancel</Button>
-              </Dialog.Close>
-              <Dialog.Close onClick={handleSaveValueRange}>
-                <Button>Save</Button>
-              </Dialog.Close>
-            </Flex>
-          </Dialog.Content>
-        </Dialog.Root>
-      </Box>
-
-      {/* filter by objects weights range*/}
-      <Box style={{width:'100%'}}>
-        <Dialog.Root>
-          <Dialog.Trigger>
-            <Button variant="surface" style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
-              <SliderIcon /> Filter by Weight Range
-            </Button>
-          </Dialog.Trigger>
-
-          <Dialog.Content style={{ maxWidth: '350px', width: '100%' }}>
-            <Dialog.Title>By weight range</Dialog.Title>
-            <Dialog.Description size="2" mb="4">
-              Drag the slider to decide the minimum and maximum of weight range.
-            </Dialog.Description>
-
-            <Flex direction="column" gap="3">
-              <Flex justify="between" align="center">
-                <Text size="2">Min: {localMinWeight.toFixed(1)}</Text>
-                <Text size="2">Max: {localMaxWeight.toFixed(1)}</Text>
+              <Flex gap="3" mt="4" justify="end">
+                <Dialog.Close >
+                  <Button variant="soft" color="gray">Cancel</Button>
+                </Dialog.Close>
+                <Dialog.Close onClick={handleSaveValueRange}>
+                  <Button>Save</Button>
+                </Dialog.Close>
               </Flex>
-              <Slider.Root
-                className="SliderRoot"
-                defaultValue={[0, 1]}
-                min={0}
-                max={1}
-                step={0.1}
-                value={[localMinWeight, localMaxWeight]}
-                onValueChange={([min, max]) => {
-                  setLocalMinWeight(min);
-                  setLocalMaxWeight(max);
-                }}
-              >
-                <Slider.Track className="SliderTrack">
-                  <Slider.Range className="SliderRange" />
-                </Slider.Track>
-                <Slider.Thumb className="SliderThumb" />
-                <Slider.Thumb className="SliderThumb" />
-              </Slider.Root>
-            </Flex>
+            </Dialog.Content>
+          </Dialog.Root>
+        </Box>
 
-            <Flex gap="3" mt="4" justify="end">
-              <Dialog.Close>
-                <Button variant="soft" color="gray">
-                  Cancel
-                </Button>
-              </Dialog.Close>
-              <Dialog.Close onClick={handleSaveWeightRange}>
-                <Button>Save</Button>
-              </Dialog.Close>
-            </Flex>
-          </Dialog.Content>
-        </Dialog.Root>
-      </Box>
+        {/* filter by objects weights range*/}
+        <Box style={{ width: '100%' }}>
+          <Dialog.Root>
+            <Dialog.Trigger>
+              <Button variant="surface" style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
+                <SliderIcon /> Filter by Weight Range
+              </Button>
+            </Dialog.Trigger>
+
+            <Dialog.Content style={{ maxWidth: '350px', width: '100%' }}>
+              <Dialog.Title>By weight range</Dialog.Title>
+              <Dialog.Description size="2" mb="4">
+                Drag the slider to decide the minimum and maximum of weight range.
+              </Dialog.Description>
+
+              <Flex direction="column" gap="3">
+                <Flex justify="between" align="center">
+                  <Text size="2">Min: {minWeight.toFixed(1)}</Text>
+                  <Text size="2">Max: {maxWeight.toFixed(1)}</Text>
+                </Flex>
+                <Slider.Root
+                  className="SliderRoot"
+                  defaultValue={[0, 1]}
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  value={[minWeight, maxWeight]}
+                  onValueChange={([min, max]) => {
+                    setMinWeight(min);
+                    setMaxWeight(max);
+                  }}
+                >
+                  <Slider.Track className="SliderTrack">
+                    <Slider.Range className="SliderRange" />
+                  </Slider.Track>
+                  <Slider.Thumb className="SliderThumb" />
+                  <Slider.Thumb className="SliderThumb" />
+                </Slider.Root>
+              </Flex>
+
+              <Flex gap="3" mt="4" justify="end">
+                <Dialog.Close>
+                  <Button variant="soft" color="gray">
+                    Cancel
+                  </Button>
+                </Dialog.Close>
+                <Dialog.Close onClick={handleSaveWeightRange}>
+                  <Button>Save</Button>
+                </Dialog.Close>
+              </Flex>
+            </Dialog.Content>
+          </Dialog.Root>
+        </Box>
       </Flex>
 
     </Flex>
