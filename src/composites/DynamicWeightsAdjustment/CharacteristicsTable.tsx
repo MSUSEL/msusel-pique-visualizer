@@ -8,12 +8,6 @@ import "../FeaturesContainer/Slider.css";
 import * as schema from '../../data/schema';
 
 
-interface AdjustableCharacteristicItem {
-  name: string;
-  value: number;
-  weights: Record<string, number>;
-  [key: string]: any;
-}
 
 interface Weights {
   [key: string]: number;
@@ -21,10 +15,6 @@ interface Weights {
 
 interface TQIEntry {
   weights: Weights;
-}
-
-interface TQIObject {
-  [key: string]: TQIEntry;
 }
 
 interface SingleTableRowProps {
@@ -58,8 +48,6 @@ const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAs
     </Table.Row>
   );
 };
-
-
 
 export const CharacteristicsTableGenerator = () => {
   const dataset = useAtomValue(State.dataset);
