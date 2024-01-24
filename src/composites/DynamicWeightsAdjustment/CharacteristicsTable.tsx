@@ -33,11 +33,12 @@ interface SingleTableRowProps {
   qualityAspectValue: number;
   weightValue: number; // Original weight before adjustment
   sliderValue: number; // Current slider value after adjustment
+  maxSliderValue: number; // Maximum value for the slider
   onSliderChange: (tqiKey: string, name: string, newWeight: number) => void;
 }
 
 
-const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAspectValue, weightValue, sliderValue, onSliderChange }) => {
+const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAspectValue, weightValue, sliderValue, maxSliderValue, onSliderChange }) => {
   return (
     <Table.Row>
       <Table.RowHeaderCell>{name}</Table.RowHeaderCell>
@@ -45,7 +46,7 @@ const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAs
       <Table.Cell>{weightValue.toFixed(4)}</Table.Cell> {/* Original weight value */}
       <Table.Cell>
         <Box>
-          <Slider.Root value={[sliderValue]} onValueChange={value => onSliderChange(tqiKey, name, value[0])} min={0} max={1} step={0.05} className="SliderRoot">
+          <Slider.Root value={[sliderValue]} onValueChange={value => onSliderChange(tqiKey, name, value[0])} min={0} max={maxSliderValue} step={0.05} className="SliderRoot">
             <Slider.Track className="SliderTrack">
               <Slider.Range className="SliderRange" />
             </Slider.Track>
@@ -132,20 +133,34 @@ export const CharacteristicsTableGenerator = () => {
 
           <Table.Body>
             {Object.entries(adjustedDataset.factors.tqi).map(([tqiKey, tqiEntry]) => {
-              const tqiValue = tqiEntry as TQIEntry; // Type assertion for tqiEntry
-              return Object.entries(tqiValue.weights).map(([name, weightValue]) => (
-                <SingleTableRow
-                  key={`${tqiKey}-${name}`}
-                  tqiKey={tqiKey}
-                  name={name}
-                  qualityAspectValue={adjustedDataset.factors.quality_aspects[name]?.value || 0}
-                  weightValue={weightValue as number} // Type assertion for weightValue
-                  sliderValue={sliderValues[`${tqiKey}-${name}`]} // Current slider value
-                  onSliderChange={handleSliderChange}
-                />
-              ));
+              const entry = tqiEntry as TQIEntry; // Type assertion for tqiEntry
+
+              return Object.entries(entry.weights).map(([name, weightValue]) => {
+                // Calculate the sum of all other weights
+                const sumOtherWeights = Object.entries(entry.weights).reduce((sum, [otherName, otherWeightValue]) => {
+                  return otherName !== name ? sum + sliderValues[`${tqiKey}-${otherName}`] : sum;
+                }, 0);
+
+                // Calculate the maximum value for this slider
+                const maxSliderValue = 1 - sumOtherWeights;
+
+                return (
+                  <SingleTableRow
+                    key={`${tqiKey}-${name}`}
+                    tqiKey={tqiKey}
+                    name={name}
+                    qualityAspectValue={adjustedDataset.factors.quality_aspects[name]?.value || 0}
+                    weightValue={weightValue as number}
+                    sliderValue={sliderValues[`${tqiKey}-${name}`]}
+                    maxSliderValue={maxSliderValue}
+                    onSliderChange={handleSliderChange}
+                  />
+                );
+              });
             })}
           </Table.Body>
+
+
         </Table.Root>
       </Box>
 
@@ -158,7 +173,7 @@ export const CharacteristicsTableGenerator = () => {
         </Box>
         <Box><Button variant={"surface"} onClick={resetAllAdjustments}>Reset All Adjustments</Button></Box>
       </Flex>
-      
+
 
     </Flex>
   );
