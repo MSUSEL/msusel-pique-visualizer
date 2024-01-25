@@ -1,6 +1,6 @@
-import "./NodeDescriptionPanel.css"
-import {useEffect, useState, useMemo, useRef} from "react";
-import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
+import "./NodeDescriptionPanel.css";
+import { useEffect, useState, useMemo, useRef } from "react";
+import { determineNodeInfo } from "./NodeDescriptionPanelHelpers";
 
 export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
   const [nodes, setNodes] = useState<any[]>([]);
@@ -41,7 +41,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
       <div
         ref={i === nodes.length - 1 ? lastNodeRef : null}
         className={`${
-          i === nodes.length - 1 ? (nodes.length > 2 ? "node-bottom-panel" : "node-panel") : "node-panel"
+          i === nodes.length - 1 ? (nodes.length > 2 ? "node-bottom-panel highlight" : "node-panel highlight") : "node-panel"
         }`}
         key={i}
       >

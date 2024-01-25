@@ -35,3 +35,8 @@
     overflow-y: auto;
     max-height: 100vh; 
   }
+
+  .highlight {
+    background-color: #ffe066;
+    border-color: #ffd43b; 
+  }
