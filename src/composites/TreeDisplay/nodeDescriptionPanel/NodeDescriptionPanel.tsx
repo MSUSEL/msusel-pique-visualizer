@@ -1,16 +1,24 @@
 import "./NodeDescriptionPanel.css"
-import React, { useEffect, useState, useMemo } from "react";
+import {useEffect, useState, useMemo, useRef} from "react";
 import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
 
 export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
   const [nodes, setNodes] = useState<any[]>([]);
   const [orderBy, setOrderBy] = useState<string>("default");
   const [orderDirection, setOrderDirection] = useState<string>("asc");
+  const lastNodeRef = useRef<HTMLDivElement | null>(null);
 
   // Rerender this component whenever the nodes prop from TreeDisplay changes.
   useEffect(() => {
     setNodes(props.nodes);
   }, [props.nodes]);
+
+  // Scroll to the last node whenever nodes change
+  useEffect(() => {
+    if (lastNodeRef.current) {
+      lastNodeRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [nodes]);
 
   const makeNodePanelRectangles = useMemo(() => {
     let orderedNodes = [...nodes];
@@ -31,6 +39,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
 
     return orderedNodes.map((node, i) => (
       <div
+        ref={i === nodes.length - 1 ? lastNodeRef : null}
         className={`${
           i === nodes.length - 1 ? (nodes.length > 2 ? "node-bottom-panel" : "node-panel") : "node-panel"
         }`}

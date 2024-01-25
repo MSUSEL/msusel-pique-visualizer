@@ -73,22 +73,23 @@ export function determineNodeInfo(node, impacts) {
   // TO DO: change the height and width to change as the screen size changes
   // TO DO: Test the changes of adding the class name
 
-  function graphImage() {
-    if (node.utility_function === "pique.evaluation.DefaultUtility") {
-      // return <img src={linear} alt="Linear Graph" width={30} height={30} />;
-      return <span>linear</span>;
-      //return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
-    } else if (node.utility_function === "evaluator.BinaryUtility") {
-      // return <img src={linear} alt="Linear Graph" width={30} height={30} />;
-      return <span>linear</span>;
-    } else if (node.utility_function === "pique.evaluation.GaussianUtility") {
-      // return <img src={gaussian} alt="Gaussian Graph" width={40} height={20} />;
-      return <span>gaussian</span>;
-    } else if (node.utility_function === "pique.evaluation.GamUtility") {
-      // return <img src={gam} alt="Gamutility Graph" width={30} height={30} />;
-      return <span>gam</span>;
-    }
-  }
+  // function graphImage() {
+  //   if (node.utility_function === "pique.evaluation.DefaultUtility") {
+  //     // return <img src={linear} alt="Linear Graph" width={30} height={30} />;
+  //     return <span>linear</span>;
+  //     //return ( <img src={linear} alt="Linear Graph" width={20} height={20}/> );
+  //   } else if (node.utility_function === "evaluator.BinaryUtility") {
+  //     // return <img src={linear} alt="Linear Graph" width={30} height={30} />;
+  //     return <span>linear</span>;
+  //   } else if (node.utility_function === "pique.evaluation.GaussianUtility") {
+  //     // return <img src={gaussian} alt="Gaussian Graph" width={40} height={20} />;
+  //     return <span>gaussian</span>;
+  //   } else if (node.utility_function === "pique.evaluation.GamUtility") {
+  //     // return <img src={gam} alt="Gamutility Graph" width={30} height={30} />;
+  //     return <span>gam</span>;
+  //   }
+  // }
+  
 
   return (
     <>
@@ -127,11 +128,11 @@ export function determineNodeInfo(node, impacts) {
           <b>Normalizer: </b>
           {node.normalizer}
         </div>
-        <div>
+        {/* <div>
           <b>Utility Function: </b>
           {node.utility_function}
           {graphImage()}
-        </div>
+        </div> */}
         {getQualityImpactScore()}
       </div>
     </>
