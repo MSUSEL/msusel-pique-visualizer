@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Box, Flex, Avatar, Text, HoverCard, Link, Separator, Badge } from "@radix-ui/themes";
+import { Box, Flex, Avatar, Text, HoverCard, Link, Separator, Badge, Strong } from "@radix-ui/themes";
 import { classifyRiskLevel } from "../LegendContainer/ClassifyRiskLevel";
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Tooltip, Cell } from 'recharts';
 import * as schema from '../../data/schema';
@@ -13,6 +13,12 @@ interface FilterableItem {
     weights: Record<string, number>;
     [key: string]: any;
 }
+
+interface Impact {
+    aspectName: string;
+    weight: number;
+}
+
 
 // define a function classifyRiskLevels for a high-level object, such as tqi, quality_aspects, product_factors
 // input: an object: NestedObject
@@ -82,9 +88,9 @@ export const AlternativeOverviewTab = () => {
 
 
     // Define colors for each slice of the pie chart
-    const COLORS = ['#FF8042', '#00C49F', '#FFBB28', '#0088FE', '#8884d8'];
+    const COLORS = ['red', 'orange', 'yellow', 'blue', 'green'];
 
-    // Get top 3 problematic objects
+    // Get top 3 problematic objects for characteristics and factors
     const topProblematicQualityAspects = useMemo(() => {
         if (!qualityAspectsRiskData || !dataset) return [];
 
@@ -95,9 +101,9 @@ export const AlternativeOverviewTab = () => {
         const [_, riskSubObjNames] = qualityAspectsRiskData;
         return riskSubObjNames.flat().slice(0, 3).map(name => {
             const details = dataset.factors.quality_aspects[name];
-            const weight = name in tqiWeights ? tqiWeights[name] : 'N/A';
+            const weight = name in tqiWeights ? tqiWeights[name] : 0;
 
-            return { name, details, weight: weight.toString() };
+            return { name, details, weight: weight };
         });
     }, [qualityAspectsRiskData, dataset]);
 
@@ -105,15 +111,23 @@ export const AlternativeOverviewTab = () => {
         if (!productFactorsRiskData || !dataset) return [];
 
         const [_, riskSubObjNames] = productFactorsRiskData;
-        return riskSubObjNames.flat().slice(0, 3).map(name => {
-            const details = dataset.factors.product_factors[name];
-            const qualityAspectWeights = Object.values(dataset.factors.quality_aspects)[0].weights;
-            const weight = name in qualityAspectWeights ? qualityAspectWeights[name] : 'N/A';
+        return riskSubObjNames.flat().slice(0, 3).map(productFactorName => {
+            const details = dataset.factors.product_factors[productFactorName];
+            const impacts: Impact[] = [];  
 
-            return { name, details, weight: weight.toString() };
+            // Iterate over each quality aspect
+            Object.entries(dataset.factors.quality_aspects).forEach(([qualityAspectName, qualityAspect]) => {
+                if (productFactorName in qualityAspect.weights) {
+                    impacts.push({
+                        aspectName: qualityAspectName,
+                        weight: qualityAspect.weights[productFactorName]
+                    });
+                }
+            });
+
+            return { name: productFactorName, details, impacts };
         });
     }, [productFactorsRiskData, dataset]);
-
 
 
     return (
@@ -130,7 +144,7 @@ export const AlternativeOverviewTab = () => {
                     <Text> Risk Level: {tqiRiskLevel.level}</Text>
                 </Flex>
 
-                
+
             </Flex>
 
             <Separator my="3" size="4" />
@@ -141,7 +155,7 @@ export const AlternativeOverviewTab = () => {
                     <Box>
                         {/* Display risk counts here */}
                         {qualityAspectsChartData.map((data, index) => (
-                            <Text key={index}><p>{data.name}: {data.Count}</p></Text>
+                            <Text key={index}><Text as='p'>{data.name}: {data.Count}</Text></Text>
                         ))}
                     </Box>
                 </Flex>
@@ -177,14 +191,14 @@ export const AlternativeOverviewTab = () => {
                         {topProblematicQualityAspects.map((item, index) => (
                             <HoverCard.Root key={index}>
                                 <HoverCard.Trigger>
-                                    <p><Link href="#">{item.name}: {item.details.value.toFixed(3)}</Link></p>
+                                    <Text as="p"><Link href="#">{item.name}: {item.details.value.toFixed(3)}</Link></Text>
                                 </HoverCard.Trigger>
                                 <HoverCard.Content>
-                                    <Text as="div" size="1" style={{ maxWidth: 325 }}>
-                                        <p><strong>Name:</strong> {item.name}</p>
-                                        <p><strong>Value:</strong> {item.details.value.toFixed(3)}</p>
-                                        <p><strong>Impact to TQI:</strong> {item.weight}</p>
-                                        <p><strong>Description:</strong> {item.details.description}</p>
+                                    <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                                        <Text as="p"><Strong>Name:</Strong> {item.name}</Text>
+                                        <Text as="p"><Strong>Value:</Strong> {item.details.value.toFixed(3)}</Text>
+                                        <Text as="p"><Strong>Impact to TQI:</Strong> {item.weight.toFixed(3)}</Text>
+                                        <Text as="p"><Strong>Description:</Strong> {item.details.description}</Text>
                                     </Text>
                                 </HoverCard.Content>
                             </HoverCard.Root>
@@ -201,7 +215,7 @@ export const AlternativeOverviewTab = () => {
                     <Box>
                         {/* Display risk counts here */}
                         {productFactorsChartData.map((data, index) => (
-                            <Text key={index}><p>{data.name}: {data.Count}</p></Text>
+                            <Text key={index}><Text as='p'>{data.name}: {data.Count}</Text></Text>
                         ))}
                     </Box>
                 </Flex>
@@ -232,24 +246,28 @@ export const AlternativeOverviewTab = () => {
                 </Flex>
 
                 <Flex direction={"column"} align={'center'} gap={'5'} style={{ flexBasis: '30%' }}>
-                    <Box><Text>Top 3 lowest Quality Characteristics:</Text></Box>
+                    <Box><Text>Top 3 lowest Factors:</Text></Box>
                     <Box>
                         {topProblematicProductFactors.map((item, index) => (
                             <HoverCard.Root key={index}>
                                 <HoverCard.Trigger>
-                                    <p><Link href="#">{item.name}: {item.details.value.toFixed(3)}</Link></p>
+                                    <Text as='p'><Link href="#">{item.name}: {item.details.value.toFixed(3)}</Link></Text>
                                 </HoverCard.Trigger>
                                 <HoverCard.Content>
-                                    <Text as="div" size="1" style={{ maxWidth: 325 }}>
-                                        <p><strong>Name:</strong> {item.name}</p>
-                                        <p><strong>Value:</strong> {item.details.value.toFixed(3)}</p>
-                                        <p><strong>Impact to TQI:</strong> {item.weight}</p>
-                                        <p><strong>Description:</strong> {item.details.description}</p>
+                                    <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                                        <Text as='p'><Strong>Name:</Strong> {item.name}</Text>
+                                        <Text as='p'><Strong>Value:</Strong> {item.details.value.toFixed(3)}</Text>
+                                        <Text as='p'><Strong>Impact to corresponding Characteristics:</Strong></Text>
+                                        {item.impacts.map((impact, idx) => (
+                                            <Text as='p' key={idx}>{impact.aspectName}: {impact.weight.toFixed(3)}</Text>
+                                        ))}
+                                        <Text as='p'><Strong>Description:</Strong> {item.details.description}</Text>
                                     </Text>
                                 </HoverCard.Content>
                             </HoverCard.Root>
                         ))}
                     </Box>
+
                 </Flex>
             </Flex>
 
