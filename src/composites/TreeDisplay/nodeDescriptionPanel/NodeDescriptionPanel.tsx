@@ -1,5 +1,5 @@
 import "./NodeDescriptionPanel.css"
-import {useEffect, useState} from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
 
 export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
@@ -12,7 +12,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
     setNodes(props.nodes);
   }, [props.nodes]);
 
-  function makeNodePanelRectangles() {
+  const makeNodePanelRectangles = useMemo(() => {
     let orderedNodes = [...nodes];
 
     switch (orderBy) {
@@ -39,7 +39,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
         {determineNodeInfo(node, props.impacts)}
       </div>
     ));
-  }
+  }, [nodes, orderBy, orderDirection, props.impacts]);
 
   const handleOrderByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOrderBy(e.target.value);
@@ -69,7 +69,7 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
         </>
       )}
 
-      {makeNodePanelRectangles()}
+      {makeNodePanelRectangles}
     </div>
   );
 }
