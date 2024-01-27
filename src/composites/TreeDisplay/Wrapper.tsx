@@ -9,8 +9,7 @@ import { Box, IconButton, Tabs } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
 import { LegendContainer } from "../LegendContainer/Legend";
 import { ViewVerticalIcon, BarChartIcon, HomeIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
-import { OverviewTab } from "../FeaturesContainer/OverviewTab";
-import { AlternativeOverviewTab } from "../FeaturesContainer/AlternativeOverviewTab";
+import { OverviewTab } from "../FeaturesContainer/Overview/OverviewTab";
 import { styled } from '@stitches/react';
 
 
@@ -106,7 +105,6 @@ export const Wrapper = () => {
           <Tabs.Root defaultValue="overview">
             <Tabs.List>
               <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-              <Tabs.Trigger value="alternativeOverview">Alternative Overview</Tabs.Trigger>
               <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
               <Tabs.Trigger value="list">List</Tabs.Trigger>
 
@@ -118,12 +116,6 @@ export const Wrapper = () => {
               <Tabs.Content value="overview">
                 <Box width="100%">
                   <OverviewTab />
-                </Box>
-              </Tabs.Content>
-
-              <Tabs.Content value="alternativeOverview">
-                <Box width="100%">
-                  <AlternativeOverviewTab />
                 </Box>
               </Tabs.Content>
 

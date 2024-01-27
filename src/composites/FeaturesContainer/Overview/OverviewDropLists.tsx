@@ -26,7 +26,7 @@ export function OverviewDropList(risk:string, section:string, props:overviewData
             <Box className = {childClass} key={index}>
                 <Text as='p'><Strong>{item.name}</Strong>
                     { /* Zooms tree graph to given node */ }
-                    <Button className='Button'>View Node</Button>
+                    <Button className='Button' variant='ghost'>View Node</Button>
                 </Text>
                 <Text as='p'><DotFilledIcon/>{"Value: " + item.value}</Text>
                 {item.description && (<Text as='p'><DotFilledIcon/>{"Description: " + item.description}</Text>)}

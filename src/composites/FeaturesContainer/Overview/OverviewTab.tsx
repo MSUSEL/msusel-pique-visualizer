@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAtomValue } from "jotai";
 import { State } from "../../../state";
-import { Flex, Text, Box, Button } from "@radix-ui/themes";
-import { HamburgerMenuIcon, Cross1Icon } from '@radix-ui/react-icons';
-import { classifyRiskLevel } from "../../LegendContainer/ClassifyRiskLevel";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { Flex, Text, Box, Button, Avatar, HoverCard, Link, Separator, Badge, Strong } from "@radix-ui/themes";
+import { ChevronUpIcon, ChevronDownIcon } from '@radix-ui/react-icons';
+import { PieChart, Pie, Tooltip, Cell } from 'recharts';
 import { OverviewList } from '.';
 import "./Overview.css"
 
@@ -14,130 +13,280 @@ interface FilterableItem {
     [key: string]: any;
 }
 
-interface CategoryRiskLevelData {
-    [riskLevel: string]: string[]; // Array of item keys
+
+interface Impact {
+    aspectName: string;
+    weight: number;
 }
 
-interface RiskLevelData {
-    tqi: CategoryRiskLevelData;
-    quality_aspects: CategoryRiskLevelData;
-    product_factors: CategoryRiskLevelData;
+
+// define a function classifyRiskLevels for a high-level object, such as tqi, quality_aspects, product_factors
+// input: an object: NestedObject
+// ouput: two arrays or a dictionary: risk level counts, and objects.names in each level
+
+function classifyNestedObjRiskLevel(obj: Record<string, FilterableItem>): [number[], string[][]] {
+    const riskCounts = [0, 0, 0, 0, 0];
+    const riskSubObjNames: string[][] = [[], [], [], [], []];
+
+    for (const key in obj) {
+        const item = obj[key];
+        if (item.value < 0.2) {
+            riskCounts[0]++;
+            riskSubObjNames[0].push(item.name);
+        } else if (item.value >= 0.2 && item.value < 0.4) {
+            riskCounts[1]++;
+            riskSubObjNames[1].push(item.name);
+        } else if (item.value >= 0.4 && item.value < 0.6) {
+            riskCounts[2]++;
+            riskSubObjNames[2].push(item.name);
+        } else if (item.value >= 0.6 && item.value < 0.8) {
+            riskCounts[3]++;
+            riskSubObjNames[3].push(item.name);
+        } else if (item.value >= 0.8) {
+            riskCounts[4]++;
+            riskSubObjNames[4].push(item.name);
+        }
+    }
+
+
+    return [riskCounts, riskSubObjNames];
+};
+
+function hasWeights(obj: any): obj is { weights: Record<string, number> } {
+    return obj && typeof obj === 'object' && 'weights' in obj;
 }
+
+const generateChartData = (riskData: [number[], string[][]] | null) => {
+    if (!riskData) return [];
+    const [riskCounts] = riskData;
+    return ['Severe', 'High', 'Medium', 'Low', 'Insignificant'].map((level, index) => ({
+        name: level,
+        Count: riskCounts[index]
+    }));
+};
 
 export const OverviewTab = () => {
-
+    const dataset = useAtomValue(State.dataset);
+    const tqiRiskData = useMemo(() => dataset ? classifyNestedObjRiskLevel(dataset.factors.tqi) : null, [dataset]);
+    const qualityAspectsRiskData = useMemo(() => dataset ? classifyNestedObjRiskLevel(dataset.factors.quality_aspects) : null, [dataset]);
+    const productFactorsRiskData = useMemo(() => dataset ? classifyNestedObjRiskLevel(dataset.factors.product_factors) : null, [dataset]);
     
 
-    const dataset = useAtomValue(State.dataset);
+    // Determine the risk level and name for TQI
+    const tqiRiskLevel = useMemo(() => {
+        if (!tqiRiskData || !dataset) return { level: '', name: '' };
+        const [riskCounts, riskSubObjNames] = tqiRiskData;
+        const levelIndex = riskCounts.findIndex(count => count > 0);
+        const levelName = levelIndex >= 0 ? ['Severe', 'High', 'Medium', 'Low', 'Insignificant'][levelIndex] : '';
+        const name = levelIndex >= 0 ? riskSubObjNames[levelIndex][0] : '';
+        const value = Object.values(dataset.factors.tqi)[0].value;
+        return { level: levelName, name, value };
+    }, [tqiRiskData]);
 
-    const initialRiskLevelData: RiskLevelData = {
-        tqi: {},
-        quality_aspects: {},
-        product_factors: {},
+    const [isOverviewListOpen, setOverviewListOpen] = useState(false);
+
+    const toggleOverviewList = () => {
+        setOverviewListOpen(!isOverviewListOpen);
     };
 
-    const [riskLevelData, setRiskLevelData] = useState<RiskLevelData>(initialRiskLevelData);
-    const [selectedCategory, setSelectedCategory] = useState<string>('');
-    const [isDSSideOpen, setDSSideOpen] = useState(false);
+    // Prepare data for the chart
+    const qualityAspectsChartData = useMemo(() => generateChartData(qualityAspectsRiskData), [qualityAspectsRiskData]);
+    const productFactorsChartData = useMemo(() => generateChartData(productFactorsRiskData), [productFactorsRiskData]);
 
-    const toggleDSSide = () => {
-        setDSSideOpen(!isDSSideOpen);
-    };
 
-    const parseAndClassifyData = (data: any) => {
-        let categorizedData: RiskLevelData = {
-            tqi: {},
-            quality_aspects: {},
-            product_factors: {},
-        };
+    // Define colors for each slice of the pie chart
+    const COLORS = ['red', 'orange', 'yellow', 'blue', 'green'];
 
-        Object.keys(categorizedData).forEach(category => {
-            const items = data[category];
-            if (items) {
-                Object.keys(items).forEach(itemKey => {
-                    const item = items[itemKey] as FilterableItem;
-                    if (item && typeof item.value === 'number') {
-                        if (item.value >= -1 && item.value <= 1) {
-                            const riskLevel = classifyRiskLevel(item.value);
-                            categorizedData[category][riskLevel] = categorizedData[category][riskLevel] || [];
-                            categorizedData[category][riskLevel].push(itemKey);
-                        }
-                    }
-                });
-            }
+    // Get top 3 problematic objects for characteristics and factors
+    const topProblematicQualityAspects = useMemo(() => {
+        if (!qualityAspectsRiskData || !dataset) return [];
+
+        // Assuming there's only one subobject in dataset.factors.tqi
+        const tqiSubObject = Object.values(dataset.factors.tqi)[0];
+        const tqiWeights = hasWeights(tqiSubObject) ? tqiSubObject.weights : {};
+
+        const [_, riskSubObjNames] = qualityAspectsRiskData;
+        return riskSubObjNames.flat().slice(0, 3).map(name => {
+            const details = dataset.factors.quality_aspects[name];
+            const weight = name in tqiWeights ? tqiWeights[name] : 0;
+
+            return { name, details, weight: weight };
         });
+    }, [qualityAspectsRiskData, dataset]);
 
-        setRiskLevelData(categorizedData);
-    };
+    const topProblematicProductFactors = useMemo(() => {
+        if (!productFactorsRiskData || !dataset) return [];
 
-    const createChartData = (categoryData: CategoryRiskLevelData) => {
-        return [
-            { name: 'Severe', count: categoryData['Severe']?.length || 0 },
-            { name: 'High', count: categoryData['High']?.length || 0 },
-            { name: 'Medium', count: categoryData['Medium']?.length || 0 },
-            { name: 'Low', count: categoryData['Low']?.length || 0 },
-            { name: 'Insignificant', count: categoryData['Insignificant']?.length || 0 },
-        ];
-    };
+        const [_, riskSubObjNames] = productFactorsRiskData;
+        return riskSubObjNames.flat().slice(0, 3).map(productFactorName => {
+            const details = dataset.factors.product_factors[productFactorName];
+            const impacts: Impact[] = [];  
 
-    useEffect(() => {
-        if (dataset) {
-            parseAndClassifyData(dataset);
-        }
-    }, [dataset]);
+            // Iterate over each quality aspect
+            Object.entries(dataset.factors.quality_aspects).forEach(([qualityAspectName, qualityAspect]) => {
+                if (productFactorName in qualityAspect.weights) {
+                    impacts.push({
+                        aspectName: qualityAspectName,
+                        weight: qualityAspect.weights[productFactorName]
+                    });
+                }
+            });
+
+            return { name: productFactorName, details, impacts };
+        });
+    }, [productFactorsRiskData, dataset]);
 
     return (
-        <Flex className='overviewContainer' direction="row">
-            <Box className='chartsContainer' style={{ flex: '1' }}>
-                <Flex gap="3" align="center" direction="column">
+        <Flex direction={"row"} gap={"3"}>
+            <Flex direction={"column"} gap={"3"} align={"center"} style={{ width: '100%' }}>
+                <Flex direction={"row"} gap={"3"} align={"center"} style={{ width: '100%' }} justify="center">
+                    <Box>
+                        <Avatar size="5" fallback="TQI" />
+                    </Box>
+                    <Flex direction={'column'}>
+                        <Text> Project Name: {tqiRiskLevel.name}</Text>
+                        <Text> Total Quality Index: {tqiRiskLevel.value?.toFixed(3)}</Text>
+                        <Text> Risk Level: {tqiRiskLevel.level}</Text>
+                    </Flex>
 
-                    <Text>Overview information of the uploaded JSON file.</Text>
 
-                    {/* Quality Aspects Chart */}
-                    <BarChart width={600} height={300} data={createChartData(riskLevelData.quality_aspects)}>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="count" fill="#82ca9d" />
-                    </BarChart>
-
-                    {/* Product Factors Chart */}
-                    <BarChart width={600} height={300} data={createChartData(riskLevelData.product_factors)}>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="count" fill="#ffc658" />
-                    </BarChart>
-
-                    {/* Interactive elements for selecting risk levels and displaying sub-object names */}
-                    {
-                        selectedCategory && (
-                            <Flex direction="column">
-                                <Text size="4">Sub-Objects in {selectedCategory} Risk Level:</Text>
-                                {
-                                    // Assuming riskLevelData[selectedCategory] is an array of strings
-                                    riskLevelData[selectedCategory]?.map((item, index) => (
-                                        <Text key={index}>{item}</Text>
-                                    ))
-                                }
-                            </Flex>
-                        )
-                    }
                 </Flex>
-            </Box>
-            
-            {/* Toggle Button */}
-            <Button onClick={toggleDSSide} style={{}}>
-                {isDSSideOpen ? <Cross1Icon /> : <HamburgerMenuIcon />}
-            </Button>
 
-            {/* DSSide panel */}
-            <Box className='OverviewListContainer' style={{ flex: '0 0 auto', display: isDSSideOpen ? 'block' : 'none' }}>
-                <OverviewList/>
-            </Box>
+                <Separator my="3" size="4" />
 
+                <Flex direction={"row"} style={{ width: '100%' }} justify="between">
+                    <Flex direction={"column"} align={'center'} gap={'5'} style={{ flexBasis: '30%' }}>
+                        <Box> <Badge size="2">Charactertistics</Badge> </Box>
+                        <Box>
+                            {/* Display risk counts here */}
+                            {qualityAspectsChartData.map((data, index) => (
+                                <Text key={index}><Text as='p'>{data.name}: {data.Count}</Text></Text>
+                            ))}
+                        </Box>
+                    </Flex>
+
+                    <Flex direction={"column"} align={'center'} gap={'5'} style={{ flexBasis: '30%' }}>
+                        <Box><Text> Risk Level Distribution</Text></Box>
+                        <Box>
+                            {/* Pie chart visualization */}
+                            <PieChart width={300} height={300}>
+                                <Pie
+                                    data={qualityAspectsChartData}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={100}
+                                    fill="#8884d8"
+                                    dataKey="Count"
+                                    label
+                                >
+                                    {
+                                        qualityAspectsChartData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))
+                                    }
+                                </Pie>
+                                <Tooltip />
+                            </PieChart>
+                        </Box>
+                    </Flex>
+
+                    <Flex direction={"column"} align={'center'} gap={'5'} style={{ flexBasis: '30%' }}>
+                        <Box><Text>Top 3 lowest Quality Characteristics:</Text></Box>
+                        <Box>
+                            {topProblematicQualityAspects.map((item, index) => (
+                                <HoverCard.Root key={index}>
+                                    <HoverCard.Trigger>
+                                        <Text as="p"><Link href="#">{item.name}: {item.details.value.toFixed(3)}</Link></Text>
+                                    </HoverCard.Trigger>
+                                    <HoverCard.Content>
+                                        <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                                            <Text as="p"><Strong>Name:</Strong> {item.name}</Text>
+                                            <Text as="p"><Strong>Value:</Strong> {item.details.value.toFixed(3)}</Text>
+                                            <Text as="p"><Strong>Impact to TQI:</Strong> {item.weight.toFixed(3)}</Text>
+                                            <Text as="p"><Strong>Description:</Strong> {item.details.description}</Text>
+                                        </Text>
+                                    </HoverCard.Content>
+                                </HoverCard.Root>
+                            ))}
+                        </Box>
+                    </Flex>
+                </Flex>
+
+                <Separator my="3" size="4" />
+
+                <Flex direction={"row"} style={{ width: '100%' }} justify="between">
+                    <Flex direction={"column"} align={'center'} gap={'5'} style={{ flexBasis: '30%' }}>
+                        <Box> <Badge size="2">Factors</Badge> </Box>
+                        <Box>
+                            {/* Display risk counts here */}
+                            {productFactorsChartData.map((data, index) => (
+                                <Text key={index}><Text as='p'>{data.name}: {data.Count}</Text></Text>
+                            ))}
+                        </Box>
+                    </Flex>
+
+                    <Flex direction={"column"} align={'center'} gap={'5'} style={{ flexBasis: '30%' }}>
+                        <Box><Text> Risk Level Distribution</Text></Box>
+                        <Box>
+                            {/* Pie chart visualization */}
+                            <PieChart width={300} height={300}>
+                                <Pie
+                                    data={productFactorsChartData}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={100}
+                                    fill="#8884d8"
+                                    dataKey="Count"
+                                    label
+                                >
+                                    {
+                                        productFactorsChartData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))
+                                    }
+                                </Pie>
+                                <Tooltip />
+                            </PieChart>
+                        </Box>
+                    </Flex>
+
+                    <Flex direction={"column"} align={'center'} gap={'5'} style={{ flexBasis: '30%' }}>
+                        <Box><Text>Top 3 lowest Factors:</Text></Box>
+                        <Box>
+                            {topProblematicProductFactors.map((item, index) => (
+                                <HoverCard.Root key={index}>
+                                    <HoverCard.Trigger>
+                                        <Text as='p'><Link href="#">{item.name}: {item.details.value.toFixed(3)}</Link></Text>
+                                    </HoverCard.Trigger>
+                                    <HoverCard.Content>
+                                        <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                                            <Text as='p'><Strong>Name:</Strong> {item.name}</Text>
+                                            <Text as='p'><Strong>Value:</Strong> {item.details.value.toFixed(3)}</Text>
+                                            <Text as='p'><Strong>Impact to corresponding Characteristics:</Strong></Text>
+                                            {item.impacts.map((impact, idx) => (
+                                                <Text as='p' key={idx}>{impact.aspectName}: {impact.weight.toFixed(3)}</Text>
+                                            ))}
+                                            <Text as='p'><Strong>Description:</Strong> {item.details.description}</Text>
+                                        </Text>
+                                    </HoverCard.Content>
+                                </HoverCard.Root>
+                            ))}
+                        </Box>
+                    </Flex>
+                </Flex>
+            </Flex>
+
+            <Flex direction={"column"}>
+                {/* Toggle Button */}
+                <Button onClick={toggleOverviewList} style={{position: 'relative', top: 0, right: 0, width: 300}} variant='surface'>
+                    Overview List {isOverviewListOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                </Button>
+
+                {/* Overview List panel */}
+                <Box className='OverviewListContainer' style={{ display: isOverviewListOpen ? 'block' : 'none' }}>
+                    <OverviewList/>
+                </Box>
+            </Flex>
         </Flex>
     );
 };
