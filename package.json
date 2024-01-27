@@ -21,6 +21,7 @@
     "@stitches/react": "^1.2.8",
     "d3": "^7.8.5",
     "jotai": "^2.5.1",
+    "plotly.js-dist": "^2.28.0",
     "ramda": "^0.29.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
