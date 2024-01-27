@@ -24,6 +24,8 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
     let orderedNodes = [...nodes];
 
     switch (orderBy) {
+      case "default":
+        break;
       case "alphabetical":
         orderedNodes.sort((a, b) => (orderDirection === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
         break;
@@ -41,7 +43,11 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
       <div
         ref={i === nodes.length - 1 ? lastNodeRef : null}
         className={`${
-          i === nodes.length - 1 ? (nodes.length > 2 ? "node-bottom-panel highlight" : "node-panel highlight") : "node-panel"
+          orderBy === "default" && i === nodes.length - 1
+            ? nodes.length > 2
+              ? "node-bottom-panel highlight"
+              : "node-panel highlight"
+            : "node-panel"
         }`}
         key={i}
       >
