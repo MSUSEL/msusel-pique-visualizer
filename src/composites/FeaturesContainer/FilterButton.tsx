@@ -9,6 +9,7 @@ import '@radix-ui/colors/violet.css';
 import './Slider.css'
 import * as Accordion from '@radix-ui/react-accordion';
 import * as schema from '../../data/schema';
+import { findMinMaxValues } from "../Filtering/FindMinMaxValues";
 
 
 export const FilterButton = () => {
@@ -20,30 +21,7 @@ export const FilterButton = () => {
     setCheckboxStates({ ...checkboxStates, [label]: e.target.checked });
   };
 
-  // Function to find min and max values in the dataset
-  const findMinMaxValues = (dataset: schema.base.Schema | undefined): [number, number] => {
-    let min = Number.POSITIVE_INFINITY;
-    let max = Number.NEGATIVE_INFINITY;
 
-    const findValues = (obj: any) => {
-      for (const key in obj) {
-        if (key === 'diagnostics' || key === 'measures') continue;
-
-        if (typeof obj[key] === 'object' && obj[key] !== null) {
-          findValues(obj[key]);
-        } else if (key === 'value' && typeof obj[key] === 'number') {
-          min = Math.min(min, obj[key]);
-          max = Math.max(max, obj[key]);
-        }
-      }
-    };
-
-    if (dataset) {
-      findValues(dataset);
-    }
-
-    return [min, max];
-  };
 
   // Determine the min and max values for the slider
   const [sliderMin, sliderMax] = dataset ? findMinMaxValues(dataset) : [0, 1];
