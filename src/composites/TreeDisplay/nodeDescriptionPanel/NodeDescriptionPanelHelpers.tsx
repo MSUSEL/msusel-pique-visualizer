@@ -69,6 +69,21 @@ export function determineNodeInfo(node, impacts) {
     }
   }
 
+  function renderUtilityFunction() {
+    if (typeof node.utility_function === 'string') {
+      return (
+        <div>
+          <b>Utility Function: </b>
+          {node.utility_function}
+        </div>
+      );
+    } else {
+      <div>
+          <b>Utility Function: pique.evaluation.DefaultUtility</b>
+        </div>
+    }
+  }
+
   // change the name of the node when it is created as well as the image associated with gam
   // TO DO: change the height and width to change as the screen size changes
   // TO DO: Test the changes of adding the class name
@@ -128,11 +143,9 @@ export function determineNodeInfo(node, impacts) {
           <b>Normalizer: </b>
           {node.normalizer}
         </div>
-        {/* <div>
-          <b>Utility Function: </b>
-          {node.utility_function}
-          {graphImage()}
-        </div> */}
+        <div>
+          {renderUtilityFunction()}
+        </div>
         {getQualityImpactScore()}
       </div>
     </>
