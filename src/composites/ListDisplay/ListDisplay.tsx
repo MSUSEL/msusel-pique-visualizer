@@ -65,7 +65,7 @@ export const ListDisplay = () => {
             <Accordion.Item key={key} value={key} className="AccordionItem">
               <Accordion.Header className="AccordionHeader">
                 <Accordion.Trigger className="AccordionTrigger" onClick={() => toggleItemFn(key)}>
-                  {value.name ?? 'N/A'}: {value.value ?? 'N/A'}
+                  {value.name ?? 'N/A'}: {value.value.toFixed(4) ?? 'N/A'}
                   {isExpanded ? <EyeOpenIcon /> : <EyeClosedIcon />}
                 </Accordion.Trigger>
               </Accordion.Header>
