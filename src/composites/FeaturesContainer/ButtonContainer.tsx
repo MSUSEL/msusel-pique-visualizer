@@ -5,7 +5,7 @@ import { SortButton } from "./SortButton";
 import { FilterButton } from "./FilterButton";
 import { ResetButton } from "./ResetButton";
 import { QuickActionButton } from "./QuickActionButton";
-import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
+import { DynamicWeightsButton } from "../ConfigurationContainer/DynamicWeightsAdjustSettingWindow";
 import * as Separator from '@radix-ui/react-separator';
 import "./Separator.css"
 
@@ -41,7 +41,7 @@ export const ButtonContainer = () => {
 
       {/* Others */}
       {/* <HideZeroWeightsSwitch /> */}
-      <DynamicWeightsButton />
+      {/* <DynamicWeightsButton /> */}
     </Flex>
   );
 };

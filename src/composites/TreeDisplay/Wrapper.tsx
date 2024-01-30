@@ -1,106 +1,94 @@
 import { useAtomValue } from "jotai";
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { State } from "../../state";
 import { TreeDisplay } from "./TreeDisplay";
 import { ListDisplay } from "../ListDisplay/ListDisplay";
 import { NestedListDisplay } from "../ListDisplay/NestedListLayout";
 import { TreeDisplayRefactored } from "./TreeDisplayRefactored";
-import { Box, IconButton, Tabs } from "@radix-ui/themes";
+import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
 import { LegendContainer } from "../LegendContainer/Legend";
-import { ViewVerticalIcon, BarChartIcon, HomeIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
+import { GearIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
 import { OverviewTab } from "../FeaturesContainer/OverviewTab";
 import { AlternativeOverviewTab } from "../FeaturesContainer/AlternativeOverviewTab";
-import { styled } from '@stitches/react';
-
+import { ConfigurationContainer } from "../ConfigurationContainer/ConfigurationContainer";
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  const HoverCard = styled('div', {
-    // Base styles
-    position: 'relative',
-    left: '10px',
-    height: '50px',
-    cursor: 'pointer',
-
-    // Variants for display
-    variants: {
-      display: {
-        none: {
-          display: 'none',
-        },
-        flex: {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-      },
-    },
-  });
-
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <Flex direction="column" align="center" style={{ overflow: 'hidden', maxHeight: '100vh' }}>
 
       {/* Title and Icon Centered */}
-      <div style={{
-        display: 'flex',
-        flexGrow: 1,
-        backgroundColor: '#f9f9f9',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: '10px',
-        overflowY: 'auto',
-      }}>
+      <Flex direction={'row'} align={'center'} justify={'center'} gap={'3'}
+        style={{ height: '10vh', width: '100%', backgroundColor: '#f9f9f9', marginBottom: '10px', overflowY: 'auto', }}>
         <img src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg" alt="CISA Logo" width="100" height="100" style={{ marginRight: '20px' }} />
-        <h1>PIQUE Visualizer</h1>
+        <Heading>PIQUE Visualizer</Heading>
         <img src="https://raw.githubusercontent.com/MSUSEL/msusel-pique-visualizer/refactorZiyi/src/assets/PIQUE_svg.svg" alt="PIQUE Logo" width="100" height="100" style={{ marginLeft: '20px' }} />
-      </div>
+      </Flex>
+
       {/* Main Content */}
-      <div style={{ display: 'flex', flexGrow: 1, overflowY: 'auto', height: '100%' }}>
+      <Flex direction="row" align="start" justify="center" style={{ height: '90vh', width: '100%', overflow: 'hidden' }} gap={'3'}>
 
-        {/* Sidebar */}
-        <div style={{
-          flexDirection: 'column',
-          backgroundColor: '#f0f0f0',
-          borderRight: '2px solid #ccc',
-          padding: '10px',
-          width: isSidebarOpen ? '300px' : '0px',
-          transition: 'width 0.3s ease-in-out',
-          overflowY: 'auto',
-          display: isSidebarOpen ? 'flex' : 'none',
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            position: 'relative',
-            height: '50px',
-          }}>
+        {/* Left Side Panel */}
+        <Flex direction={'column'} style={{ width: isLeftSidebarOpen ? '300px' : '0px', transition: 'width 0.3s ease-in-out', position: 'relative' }}>
+          {/* Sidebar */}
+          {isLeftSidebarOpen && (
+            <Flex
+              style={{
+                flexDirection: 'column',
+                backgroundColor: '#f0f0f0',
+                borderRight: '2px solid #ccc',
+                padding: '10px',
+                height: '100%', // Make sure sidebar takes full height
+                overflowY: 'auto',
+              }}
+            >
+              <IconButton
+                onClick={() => setIsLeftSidebarOpen(false)}
+                size="3"
+                variant="soft"
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px', 
+                }}
+              >
+                <PinLeftIcon />
+              </IconButton>
+              <ButtonContainer />
+           
+            </Flex>
+          )}
 
-            <IconButton onClick={() => setIsSidebarOpen(false)} size="3" variant="soft">
-              <PinLeftIcon />
-            </IconButton>
-          </div>
-          <ButtonContainer />
-        </div>
-        
-        {/* Hover Card */}
-        <HoverCard display={isSidebarOpen ? 'none' : 'flex'} onClick={() => setIsSidebarOpen(true)}>
-          <IconButton size="3" variant="soft">
-            <PinRightIcon />
-          </IconButton>
+          {/* Hover Card Panel */}
+          {!isLeftSidebarOpen && (
+            <Flex
+              style={{
+                position: 'absolute',
+                left: '10px', 
+                top: '15px', 
+                cursor: 'pointer',
+              }}
+              onClick={() => setIsLeftSidebarOpen(true)}
+            >
+              <IconButton size="3" variant="soft">
+                <PinRightIcon />
+              </IconButton>
+            </Flex>
+          )}
+        </Flex>
 
-        </HoverCard>
 
-        <div style={{ flexGrow: 1 }}>
-
-
+        {/* Middle Majority Content */}
+        <Flex direction={'column'} align={'stretch'} justify="between"
+          style={{ flexGrow: isRightSidebarOpen ? 0 : 1, transition: 'flex-grow 0.3s ease-in-out' }}>
           {/* legend - risk level */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Flex direction={'column'} align={'center'} justify={'start'}>
             <LegendContainer />
-          </div>
+          </Flex>
 
           {/* layout tabs */}
           <Tabs.Root defaultValue="overview">
@@ -109,9 +97,6 @@ export const Wrapper = () => {
               <Tabs.Trigger value="alternativeOverview">Alternative Overview</Tabs.Trigger>
               <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
               <Tabs.Trigger value="list">List</Tabs.Trigger>
-
-
-
             </Tabs.List>
 
             <Box px="4" pt="3" pb="3">
@@ -154,9 +139,62 @@ export const Wrapper = () => {
             </Box>
           </Tabs.Root>
 
-        </div>
+        </Flex>
 
-      </div>
-    </div>
+
+        {/* Right Configuration Bar */}
+        <Flex direction="column" style={{ width: isRightSidebarOpen ? '20%' : '0%', height: '90vh', transition: 'width 0.3s ease-in-out', position: 'relative' }}>
+          {/* Right Sidebar */}
+          {isRightSidebarOpen && (
+            <Flex
+              style={{
+                flexDirection: 'column',
+                backgroundColor: '#f0f0f0',
+                borderLeft: '2px solid #ccc',
+                padding: '10px',
+                height: '100%', // Stretch to fill the height
+                overflowY: 'auto',
+              }}
+            >
+              {/* Sidebar content */}
+              <ConfigurationContainer />
+              {/* Close IconButton inside the sidebar for closing it */}
+              <IconButton
+                size="3"
+                variant="soft"
+                style={{
+                  position: 'absolute',
+                  top: '10px', // Adjust as needed
+                  right: '10px', // Adjust as needed
+                }}
+                onClick={() => setIsRightSidebarOpen(false)}
+              >
+                <GearIcon />
+              </IconButton>
+            </Flex>
+          )}
+
+          {/* GearIcon to open the sidebar, only shown when the sidebar is not open */}
+          {!isRightSidebarOpen && (
+            <IconButton
+              size="3"
+              variant="soft"
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '15px', // Adjust as needed, set to '0px' to align with the right edge of the sidebar
+              }}
+              onClick={() => setIsRightSidebarOpen(true)} // Open the sidebar
+            >
+              <GearIcon />
+            </IconButton>
+          )}
+        </Flex>
+
+
+
+      </Flex>
+
+    </Flex>
   );
 };
