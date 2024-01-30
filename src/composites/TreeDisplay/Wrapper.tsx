@@ -33,7 +33,7 @@ export const Wrapper = () => {
       <Flex direction="row" align="start" justify="center" style={{ height: '90vh', width: '100%', overflow: 'hidden' }} gap={'3'}>
 
         {/* Left Side Panel */}
-        <Flex direction={'column'} style={{ width: isLeftSidebarOpen ? '300px' : '0px', transition: 'width 0.3s ease-in-out', position: 'relative' }}>
+        <Flex direction={'column'} style={{ width: isLeftSidebarOpen ? '20%' : '3%', transition: 'width 0.3s ease-in-out', position: 'relative', height: '84vh', }}>
           {/* Sidebar */}
           {isLeftSidebarOpen && (
             <Flex
@@ -84,7 +84,7 @@ export const Wrapper = () => {
 
         {/* Middle Majority Content */}
         <Flex direction={'column'} align={'stretch'} justify="between"
-          style={{ flexGrow: isRightSidebarOpen ? 0 : 1, transition: 'flex-grow 0.3s ease-in-out' }}>
+          style={{ flexGrow: isRightSidebarOpen ? 0 : 1, transition: 'flex-grow 0.3s ease-in-out' , }}>
           {/* legend - risk level */}
           <Flex direction={'column'} align={'center'} justify={'start'}>
             <LegendContainer />
@@ -143,7 +143,7 @@ export const Wrapper = () => {
 
 
         {/* Right Configuration Bar */}
-        <Flex direction="column" style={{ width: isRightSidebarOpen ? '20%' : '0%', height: '90vh', transition: 'width 0.3s ease-in-out', position: 'relative' }}>
+        <Flex direction="column" style={{ width: isRightSidebarOpen ? '20%' : '3%', height: '84vh', transition: 'width 0.3s ease-in-out', position: 'relative' }}>
           {/* Right Sidebar */}
           {isRightSidebarOpen && (
             <Flex

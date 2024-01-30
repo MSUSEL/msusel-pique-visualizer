@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Flex, Text, Tabs, Box, Heading } from "@radix-ui/themes";
+import { Flex, Text, Tabs, Box, Strong } from "@radix-ui/themes";
+import { ConfigurationSummary } from "./ConfigurationSummary";
 import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
 import * as Separator from '@radix-ui/react-separator';
 import "../FeaturesContainer/Separator.css"
@@ -13,8 +14,10 @@ export const ConfigurationContainer = () => {
         <Flex direction={'column'} gap={'3'} align={'start'}>
 
             <Flex direction={'column'}>
-                <Text size={'5'}>Configuration</Text>
-                <Text size={'2'}>Here we will add description for the configuration window</Text>
+                <Box>
+                    <Text size={'5'}>Configuration</Text>
+                </Box>
+
             </Flex>
 
             <Flex>
@@ -28,7 +31,7 @@ export const ConfigurationContainer = () => {
                     <Flex>
                         <Tabs.Content value="summary">
                             <Box width="100%">
-                                <Text>Here will be a summary of what the current configuration is.</Text>
+                                <ConfigurationSummary />
                             </Box>
                         </Tabs.Content>
 
@@ -42,6 +45,6 @@ export const ConfigurationContainer = () => {
                     </Flex>
                 </Tabs.Root>
             </Flex>
-        </Flex>
+        </Flex >
     );
 };
