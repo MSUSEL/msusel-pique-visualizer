@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Flex, Tabs, Box } from "@radix-ui/themes";
+import { Flex, Box } from "@radix-ui/themes";
+import * as Tabs from '@radix-ui/react-tabs';
 import { SortButton } from "./SortButton";
 import { FilterButton } from "./FilterButton";
 import { ResetButton } from "./ResetButton";
@@ -18,10 +19,10 @@ export const ButtonContainer = () => {
 
       <Tabs.Root defaultValue="quick">
         <Tabs.List>
-          <Tabs.Trigger value="quick"> <MagicWandIcon /> </Tabs.Trigger>
-          <Tabs.Trigger value="sort"><CaretSortIcon />Sort</Tabs.Trigger>
-          <Tabs.Trigger value="filter"><MixerHorizontalIcon />Filter</Tabs.Trigger>
-          <Tabs.Trigger value="reset"> <ResetIcon /> </Tabs.Trigger>
+          <Tabs.Trigger value="quick" style={{fontSize: "small"}}> <MagicWandIcon /> </Tabs.Trigger>
+          <Tabs.Trigger value="sort" style={{fontSize: "small"}}><CaretSortIcon />Sort</Tabs.Trigger>
+          <Tabs.Trigger value="filter" style={{fontSize: "small"}}><MixerHorizontalIcon />Filter</Tabs.Trigger>
+          <Tabs.Trigger value="reset" style={{fontSize: "small"}}> <ResetIcon /> </Tabs.Trigger>
         </Tabs.List>
 
         {/* Quick Actions */}
