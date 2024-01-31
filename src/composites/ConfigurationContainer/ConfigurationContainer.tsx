@@ -5,7 +5,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { ConfigurationSummary } from "./Summary";
 import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
 import { NodeValueAdjustment } from "./NodeValueAdjustment";
-import "../FeaturesContainer/Separator.css"
+import "../Style/Separator.css"
 
 export const ConfigurationContainer = () => {
 

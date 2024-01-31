@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai";
 import { State } from "../../state";
 import { Flex, Text, Tabs, Box, Strong } from "@radix-ui/themes";
 import * as Separator from '@radix-ui/react-separator';
-import "../FeaturesContainer/Separator.css"
+import "../Style/Separator.css"
 
 export const ConfigurationSummary = () => {
     const dataset = useAtomValue(State.dataset);

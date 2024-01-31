@@ -1,11 +1,11 @@
 import { useAtom, useAtomValue } from "jotai";
 import React, { useMemo, useState } from 'react';
-import { State } from "../../state";
+import { State } from "../../../state";
 import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Table, Callout, Box, Inset, Grid, Card, Avatar } from "@radix-ui/themes";
 import { InfoCircledIcon, GearIcon, UpdateIcon, ResetIcon, DownloadIcon } from "@radix-ui/react-icons";
 import * as Slider from '@radix-ui/react-slider';
-import "../FeaturesContainer/Slider.css";
-import * as schema from '../../data/schema';
+import "../../Style/Slider.css";
+import * as schema from '../../../data/schema';
 
 
 

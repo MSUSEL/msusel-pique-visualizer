@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
-import { CharacteristicsTableGenerator } from "../DynamicWeightsAdjustment/CharacteristicsTable";
+import { CharacteristicsTableGenerator } from "./DynamicWeightsAdjustment/CharacteristicsTable";
 import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Callout, Box, Inset, IconButton } from "@radix-ui/themes";
 import { InfoCircledIcon, GearIcon, CrossCircledIcon, Cross1Icon } from "@radix-ui/react-icons";
 

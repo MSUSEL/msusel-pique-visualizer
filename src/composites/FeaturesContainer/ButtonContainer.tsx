@@ -8,7 +8,7 @@ import { ResetButton } from "./ResetButton";
 import { QuickActionButton } from "./QuickActionButton";
 import { MagicWandIcon, CaretSortIcon, MixerHorizontalIcon, ResetIcon } from "@radix-ui/react-icons";
 import * as Separator from '@radix-ui/react-separator';
-import "./Separator.css"
+import "../Style/Slider.css"
 
 export const ButtonContainer = () => {
   const dataset = useAtomValue(State.dataset);

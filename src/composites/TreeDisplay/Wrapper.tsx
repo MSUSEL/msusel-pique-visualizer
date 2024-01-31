@@ -118,6 +118,7 @@ export const Wrapper = () => {
           </Flex>
 
           {/* layout tabs */}
+          <Flex direction={'column'} align={'start'} justify={'center'}>
           <Tabs.Root defaultValue="alternativeOverview">
             <Tabs.List>
               <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
@@ -128,7 +129,7 @@ export const Wrapper = () => {
 
             <Box px="4" pt="3" pb="3">
               <Tabs.Content value="overview">
-                <Box width="100%">
+                <Box width="100%" height={'100%'}>
                   <OverviewTab />
                 </Box>
               </Tabs.Content>
@@ -165,6 +166,7 @@ export const Wrapper = () => {
 
             </Box>
           </Tabs.Root>
+          </Flex>
 
         </Flex>
 

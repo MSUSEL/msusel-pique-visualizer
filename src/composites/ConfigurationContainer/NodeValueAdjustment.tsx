@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
 import { Flex, Text, Box, Strong } from "@radix-ui/themes";
-import "../FeaturesContainer/Separator.css"
+import "../Style/Separator.css"
 
 export const NodeValueAdjustment = () => {
     const dataset = useAtomValue(State.dataset);
