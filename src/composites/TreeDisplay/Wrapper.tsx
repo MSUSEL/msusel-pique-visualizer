@@ -91,7 +91,7 @@ export const Wrapper = () => {
           </Flex>
 
           {/* layout tabs */}
-          <Tabs.Root defaultValue="overview">
+          <Tabs.Root defaultValue="alternativeOverview">
             <Tabs.List>
               <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
               <Tabs.Trigger value="alternativeOverview">Alternative Overview</Tabs.Trigger>
