@@ -1,13 +1,14 @@
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Flex, Text, Tabs, Box, Strong } from "@radix-ui/themes";
-import { ConfigurationSummary } from "./ConfigurationSummary";
+import { Flex, Text, Box, Strong } from "@radix-ui/themes";
+import * as Tabs from '@radix-ui/react-tabs';
+import { ConfigurationSummary } from "./Summary";
 import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
+import { NodeValueAdjustment } from "./NodeValueAdjustment";
 import * as Separator from '@radix-ui/react-separator';
 import "../FeaturesContainer/Separator.css"
 
 export const ConfigurationContainer = () => {
-    const dataset = useAtomValue(State.dataset);
 
     return (
         // Change Flex direction to 'column' for vertical layout
@@ -23,12 +24,14 @@ export const ConfigurationContainer = () => {
             <Flex>
                 <Tabs.Root defaultValue="summary">
                     <Tabs.List>
-                        <Tabs.Trigger value="summary">Summary</Tabs.Trigger>
-                        <Tabs.Trigger value="dynamic">Weight Adjustment</Tabs.Trigger>
+                        <Tabs.Trigger value="summary" style={{fontSize: "small"}}>Summary</Tabs.Trigger>
+                        <Tabs.Trigger value="weight" style={{fontSize: "small"}}>Weight Adjustment</Tabs.Trigger>
+                        <Tabs.Trigger value="value" style={{fontSize: "small"}}>Value Adjustment</Tabs.Trigger>
                     </Tabs.List>
 
-                    {/* Current Configuration Summary */}
                     <Flex>
+
+                        {/* Current Configuration Summary */}
                         <Tabs.Content value="summary">
                             <Box width="100%">
                                 <ConfigurationSummary />
@@ -36,12 +39,18 @@ export const ConfigurationContainer = () => {
                         </Tabs.Content>
 
                         {/* dynamic weight adjustment */}
-                        <Tabs.Content value="dynamic">
+                        <Tabs.Content value="weight">
                             <Box width="100%">
                                 <DynamicWeightsButton />
                             </Box>
                         </Tabs.Content>
 
+                        {/* dynamic value adjustment */}
+                        <Tabs.Content value="value">
+                            <Box width="100%">
+                                <NodeValueAdjustment />
+                            </Box>
+                        </Tabs.Content>
                     </Flex>
                 </Tabs.Root>
             </Flex>
