@@ -17,9 +17,11 @@ export const ConfigurationSummary = () => {
                 <Text size={'2'} as="p"> <Strong>* Current Profile: </Strong> Default </Text>
                 
                 <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
-                <Text size={'2'} as="p"> * Here we will add description for the configuration window. </Text>
-                <Text size={'2'} as="p"> * We will also insert hyperlinks or provied brief descriptions of those strategies </Text>
-
+                <Text color="blue"> TODO</Text>
+                <Text size={'2'} as="p" color="blue"> * Here we will add description for the configuration window. </Text>
+                <Text size={'2'} as="p" color="blue"> * We will also insert hyperlinks or provied brief descriptions of those strategies </Text>
+                <Text size={'2'} as="p" color="blue"> * For profile, currently it is set as default. This should be consistent with the dynamic importance adjustment window. </Text>
+                
             </Box>
 
         </Flex >
