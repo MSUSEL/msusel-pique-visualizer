@@ -1,14 +1,18 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
 import { CharacteristicsTableGenerator } from "./DynamicWeightsAdjustment/CharacteristicsTable";
-import { Button, Dialog, Flex, Text, HoverCard, Link, Strong, Callout, Box, Inset, IconButton } from "@radix-ui/themes";
-import { InfoCircledIcon, GearIcon, CrossCircledIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { Button, Flex, Text, HoverCard, Link, Strong, Callout, Box, Inset, IconButton } from "@radix-ui/themes";
+import { InfoCircledIcon, GearIcon, Cross2Icon, Cross1Icon } from "@radix-ui/react-icons";
+import * as Dialog from '@radix-ui/react-dialog';
+import "../Style/Dialog.css"
+
 
 export const DynamicWeightsButton = () => {
     return (
 
         <Flex direction="column" gap="3" align="start">
 
+            {/* dynamic weight adjustment title, right now we will keep it as "weight" */}
             <Box>
                 <HoverCard.Root>
                     <HoverCard.Trigger>
@@ -17,10 +21,10 @@ export const DynamicWeightsButton = () => {
                     <HoverCard.Content>
                         <Text as="div" size="1" style={{ maxWidth: 325 }}>
 
-                            <Strong>Weights, </Strong> shown as numbers alonging on edges in the tree display,
+                            For Quality Chracteristics, <Strong>weights, </Strong> shown as numbers alonging on edges in the tree display,
                             indicate the relative importance among the quality aspects in consideration.
                             Since the industry requirements could be various,
-                            tuning the weights allows users to prioritize different aspects.
+                            users are welcome to tune the weights by adjusting the corresponding importance to prioritize different characteristics.
 
                         </Text>
                     </HoverCard.Content>
@@ -28,44 +32,49 @@ export const DynamicWeightsButton = () => {
 
             </Box>
 
+            {/* callout card information */}
             <Box>
                 <Callout.Root>
                     <Callout.Icon>
                         <InfoCircledIcon />
                     </Callout.Icon>
                     <Callout.Text>
-                        Currently, the adjsutment of weights is only applicable for Quality Characteristics (i.e., the 2nd level of the tree display).
+                        Currently, the adjsutment is only applicable for <Strong>Quality Characteristics</Strong>
+                        (i.e., the 2nd level of the tree display, and the 2nd expandable box in the list display).
                     </Callout.Text>
                 </Callout.Root>
 
             </Box>
 
-            <Box>
+            <Box position={'relative'} left={'50%'} top={'50%'}>
                 <Dialog.Root>
-                    <Dialog.Trigger>
-                        <Button size="2" variant="surface">
-                            Adjust quality characteristics weights
-                        </Button>
+                    <Dialog.Trigger asChild>
+                        <Button size="2" className="Button violet"> Adjust </Button>
                     </Dialog.Trigger>
-                    <Dialog.Content style={{ position: 'relative' }}>
-                        <Dialog.Title>Characteristics and corresponding weights</Dialog.Title>
-                        <Dialog.Description>
-                            {/* Dialog description content */}
-                        </Dialog.Description>
 
-                        {/* Position the close button absolutely within the Dialog.Content */}
-                        <Dialog.Close style={{ position: 'absolute', top: '10px', right: '10px' }}>
-                            <IconButton radius="full" color="gray">
-                                <Cross1Icon width="15" height="15" />
-                            </IconButton>
-                        </Dialog.Close>
+                    <Dialog.Portal>
+                        <Dialog.Overlay className="DialogOverlay" />
+                        <Dialog.Content className="DialogContent">
+                            <Dialog.Title className="DialogTitle">Characteristics and corresponding weights</Dialog.Title>
+                            <Dialog.Description className="DialogDescription">
+                                {/* Dialog description content */}
+                                Adjust the importance of chrachteristics, the weights will be recalculated automaticly.
+                            </Dialog.Description>
 
-                        <Inset side="x" my="5">
-                            <CharacteristicsTableGenerator />
-                        </Inset>
+                            {/* Position the close button absolutely within the Dialog.Content */}
+                            <Dialog.Close>
+                                <IconButton  className="IconButton" aria-label="Close">
+                                    <Cross2Icon />
+                                </IconButton>
+                            </Dialog.Close>
 
-                        {/* Other dialog content */}
-                    </Dialog.Content>
+                            <Inset side="x" my="5">
+                                <CharacteristicsTableGenerator />
+                            </Inset>
+
+                        </Dialog.Content>
+
+                    </Dialog.Portal>
                 </Dialog.Root>
 
             </Box>

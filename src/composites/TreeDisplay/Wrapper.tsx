@@ -30,27 +30,27 @@ export const Wrapper = () => {
       </Flex>
 
       {/* Main Content */}
-      <Flex 
-      direction="row" 
-      align="start" 
-      justify="center" 
-      style={{ 
-        height: '90vh', 
-        width: '100%', 
-        overflow: 'hidden',
-       }} 
-      gap={'3'}>
-        
+      <Flex
+        direction="row"
+        align="start"
+        justify="center"
+        style={{
+          height: '90vh',
+          width: '100%',
+          overflow: 'hidden',
+        }}
+        gap={'3'}>
+
 
         {/* Left Side Panel */}
-        <Flex 
-        direction={'column'} 
-        style={{ 
-          width: isLeftSidebarOpen ? '20%' : '50px', 
-          transition: 'width 0.3s ease-in-out', 
-          flexShrink: 0,
-          position: 'relative', 
-          height: '90vh', 
+        <Flex
+          direction={'column'}
+          style={{
+            width: isLeftSidebarOpen ? '20%' : '50px',
+            transition: 'width 0.3s ease-in-out',
+            flexShrink: 0,
+            position: 'relative',
+            height: '90vh',
           }}>
           {/* Sidebar */}
           {isLeftSidebarOpen && (
@@ -71,13 +71,13 @@ export const Wrapper = () => {
                 style={{
                   position: 'absolute',
                   top: '10px',
-                  right: '10px', 
+                  right: '10px',
                 }}
               >
                 <PinLeftIcon />
               </IconButton>
               <ButtonContainer />
-           
+
             </Flex>
           )}
 
@@ -86,8 +86,8 @@ export const Wrapper = () => {
             <Flex
               style={{
                 position: 'absolute',
-                left: '10px', 
-                top: '15px', 
+                left: '10px',
+                top: '15px',
                 cursor: 'pointer',
               }}
               onClick={() => setIsLeftSidebarOpen(true)}
@@ -101,16 +101,16 @@ export const Wrapper = () => {
 
 
         {/* Middle Majority Content */}
-        <Flex 
-        direction={'column'} 
-        align={'stretch'} 
-        justify="between"
-        style={{ 
-          flexGrow: 1, 
-          transition: 'flex-grow 0.3s ease-in-out' ,
-          minWidth: 0,
-          height: '90vh'
-           }}>
+        <Flex
+          direction={'column'}
+          align={'stretch'}
+          justify="between"
+          style={{
+            flexGrow: 1,
+            transition: 'flex-grow 0.3s ease-in-out',
+            minWidth: 10,
+            height: '90vh'
+          }}>
 
           {/* legend - risk level */}
           <Flex direction={'column'} align={'center'} justify={'start'}>
@@ -118,68 +118,61 @@ export const Wrapper = () => {
           </Flex>
 
           {/* layout tabs */}
-          <Flex direction={'column'} align={'start'} justify={'center'}>
-          <Tabs.Root defaultValue="alternativeOverview">
-            <Tabs.List>
-              <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-              <Tabs.Trigger value="alternativeOverview">Alternative Overview</Tabs.Trigger>
-              <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
-              <Tabs.Trigger value="list">List</Tabs.Trigger>
-            </Tabs.List>
+          <Flex direction={'column'} align={'start'} justify={'between'}>
+            <Tabs.Root defaultValue="alternativeOverview">
+              <Tabs.List>
+                <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+                <Tabs.Trigger value="alternativeOverview">Alternative Overview</Tabs.Trigger>
+                <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
+                <Tabs.Trigger value="list">List</Tabs.Trigger>
+              </Tabs.List>
 
-            <Box px="4" pt="3" pb="3">
-              <Tabs.Content value="overview">
-                <Box width="100%" height={'100%'}>
-                  <OverviewTab />
-                </Box>
-              </Tabs.Content>
+              <Box
+                px="4" pt="3" pb="3"
+                style={{ width: '100%', height: 'auto', overflow: 'hidden' }}
+              >
+                <Tabs.Content value="overview">
+                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
+                    <OverviewTab />
+                  </Box>
+                </Tabs.Content>
 
-              <Tabs.Content value="alternativeOverview">
-                <Box width="100%">
-                  <AlternativeOverviewTab />
-                </Box>
-              </Tabs.Content>
+                <Tabs.Content value="alternativeOverview">
+                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
+                    <AlternativeOverviewTab />
+                  </Box>
+                </Tabs.Content>
 
-              <Tabs.Content value="tree">
-                <Box width="100%">
-                  <TreeDisplay fileData={dataset} />
-                </Box>
-              </Tabs.Content>
+                <Tabs.Content value="tree">
+                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
+                    <TreeDisplay fileData={dataset} />
+                  </Box>
+                </Tabs.Content>
 
-              <Tabs.Content value="treeRefactored">
-                <Box width="100%">
-                  <TreeDisplayRefactored />
-                </Box>
-              </Tabs.Content>
+                <Tabs.Content value="list">
+                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
+                    <ListDisplay />
+                  </Box>
+                </Tabs.Content>
 
-              <Tabs.Content value="list">
-                <Box width="100%">
-                  <ListDisplay />
-                </Box>
-              </Tabs.Content>
 
-              <Tabs.Content value="nestedList">
-                <Box width="100%">
-                  <NestedListDisplay />
-                </Box>
-              </Tabs.Content>
 
-            </Box>
-          </Tabs.Root>
+              </Box>
+            </Tabs.Root>
           </Flex>
 
         </Flex>
 
 
         {/* Right Configuration Bar */}
-        <Flex 
-        direction="column" 
-        style={{ 
-          width: isRightSidebarOpen ? '20%' : '50px', 
-          height: '90vh', 
-          transition: 'width 0.3s ease-in-out', 
-          position: 'relative' ,
-          flexShrink: 0,
+        <Flex
+          direction="column"
+          style={{
+            width: isRightSidebarOpen ? '20%' : '50px',
+            height: '90vh',
+            transition: 'width 0.3s ease-in-out',
+            position: 'relative',
+            flexShrink: 0,
           }}>
           {/* Right Sidebar */}
           {isRightSidebarOpen && (
