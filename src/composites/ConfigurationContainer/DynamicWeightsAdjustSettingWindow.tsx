@@ -61,16 +61,18 @@ export const DynamicWeightsButton = () => {
                                 Adjust the importance of chrachteristics, the weights will be recalculated automaticly.
                             </Dialog.Description>
 
-                            {/* Position the close button absolutely within the Dialog.Content */}
-                            <Dialog.Close>
-                                <IconButton  className="IconButton" aria-label="Close">
-                                    <Cross2Icon />
-                                </IconButton>
-                            </Dialog.Close>
+                            
 
                             <Inset side="x" my="5">
                                 <CharacteristicsTableGenerator />
                             </Inset>
+
+                            {/* Position the close button absolutely within the Dialog.Content */}
+                            <Dialog.Close asChild>
+                                <IconButton  className="IconButton" aria-label="Close">
+                                    <Cross2Icon />
+                                </IconButton>
+                            </Dialog.Close>
 
                         </Dialog.Content>
 
