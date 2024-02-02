@@ -18,21 +18,28 @@ interface TQIEntry {
 }
 
 interface SingleTableRowProps {
-  tqiKey: string;
   name: string;
   qualityAspectValue: number;
   qualityAspectDescription: string;
-  weightValue: number; // Original weight before adjustment
-  sliderValue: number; // Current slider value after adjustment
-  maxSliderValue: number; // Maximum value for the slider
-  onSliderChange: (tqiKey: string, name: string, newWeight: number) => void;
+  weightValue: number;
+  sliderValue: number;
+  recalculatedWeight: number;
+  onSliderChange: (name: string, newImportance: number) => void;
 }
 
+const SingleTableRow: React.FC<SingleTableRowProps> = ({
+  name,
+  qualityAspectValue,
+  qualityAspectDescription,
+  weightValue,
+  sliderValue,
+  recalculatedWeight,
+  onSliderChange,
+}) => {
 
-const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAspectValue, qualityAspectDescription, weightValue, sliderValue, maxSliderValue, onSliderChange }) => {
   return (
     <Table.Row>
-      <Table.RowHeaderCell>
+      <Table.ColumnHeaderCell justify={'center'}>
         <HoverCard.Root>
           <HoverCard.Trigger>
             <Link href="#">{name}</Link>
@@ -43,87 +50,83 @@ const SingleTableRow: React.FC<SingleTableRowProps> = ({ tqiKey, name, qualityAs
             </Text>
           </HoverCard.Content>
         </HoverCard.Root>
-      </Table.RowHeaderCell>
-      <Table.Cell>{qualityAspectValue.toFixed(4)}</Table.Cell>
-      <Table.Cell>{weightValue.toFixed(4)}</Table.Cell> {/* Original weight value */}
+      </Table.ColumnHeaderCell>
+
+      <Table.Cell justify={'center'}>{qualityAspectValue.toFixed(3)}</Table.Cell>
+      <Table.Cell justify={'center'}>{weightValue.toFixed(3)}</Table.Cell> {/* Original weight value */}
       <Table.Cell>
-        <Box>
-          <Slider.Root value={[sliderValue]} onValueChange={value => onSliderChange(tqiKey, name, value[0])} min={0} max={maxSliderValue} step={0.05} className="SliderRoot">
+        <Box style={{ position: 'relative', padding: '20px' }}>
+          <Slider.Root
+            value={[sliderValue]}
+            onValueChange={(value) => onSliderChange(name, value[0])}
+            min={0}
+            max={1}
+            step={0.01}
+            className="SliderRoot">
             <Slider.Track className="SliderTrack">
               <Slider.Range className="SliderRange" />
             </Slider.Track>
             <Slider.Thumb className="SliderThumb" />
           </Slider.Root>
+          <div style={{ position: 'absolute', top: '-2px', left: `${sliderValue * 100}%`, transform: 'translateX(-50%)' }}>
+            {sliderValue.toFixed(2)}
+          </div>
         </Box>
       </Table.Cell>
-      <Table.Cell>{sliderValue.toFixed(4)}</Table.Cell> {/* Adjusted weight value */}
+      <Table.Cell>{recalculatedWeight.toFixed(3)}</Table.Cell>
     </Table.Row>
   );
 };
 
 export const CharacteristicsTableGenerator = () => {
   const dataset = useAtomValue(State.dataset);
-  if (!dataset) return null
-  var adjustedDataset = JSON.parse(JSON.stringify(dataset));
+  if (!dataset) return null;
+
   const currentTQI = Object.values(dataset.factors.tqi)[0]?.value || 0;
 
-
-  // State to track slider values
-  const [sliderValues, setSliderValues] = useState(() => {
-    const initialSliderValues: Record<string, number> = {};
-    Object.entries(adjustedDataset.factors.tqi).forEach(([tqiKey, tqiEntry]) => {
-      const entry = tqiEntry as TQIEntry; // Type assertion here
+  const initialWeights = useMemo(() => {
+    const weights: Weights = {};
+    Object.entries(dataset.factors.tqi).forEach(([_, tqiEntry]) => {
+      const entry = tqiEntry as TQIEntry;
       Object.keys(entry.weights).forEach(name => {
-        initialSliderValues[`${tqiKey}-${name}`] = entry.weights[name];
+        weights[name] = entry.weights[name];
       });
     });
-    return initialSliderValues;
-  });
+    return weights;
+  }, [dataset]);
 
-  // Function to reset all sliders
-  const resetAllAdjustments = () => {
-    setSliderValues(() => {
-      const resetValues: Record<string, number> = {};
-      Object.entries(adjustedDataset.factors.tqi).forEach(([tqiKey, tqiEntry]) => {
-        const entry = tqiEntry as TQIEntry; // Type assertion here
-        Object.keys(entry.weights).forEach(name => {
-          resetValues[`${tqiKey}-${name}`] = entry.weights[name];
-        });
-      });
-      return resetValues;
+  const [sliderValues, setSliderValues] = useState(initialWeights);
+
+  const totalImportance = useMemo(() => Object.values(sliderValues).reduce((sum, importance) => sum + importance, 0), [sliderValues]);
+
+  const recalculatedWeights = useMemo(() => {
+    const newWeights: Weights = {};
+    Object.keys(sliderValues).forEach(name => {
+      newWeights[name] = sliderValues[name] / totalImportance;
     });
+    return newWeights;
+  }, [sliderValues, totalImportance]);
+
+  const handleSliderChange = (name: string, newImportance: number) => {
+    setSliderValues(prev => ({ ...prev, [name]: newImportance }));
   };
-
-
-  // Function to handle slider change
-  const handleSliderChange = (tqiKey: string, name: string, newWeight: number) => {
-    setSliderValues(prevValues => ({
-      ...prevValues,
-      [`${tqiKey}-${name}`]: newWeight
-    }));
-    adjustedDataset.factors.tqi[tqiKey].weights[name] = newWeight; // Update adjusted dataset
-  };
-
 
   const updatedTQI = useMemo(() => {
-    let totalTQI = 0;
-    Object.entries(adjustedDataset.factors.tqi).forEach(([_, tqiEntry]) => {
-      const entry = tqiEntry as TQIEntry; // Type assertion for tqiEntry
-      Object.keys(entry.weights).forEach(name => {
-        const aspectValue = adjustedDataset.factors.quality_aspects[name]?.value || 0;
-        const sliderValue = sliderValues[`${Object.keys(dataset.factors.tqi)[0]}-${name}`];
-        totalTQI += aspectValue * sliderValue;
-      });
-    });
-    return totalTQI;
-  }, [sliderValues, adjustedDataset]);
+    return Object.entries(recalculatedWeights).reduce((total, [name, weight]) => {
+      return total + (dataset.factors.quality_aspects[name]?.value || 0) * weight;
+    }, 0);
+  }, [recalculatedWeights, dataset]);
+
+  const resetAllAdjustments = () => setSliderValues(initialWeights);
+
+
   return (
     <Flex direction={"column"} align={"center"}>
       <Box>
         <Table.Root variant='surface'>
           <Table.Header>
-            <Table.Row>
-              <Table.ColumnHeaderCell>
+            <Table.Row align={'center'}>
+              <Table.ColumnHeaderCell justify={'center'} width={'25%'}>
                 <HoverCard.Root>
                   <HoverCard.Trigger>
                     <Link href="#">Characteristics</Link>
@@ -135,49 +138,39 @@ export const CharacteristicsTableGenerator = () => {
                   </HoverCard.Content>
                 </HoverCard.Root>
               </Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Current Value</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Current Weight</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell justify={'center'} width={'15%'}>Current Value</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell justify={'center'} width={'15%'}>Current Weight</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell justify={'center'} width={'30%'}>
                 <HoverCard.Root>
                   <HoverCard.Trigger>
-                    <Link href="#">Weight Adjustment Slider</Link>
+                    <Link href="#">Importance Adjustment Slider</Link>
                   </HoverCard.Trigger>
                   <HoverCard.Content>
                     <Text as="div" style={{ maxWidth: 325 }}>
-                      Please drag the thumb on the slider to adjust the weights.
-                      The sum of all weights is 1.
-                      The next column <Strong>Adjusted Weight</Strong> renders the updated weight values while adjustment.
-                      The <Strong>Updated TQI</Strong> value is updated while adjustment immediately.
+                      Please drag the thumb on the slider to adjust the improtance.
+                      The importance could be between 0 and 1.
+                      The next column <Strong>Adjusted Weight</Strong> renders the updated weight values based on the adjusted importance.
+                      The <Strong>Updated TQI</Strong> is updated while adjustment immediately.
                     </Text>
                   </HoverCard.Content>
                 </HoverCard.Root></Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>Adjusted Weight</Table.ColumnHeaderCell>
+
+              <Table.ColumnHeaderCell justify={'center'} width={'15%'}>Adjusted Weight</Table.ColumnHeaderCell>
             </Table.Row>
           </Table.Header>
 
           <Table.Body>
-            {Object.entries(adjustedDataset.factors.tqi).map(([tqiKey, tqiEntry]) => {
-              const entry = tqiEntry as TQIEntry; // Type assertion for tqiEntry
-
-              return Object.entries(entry.weights).map(([name, weightValue]) => {
-                // Calculate the sum of all other weights
-                const sumOtherWeights = Object.entries(entry.weights).reduce((sum, [otherName, otherWeightValue]) => {
-                  return otherName !== name ? sum + sliderValues[`${tqiKey}-${otherName}`] : sum;
-                }, 0);
-
-                // Calculate the maximum value for this slider
-                const maxSliderValue = 1 - sumOtherWeights;
-
+            {Object.entries(dataset.factors.tqi).map(([_, tqiEntry]) => {
+              return Object.entries(tqiEntry.weights).map(([name, weight]) => {
                 return (
                   <SingleTableRow
-                    key={`${tqiKey}-${name}`}
-                    tqiKey={tqiKey}
+                    key={name}
                     name={name}
-                    qualityAspectValue={adjustedDataset.factors.quality_aspects[name]?.value || 0}
-                    qualityAspectDescription={adjustedDataset.factors.quality_aspects[name]?.description || ''}
-                    weightValue={weightValue as number}
-                    sliderValue={sliderValues[`${tqiKey}-${name}`]}
-                    maxSliderValue={maxSliderValue}
+                    qualityAspectValue={dataset.factors.quality_aspects[name]?.value || 0}
+                    qualityAspectDescription={dataset.factors.quality_aspects[name]?.description || ''}
+                    weightValue={weight}
+                    sliderValue={sliderValues[name]}
+                    recalculatedWeight={recalculatedWeights[name]}
                     onSliderChange={handleSliderChange}
                   />
                 );
