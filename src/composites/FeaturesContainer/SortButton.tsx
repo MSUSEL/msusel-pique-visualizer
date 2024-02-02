@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { State } from "../../state";
-import { Flex, HoverCard, Link, Text, Strong, Em, RadioGroup } from "@radix-ui/themes";
+import { Flex, HoverCard, Link, Text, Strong, Em, RadioGroup, Box } from "@radix-ui/themes";
 import * as Separator from '@radix-ui/react-separator';
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import './Separator.css';
@@ -20,115 +20,123 @@ export const SortButton = () => {
 
   return (
 
-    <Flex gap="3" align="center">
-      <div style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
-        {/* Title */}
-        <div className="Text" style={{ fontWeight: 500 }}>
-          <Text>
-            <HoverCard.Root>
-              <HoverCard.Trigger>
-                <Link href="#" size='3'>
-                  <CaretSortIcon /> Sorting
-                </Link>
+    <Flex gap="3" align="start" direction={"column"}>
+      <Box>
+        <HoverCard.Root>
+          <HoverCard.Trigger>
+            <Link href="#" size='3'><CaretSortIcon /> Sorting</Link>
+          </HoverCard.Trigger>
+          <HoverCard.Content>
+            <Text as="div" size="1" style={{ maxWidth: 325 }}>
+              <Strong>Sort</Strong> the evaluation results, consisting of quality characteristics, factors, measures and diagnostics,
+              based on their <Em>values or wegihts</Em>, in the <Em> ascending or decesding </Em> order.
+            </Text>
+          </HoverCard.Content>
+        </HoverCard.Root>
+      </Box>
 
-              </HoverCard.Trigger>
-              <HoverCard.Content>
-                <Text as="div" size="1" style={{ maxWidth: 325 }}>
-                  <Strong>Sort</Strong> the evaluation results, consisting of quality characteristics, factors, measures and diagnostics,
-                  based on their <Em>values or wegihts</Em>, in the <Em> ascending or decesding </Em> order.
-
-                </Text>
-              </HoverCard.Content>
-            </HoverCard.Root>
-          </Text>
-        </div>
-
+      <Flex>
         <RadioGroup.Root value={sortState} onValueChange={handleSortChange} defaultValue="default">
 
           {/* Default: as the same sorting as the uploaded file */}
-          <Text as="label" size="2">
-            <RadioGroup.Item value="no-sort" /> Default Order
-          </Text>
+          <Box>
+            <Text as="label" size="2">
+              <RadioGroup.Item value="no-sort" /> <HoverCard.Root>
+                <HoverCard.Trigger>
+                  <Link href="#" size={"2"}> Default Order</Link>
+                </HoverCard.Trigger>
+                <HoverCard.Content size="2">
+                  <Text as="div" size="2" style={{ maxWidth: 325 }}>
+                    I.e., the initial order of objects as in the uploaded JSON evaluation results.
+                  </Text>
+                </HoverCard.Content>
+              </HoverCard.Root>
+            </Text>
+          </Box>
 
           {/* based on value */}
-          <Text as="div" size="2" style={{ maxWidth: 325 }}>
-            <Strong>Based on Value</Strong>
-          </Text>
+          <Flex direction={"column"} align={"start"}>
+            <Box>
+              <Text as="label" size="2" >
+                <Strong>Based on Value</Strong>
+              </Text>
+            </Box>
 
-          <Text as="label" size="2">
-            <Flex gap="2">
-              <RadioGroup.Item value="value-asc" onSelect={() => handleSortChange("value-asc")} />
-              <HoverCard.Root>
-                <HoverCard.Trigger>
-                  <Link href="#">Value - Ascending</Link>
-                </HoverCard.Trigger>
-                <HoverCard.Content size="2">
-                  <Text as="div" size="2" style={{ maxWidth: 325 }}>
-                    Ascending: For the tree view, the ascending sorting will sort the smallest on the left and the largest on the right.
-                  </Text>
-                </HoverCard.Content>
-              </HoverCard.Root>
+            <Flex gap="2" direction={"column"} align={"start"}>
+              <Box>
+                <RadioGroup.Item value="value-asc" onSelect={() => handleSortChange("value-asc")} />
+                <HoverCard.Root>
+                  <HoverCard.Trigger>
+                    <Link href="#" size={"2"}> Value - Ascending</Link>
+                  </HoverCard.Trigger>
+                  <HoverCard.Content size="2">
+                    <Text as="div" size="2" style={{ maxWidth: 325 }}>
+                      Ascending: For the tree view, the ascending sorting will sort the smallest on the left and the largest on the right.
+                    </Text>
+                  </HoverCard.Content>
+                </HoverCard.Root>
+              </Box>
+
+              <Box>
+                <RadioGroup.Item value="value-desc" onSelect={() => handleSortChange("value-desc")} />
+                <HoverCard.Root>
+                  <HoverCard.Trigger>
+                    <Link href="#" size={"2"}> Value - Descending</Link>
+                  </HoverCard.Trigger>
+                  <HoverCard.Content size="2">
+                    <Text as="div" size="2" style={{ maxWidth: 325 }}>
+                      Descending: For the tree view, the descending sorting will sort the largest on the left and the smnallest on the right.
+                    </Text>
+                  </HoverCard.Content>
+                </HoverCard.Root>
+              </Box>
             </Flex>
-          </Text>
-
-          <Text as="label" size="2">
-            <Flex gap="2">
-              <RadioGroup.Item value="value-desc" onSelect={() => handleSortChange("value-desc")} />
-              <HoverCard.Root>
-                <HoverCard.Trigger>
-                  <Link href="#">Value - Descending</Link>
-                </HoverCard.Trigger>
-                <HoverCard.Content size="2">
-                  <Text as="div" size="2" style={{ maxWidth: 325 }}>
-                    Descending: For the tree view, the descending sorting will sort the largest on the left and the smnallest on the right.
-                  </Text>
-                </HoverCard.Content>
-              </HoverCard.Root>
-            </Flex>
-          </Text>
 
 
+          </Flex>
           {/* based on weights */}
-          <Text as="div" size="2" style={{ maxWidth: 325 }}>
-            <Strong>Based on Weights</Strong>
-          </Text>
+          <Flex direction={"column"} align={"start"}>
+            <Box>
+              <Text as="label" size="2" style={{ maxWidth: 325 }}>
+                <Strong>Based on Weights</Strong>
+              </Text>
+            </Box>
 
-          <Text as="label" size="2">
-            <Flex gap="2">
-              <RadioGroup.Item value="weight-asc" onSelect={() => handleSortChange("weight-asc")} />
-              <HoverCard.Root>
-                <HoverCard.Trigger>
-                  <Link href="#">Weights - Ascending</Link>
-                </HoverCard.Trigger>
-                <HoverCard.Content size="2">
-                  <Text as="div" size="2" style={{ maxWidth: 325 }}>
-                    Ascending: For the tree view, the ascending sorting will sort the smallest on the left and the largest on the right.
-                  </Text>
-                </HoverCard.Content>
-              </HoverCard.Root>
-            </Flex>
-          </Text>
+            <Flex gap="2" direction={"column"} align={"start"}>
+              <Box>
+                <RadioGroup.Item value="weight-asc" onSelect={() => handleSortChange("weight-asc")} />
+                <HoverCard.Root>
+                  <HoverCard.Trigger>
+                    <Link href="#"  size={"2"} > Weights - Ascending</Link>
+                  </HoverCard.Trigger>
+                  <HoverCard.Content size="2">
+                    <Text as="div" size="2" style={{ maxWidth: 325 }}>
+                      Ascending: For the tree view, the ascending sorting will sort the smallest on the left and the largest on the right.
+                    </Text>
+                  </HoverCard.Content>
+                </HoverCard.Root>
+              </Box>
 
-          <Text as="label" size="2">
-            <Flex gap="2">
-              <RadioGroup.Item value="weight-desc" onSelect={() => handleSortChange("weight-desc")} />
-              <HoverCard.Root>
-                <HoverCard.Trigger>
-                  <Link href="#">Weights - Descending</Link>
-                </HoverCard.Trigger>
-                <HoverCard.Content size="2">
-                  <Text as="div" size="2" style={{ maxWidth: 325 }}>
-                    Descending: For the tree view, the descending sorting will sort the largest on the left and the smnallest on the right.
-                  </Text>
-                </HoverCard.Content>
-              </HoverCard.Root>
+              <Box>
+                <RadioGroup.Item value="weight-desc" onSelect={() => handleSortChange("weight-desc")} />
+                <HoverCard.Root>
+                  <HoverCard.Trigger>
+                    <Link href="#"  size={"2"}> Weights - Descending</Link>
+                  </HoverCard.Trigger>
+                  <HoverCard.Content size="2">
+                    <Text as="div" size="2" style={{ maxWidth: 325 }}>
+                      Descending: For the tree view, the descending sorting will sort the largest on the left and the smnallest on the right.
+                    </Text>
+                  </HoverCard.Content>
+                </HoverCard.Root>
+              </Box>
             </Flex>
-          </Text>
+
+          </Flex>
 
         </RadioGroup.Root>
-
-
-      </div>
+      </Flex>
+      
     </Flex>
 
   );

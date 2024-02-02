@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Callout, HoverCard, Dialog, Button, Flex, Text, DropdownMenu, Link, Strong, Em, Heading } from "@radix-ui/themes";
+import { Callout, HoverCard, Dialog, Button, Flex, Text, DropdownMenu, Link, Strong, Em, Heading, Box } from "@radix-ui/themes";
 import { MixerHorizontalIcon, CheckCircledIcon, SliderIcon } from "@radix-ui/react-icons";
 import * as React from "react";
 import * as Slider from '@radix-ui/react-slider';
@@ -8,6 +8,8 @@ import '@radix-ui/colors/black-alpha.css';
 import '@radix-ui/colors/violet.css';
 import './Slider.css'
 import * as Accordion from '@radix-ui/react-accordion';
+import * as schema from '../../data/schema';
+import { findMinMaxValues } from "../Filtering/FindMinMaxValues";
 
 
 export const FilterButton = () => {
@@ -19,35 +21,31 @@ export const FilterButton = () => {
     setCheckboxStates({ ...checkboxStates, [label]: e.target.checked });
   };
 
-  console.log("Current filter checkboxes status", checkboxStates);
+
+
+  // Determine the min and max values for the slider
+  const [sliderMin, sliderMax] = dataset ? findMinMaxValues(dataset) : [0, 1];
 
   // user typed in min and max
-  // State for local form values
-  const [localMinValue, setLocalMinValue] = React.useState(0);
-  const [localMaxValue, setLocalMaxValue] = React.useState(1);
-  const [localMinWeight, setLocalMinWeight] = React.useState(0);
-  const [localMaxWeight, setLocalMaxWeight] = React.useState(1); 
+  const [minValue, setMinValue] = useAtom(State.minValueState);
+  const [maxValue, setMaxValue] = useAtom(State.maxValueState);
+  const [minWeight, setMinWeight] = useAtom(State.minWeightState);
+  const [maxWeight, setMaxWeight] = useAtom(State.maxWeightState);
 
-  // Atoms from state.ts
-  const [, setMinValueState] = useAtom(State.minValueState);
-  const [, setMaxValueState] = useAtom(State.maxValueState);
-  const [, setMinWeightState] = useAtom(State.minWeightState);
-  const [, setMaxWeightState] = useAtom(State.maxWeightState);
 
   const handleSaveValueRange = () => {
-    if (localMinValue <= localMaxValue) {
-      setMinValueState(localMinValue);
-      setMaxValueState(localMaxValue);
+    if (minValue <= maxValue) {
+      setMinValue(minValue);
+      setMaxValue(maxValue);
     } else {
-      // Show an error message or handle the error appropriately
       alert("Minimum value cannot be greater than maximum value.");
     }
   };
 
 
   const handleSaveWeightRange = () => {
-    setMinWeightState(localMinWeight);
-    setMaxWeightState(localMaxWeight);
+    setMinWeight(minWeight);
+    setMaxWeight(maxWeight);
   };
 
   const generateFilterSummary = () => {
@@ -57,12 +55,12 @@ export const FilterButton = () => {
       .map(([key, _]) => key);
 
     // Summary for value range
-    const isFullValueRange = localMinValue === -1 && localMaxValue === 1;
-    const valueFilterSummary = !isFullValueRange ? `Value: ${localMinValue.toFixed(1)} to ${localMaxValue.toFixed(1)}` : '';
+    const isFullValueRange = minValue === -1 && maxValue === 1;
+    const valueFilterSummary = !isFullValueRange ? `Value: ${minValue.toFixed(1)} to ${maxValue.toFixed(1)}` : '';
 
     // Summary for weight range
-    const isFullWeightRange = localMinWeight === 0 && localMaxWeight === 1;
-    const weightFilterSummary = !isFullWeightRange ? `Weight: ${localMinWeight.toFixed(1)} to ${localMaxWeight.toFixed(1)}` : '';
+    const isFullWeightRange = minWeight === 0 && maxWeight === 1;
+    const weightFilterSummary = !isFullWeightRange ? `Weight: ${minWeight.toFixed(1)} to ${maxWeight.toFixed(1)}` : '';
 
     // Combine summaries
     const filterSummaries = [
@@ -89,11 +87,11 @@ export const FilterButton = () => {
           </div>
         )}
         {<div style={{ display: 'flex', alignItems: 'left' }}>
-          <span style={{ marginLeft: '0px' }}>{`Value: ${localMinValue.toFixed(1)} to ${localMaxValue.toFixed(1)}`}</span>
+          <span style={{ marginLeft: '0px' }}>{`Value: ${minValue.toFixed(1)} to ${maxValue.toFixed(1)}`}</span>
         </div>
         }
         {<div style={{ display: 'flex', alignItems: 'left' }}>
-          <span style={{ marginLeft: '0px' }}>{`Weight: ${localMinWeight.toFixed(1)} to ${localMaxWeight.toFixed(1)}`}</span>
+          <span style={{ marginLeft: '0px' }}>{`Weight: ${minWeight.toFixed(1)} to ${maxWeight.toFixed(1)}`}</span>
         </div>
         }
         {selectedRiskLevels.length === 0 && isFullValueRange && isFullWeightRange && 'No Filtering'}
@@ -104,59 +102,48 @@ export const FilterButton = () => {
 
   return (
 
-    <Flex gap="3" align="center">
-      <div style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
-        {/* Title */}
-        <div className="Text" style={{ fontWeight: 500 }}>
-          <Text>
-            <HoverCard.Root>
-              <HoverCard.Trigger>
-                <Link href="#" size='3'>
-                  <MixerHorizontalIcon /> Filtering
-                </Link>
+    <Flex gap="3" align={"start"} direction={"column"}>
 
-              </HoverCard.Trigger>
-              <HoverCard.Content>
-                <Text as="div" size="1" style={{ maxWidth: 325 }}>
-                  <Strong>Filter</Strong> the evaluation results, consisting of quality characteristics, factors, measures and diagnostics,
-                  based on their <Em>risk levels</Em>, <Em> values range </Em>, or <Em> weights range </Em>.
+      {/* Title */}
+      <Box>
+        <HoverCard.Root>
+          <HoverCard.Trigger>
+            <Link href="#" size='3'><MixerHorizontalIcon /> Filtering </Link>
+          </HoverCard.Trigger>
+          <HoverCard.Content>
+            <Text as="div" size="1" style={{ maxWidth: 325 }}>
+              <Strong>Filter</Strong> the evaluation results, consisting of quality characteristics, factors, measures and diagnostics,
+              based on their <Em>risk levels</Em>, <Em> values range </Em>, or <Em> weights range </Em>.
+            </Text>
+          </HoverCard.Content>
+        </HoverCard.Root>
+      </Box>
 
-                </Text>
-              </HoverCard.Content>
-            </HoverCard.Root>
-          </Text>
-        </div>
+      {/* Filter summary */}
+      <Box style={{ width: '100%' }} >
+        <Callout.Root>
+          <Callout.Icon><CheckCircledIcon /></Callout.Icon>
+          <Callout.Text align={"left"}>
+            <Strong>Current Filtering Criteria: </Strong> {generateFilterSummary()}
+          </Callout.Text>
+        </Callout.Root>
+      </Box>
 
-        {/* Filter summary */}
-        <div>
-          <Callout.Root>
-            <Callout.Icon>
-              <CheckCircledIcon />
-            </Callout.Icon>
-            <Callout.Text>
-              <Strong>
-                Current Filtering Criteria
-              </Strong>
-              {generateFilterSummary()}
-            </Callout.Text>
-          </Callout.Root>
-
-        </div>
-
+      <Flex direction={"column"} align={"start"}>
         {/* Filter by risk level */}
-        <div>
+        <Box style={{ width: '100%' }}>
           <DropdownMenu.Root>
             <DropdownMenu.Trigger >
-              <Button variant="surface" style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
+              <Button variant="surface" style={{ width: '100%', margin: '0 15px' }} >
                 <MixerHorizontalIcon /> Filter by Risk Level
               </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
               {/* filter by risk level*/}
-              <DropdownMenu.Group>
+              <DropdownMenu.Group >
                 <DropdownMenu.Label>Risk Level</DropdownMenu.Label>
                 {["Insignificant", "Low", "Medium", "High", "Severe"].map((label) => (
-                  <DropdownMenu.Item key={label}>
+                  <DropdownMenu.Item key={label} >
                     <label>
                       <input
                         type="checkbox"
@@ -171,10 +158,10 @@ export const FilterButton = () => {
 
             </DropdownMenu.Content>
           </DropdownMenu.Root>
-        </div>
+        </Box>
 
         {/* filter by objects value range*/}
-        <div>
+        <Box style={{ width: '100%' }}>
           <Dialog.Root>
             <Dialog.Trigger >
               <Button variant="surface" style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
@@ -189,19 +176,19 @@ export const FilterButton = () => {
 
               <Flex direction="column" gap="3">
                 <Flex justify="between" align="center">
-                  <Text size="2">Min: {localMinValue.toFixed(1)}</Text>
-                  <Text size="2">Max: {localMaxValue.toFixed(1)}</Text>
+                  <Text size="2">Min: {minValue.toFixed(1)}</Text>
+                  <Text size="2">Max: {maxValue.toFixed(1)}</Text>
                 </Flex>
                 <Slider.Root
                   className="SliderRoot"
-                  defaultValue={[0, 1]}
-                  min={-1}
-                  max={1}
+                  defaultValue={[minValue, maxValue]}
+                  min={sliderMin}
+                  max={sliderMax}
                   step={0.1}
-                  value={[localMinValue, localMaxValue]}
+                  value={[minValue, maxValue]}
                   onValueChange={([min, max]) => {
-                    setLocalMinValue(min);
-                    setLocalMaxValue(max);
+                    setMinValue(min);
+                    setMaxValue(max);
                   }}
                 >
                   <Slider.Track className="SliderTrack">
@@ -222,10 +209,10 @@ export const FilterButton = () => {
               </Flex>
             </Dialog.Content>
           </Dialog.Root>
-        </div>
+        </Box>
 
         {/* filter by objects weights range*/}
-        <div>
+        <Box style={{ width: '100%' }}>
           <Dialog.Root>
             <Dialog.Trigger>
               <Button variant="surface" style={{ width: '100%', maxWidth: 300, margin: '0 15px' }}>
@@ -241,8 +228,8 @@ export const FilterButton = () => {
 
               <Flex direction="column" gap="3">
                 <Flex justify="between" align="center">
-                  <Text size="2">Min: {localMinWeight.toFixed(1)}</Text>
-                  <Text size="2">Max: {localMaxWeight.toFixed(1)}</Text>
+                  <Text size="2">Min: {minWeight.toFixed(1)}</Text>
+                  <Text size="2">Max: {maxWeight.toFixed(1)}</Text>
                 </Flex>
                 <Slider.Root
                   className="SliderRoot"
@@ -250,10 +237,10 @@ export const FilterButton = () => {
                   min={0}
                   max={1}
                   step={0.1}
-                  value={[localMinWeight, localMaxWeight]}
+                  value={[minWeight, maxWeight]}
                   onValueChange={([min, max]) => {
-                    setLocalMinWeight(min);
-                    setLocalMaxWeight(max);
+                    setMinWeight(min);
+                    setMaxWeight(max);
                   }}
                 >
                   <Slider.Track className="SliderTrack">
@@ -276,8 +263,9 @@ export const FilterButton = () => {
               </Flex>
             </Dialog.Content>
           </Dialog.Root>
-        </div>
-      </div>
+        </Box>
+      </Flex>
+
     </Flex>
 
   );
