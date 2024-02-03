@@ -4,6 +4,7 @@ import { Flex, Text, Box, Strong } from "@radix-ui/themes";
 import * as Tabs from '@radix-ui/react-tabs';
 import { ConfigurationSummary } from "./Summary";
 import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
+import { DynamicImportanceButton } from "./ImportanceAdjustment";
 import { NodeValueAdjustment } from "./NodeValueAdjustment";
 import "../Style/Separator.css"
 
@@ -25,6 +26,7 @@ export const ConfigurationContainer = () => {
                     <Tabs.List>
                         <Tabs.Trigger value="summary" style={{fontSize: "small"}}>Summary</Tabs.Trigger>
                         <Tabs.Trigger value="weight" style={{fontSize: "small"}}>Weight Adjustment</Tabs.Trigger>
+                        <Tabs.Trigger value="importance" style={{fontSize: "small"}}>Importance Adjustment</Tabs.Trigger>
                         <Tabs.Trigger value="value" style={{fontSize: "small"}}>Value Adjustment</Tabs.Trigger>
                     </Tabs.List>
 
@@ -41,6 +43,13 @@ export const ConfigurationContainer = () => {
                         <Tabs.Content value="weight">
                             <Box width="100%">
                                 <DynamicWeightsButton />
+                            </Box>
+                        </Tabs.Content>
+
+                        {/* dynamic importance adjustment */}
+                        <Tabs.Content value="importance">
+                            <Box width="100%">
+                                <DynamicImportanceButton />
                             </Box>
                         </Tabs.Content>
 
