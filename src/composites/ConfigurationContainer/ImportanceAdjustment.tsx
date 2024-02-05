@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from "jotai";
 import React, { ChangeEvent, useState } from 'react';
 import { State } from "../../state";
-import { Button, Flex, Text, HoverCard, Link, Strong, Callout, Box, Inset, IconButton, Select } from "@radix-ui/themes";
+import { Button, Flex, Text, HoverCard, Link, Strong, Callout, Box, Separator, IconButton, Select } from "@radix-ui/themes";
 import { InfoCircledIcon, GearIcon, Cross2Icon, Cross1Icon } from "@radix-ui/react-icons";
 import * as Dialog from '@radix-ui/react-dialog';
 import "../Style/Dialog.css"
@@ -68,8 +68,13 @@ export const DynamicImportanceButton = () => {
                                 Adjust the importance of chrachteristics, the weights will be recalculated automaticly.
                             </Dialog.Description>
 
+                            <Separator my="3" size="4" />
+
                             {/*Profile selection*/}
                             <ProfileSelection onProfileChange={handleProfileChange} />
+
+                            <Separator my="3" size="4" />
+
 
                             {/* show the adjustment table*/}
 
