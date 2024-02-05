@@ -6,16 +6,25 @@ import { InfoCircledIcon, GearIcon, Cross2Icon, Cross1Icon } from "@radix-ui/rea
 import * as Dialog from '@radix-ui/react-dialog';
 import "../Style/Dialog.css"
 import { ProfileSelection } from "./ImportanceAdjustment/ProfileSelection";
+import { AdjustmentTable } from "./ImportanceAdjustment/AdjsutmentTable";
 import { Profile } from "../../types";
 
 
-export const DynamicImportanceButton = () => {
+export const ImportanceAdjustment = () => {
     const [selectedProfile, setSelectedProfile] = useState<Profile | Profile[] | null>(null);
 
-    const handleProfileChange = (profile: Profile | Profile[] | null) => {
+    // haddle the profile selection and apply
+    const [isProfileApplied, setIsProfileApplied] = useState(false);
+
+    const handleProfileApply = (profile: Profile[] | null) => {
         setSelectedProfile(profile);
-        // Additional logic to handle profile change, if needed
+        setIsProfileApplied(true);
     };
+
+    const handleReset = () => {
+        setIsProfileApplied(false); // Reset the flag when the user clicks reset
+    };
+
 
     return (
         <Flex direction="column" gap="3" align="start">
@@ -71,12 +80,17 @@ export const DynamicImportanceButton = () => {
                             <Separator my="3" size="4" />
 
                             {/*Profile selection*/}
-                            <ProfileSelection onProfileChange={handleProfileChange} />
+                            <ProfileSelection onProfileChange={handleProfileApply} />
 
                             <Separator my="3" size="4" />
 
 
                             {/* show the adjustment table*/}
+                            <AdjustmentTable
+                                selectedProfile={Array.isArray(selectedProfile) ? selectedProfile : undefined}
+                                isProfileApplied={isProfileApplied}
+                                onResetApplied={handleReset} // Passing the reset handler down
+                            />
 
 
                             {/* Position the close button absolutely within the Dialog.Content */}

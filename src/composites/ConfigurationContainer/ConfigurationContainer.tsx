@@ -4,7 +4,7 @@ import { Flex, Text, Box, Strong } from "@radix-ui/themes";
 import * as Tabs from '@radix-ui/react-tabs';
 import { ConfigurationSummary } from "./Summary";
 import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
-import { DynamicImportanceButton } from "./ImportanceAdjustment";
+import { ImportanceAdjustment } from "./ImportanceAdjustment";
 import { NodeValueAdjustment } from "./NodeValueAdjustment";
 import "../Style/Separator.css"
 
@@ -49,7 +49,7 @@ export const ConfigurationContainer = () => {
                         {/* dynamic importance adjustment */}
                         <Tabs.Content value="importance">
                             <Box width="100%">
-                                <DynamicImportanceButton />
+                                <ImportanceAdjustment />
                             </Box>
                         </Tabs.Content>
 

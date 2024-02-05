@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Select, Button, Flex, Text } from "@radix-ui/themes";
+import { Box, Select, Button, Flex, Text, Separator } from "@radix-ui/themes";
 import { ChevronDownIcon, UploadIcon, SliderIcon, DropdownMenuIcon } from '@radix-ui/react-icons';
 import { Profile } from '../../../types';
 import profilesData from "../../../assets/PIQUE_json_files/ExampleProfile.json";
@@ -43,9 +43,10 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({ onProfileCha
     return (
         <Flex direction={'column'}>
             <Flex><Text size={'8'}> (Optional) Profile Selection</Text></Flex>
-            <Flex align={'center'} justify={'between'} gap={'3'} direction={'row'}>
+            <Flex align={'center'} justify={'between'} gap={'6'} direction={'row'}>
+                <Separator my="3" size="3" />
                 {/* Select a predefined profile */}
-                <Flex direction={'column'} align={'center'} justify={'center'}>
+                <Flex direction={'column'} align={'center'} justify={'start'}>
                     <Box>
                         <Text> <DropdownMenuIcon /> Option 1: Predefined Industry Profiles: </Text>
                     </Box>
@@ -64,11 +65,23 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({ onProfileCha
                     </Box>
                 </Flex>
 
+                <Separator orientation="vertical" size={'3'} />
 
                 {/* Upload a self-defined profile */}
-                <Flex direction={'column'} align={'center'} justify={'center'}>
+                <Flex direction={'column'} align={'center'} justify={'start'}>
                     <Box>  <UploadIcon /> <Text>Option 2: Personal profile</Text></Box>
                     <Box> <input type="file" onChange={handleFileUpload} /> </Box>
+                </Flex>
+
+                <Flex>
+                    <Flex>
+                        <Button onClick={() => {
+                            // Find profiles that match the selected type
+                            const filteredProfiles = [...profilesData, ...uploadedProfiles].filter(profile => profile.type === selectedProfileType);
+                            // Trigger the parent component's change handler with the found profiles
+                            onProfileChange(filteredProfiles.length > 0 ? filteredProfiles : null);
+                        }}>Apply</Button>
+                    </Flex>
                 </Flex>
 
 
