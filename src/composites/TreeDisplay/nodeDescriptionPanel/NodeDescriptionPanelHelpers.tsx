@@ -78,11 +78,17 @@ export function determineNodeInfo(node, impacts) {
         </div>
       );
     } else {
-      <div>
-          <b>Utility Function: pique.evaluation.DefaultUtility</b>
+      return (
+        <div>
+          <b>Utility Function: </b>
+          <a href="#" style={{textDecoration: 'underline'}} onClick={() => {}}>
+            pique.evaluation.DefaultUtility
+          </a>
         </div>
+      );
     }
   }
+  
 
   // change the name of the node when it is created as well as the image associated with gam
   // TO DO: change the height and width to change as the screen size changes
