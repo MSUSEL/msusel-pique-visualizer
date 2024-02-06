@@ -85,7 +85,7 @@ export const Wrapper = () => {
           </div>
           <ButtonContainer />
         </div>
-        
+
         {/* Hover Card */}
         <HoverCard display={isSidebarOpen ? 'none' : 'flex'} onClick={() => setIsSidebarOpen(true)}>
           <IconButton size="3" variant="soft">

@@ -1,9 +1,10 @@
 import { Box, Button, Callout } from "@radix-ui/themes";
-import { InfoCircledIcon, FileTextIcon, ButtonIcon } from "@radix-ui/react-icons";
+import { InfoCircledIcon, FileTextIcon } from "@radix-ui/react-icons";
 import { useFileUpload } from "./use-file-uploader";
 import * as schema from "../../data/schema";
 import { useSetAtom } from "jotai";
 import { State } from "../../state";
+import React, { useState } from "react";
 
 
 export interface FileUploaderProps { }
@@ -11,6 +12,8 @@ export interface FileUploaderProps { }
 export const FileUploader = () => {
   const [_, selectFile] = useFileUpload();
   const setDataset = useSetAtom(State.dataset);
+  const [errorMessage, setErrorMessage] = useState(""); // State to hold error messages
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw' }}>
@@ -31,6 +34,16 @@ export const FileUploader = () => {
         </Callout.Text>
       </Callout.Root>
 
+      {/* Display error message if present */}
+      {errorMessage && (
+        <Callout.Root size="2" style={{ marginTop: "20px" }} color="red">
+          <Callout.Icon>
+            <InfoCircledIcon />
+          </Callout.Icon>
+          <Callout.Text>{errorMessage}</Callout.Text>
+        </Callout.Root>
+      )}
+
       <Button
         size="4"
         variant="surface"
@@ -40,18 +53,21 @@ export const FileUploader = () => {
             const fileReader = new FileReader();
             fileReader.onload = (e) => {
               const result = e.target?.result;
-
               try {
                 const parsed = JSON.parse(result as string);
                 const validationResult = schema.base.dataset.safeParse(parsed);
 
                 if (validationResult.success) {
                   setDataset(validationResult.data);
+                  setErrorMessage(""); // Reset error message on success
                 } else {
-                  // error
+                  // Log the detailed error messages
+                  console.error("Validation failed", validationResult.error.issues);
+                  setErrorMessage("Validation failed. Please check the console for more details.");
                 }
               } catch (e) {
-                //error
+                console.error("Error reading the file", e);
+                setErrorMessage("An error occurred while reading the file.");
               }
             };
             fileReader.readAsText(file);

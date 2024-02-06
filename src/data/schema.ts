@@ -1,13 +1,15 @@
 import { z } from "zod";
 // Define the new utility function structure
 const utilityFunctionNewStructure = z.object({
+  //required
   name: z.string(),
-  benchmarkTag: z.string(),
   description: z.string(),
-  utilityFunctionImageURIs: z.record(z.string(), z.string()),
-  benchmarkQualityMetrics: z.record(z.string(), z.union([z.string(), z.number()])),
-  utilityFunctionQualityMetrics: z.record(z.string(), z.union([z.string(), z.number()])),
-  sensitivityAnalysisResults: z.record(z.string(), z.union([z.string(), z.number()])),
+  //optional
+  benchmarkTag: z.string().optional(),
+  utilityFunctionImageURIs: z.record(z.string(), z.string()).optional(),
+  benchmarkQualityMetrics: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+  utilityFunctionQualityMetrics: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+  sensitivityAnalysisResults: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
 });
 
 // Update the existing utility function schema to accept both the old and new format
