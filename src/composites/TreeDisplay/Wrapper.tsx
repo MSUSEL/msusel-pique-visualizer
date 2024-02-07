@@ -103,9 +103,9 @@ export const Wrapper = () => {
           </div>
 
           {/* layout tabs */}
-          <Tabs.Root defaultValue="overview">
+          <Tabs.Root defaultValue="alternativeOverview">
             <Tabs.List>
-              <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+              
               <Tabs.Trigger value="alternativeOverview">Alternative Overview</Tabs.Trigger>
               <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
               <Tabs.Trigger value="list">List</Tabs.Trigger>
@@ -115,11 +115,7 @@ export const Wrapper = () => {
             </Tabs.List>
 
             <Box px="4" pt="3" pb="3">
-              <Tabs.Content value="overview">
-                <Box width="100%">
-                  <OverviewTab />
-                </Box>
-              </Tabs.Content>
+              
 
               <Tabs.Content value="alternativeOverview">
                 <Box width="100%">
