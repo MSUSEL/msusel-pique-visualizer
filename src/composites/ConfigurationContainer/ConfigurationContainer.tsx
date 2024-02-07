@@ -7,6 +7,7 @@ import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
 import { ImportanceAdjustment } from "./ImportanceAdjustment";
 import { NodeValueAdjustment } from "./NodeValueAdjustment";
 import "../Style/Separator.css"
+import "../Style/Tab.css"
 
 export const ConfigurationContainer = () => {
 
@@ -22,39 +23,31 @@ export const ConfigurationContainer = () => {
             </Flex>
 
             <Flex>
-                <Tabs.Root defaultValue="summary">
-                    <Tabs.List>
-                        <Tabs.Trigger value="summary" style={{fontSize: "small"}}>Summary</Tabs.Trigger>
-                        <Tabs.Trigger value="weight" style={{fontSize: "small"}}>Weight Adjustment</Tabs.Trigger>
-                        <Tabs.Trigger value="importance" style={{fontSize: "small"}}>Importance Adjustment</Tabs.Trigger>
-                        <Tabs.Trigger value="value" style={{fontSize: "small"}}>Value Adjustment</Tabs.Trigger>
+                <Tabs.Root className="TabsRoot" defaultValue="summary">
+                    <Tabs.List className="TabsList">
+                        <Tabs.Trigger className="TabsTrigger" value="summary">Summary</Tabs.Trigger>
+                        <Tabs.Trigger className="TabsTrigger" value="importance" >Importance Adjustment</Tabs.Trigger>
+                        <Tabs.Trigger className="TabsTrigger" value="value" >Value Adjustment</Tabs.Trigger>
                     </Tabs.List>
 
                     <Flex>
 
                         {/* Current Configuration Summary */}
-                        <Tabs.Content value="summary">
+                        <Tabs.Content className="TabsContent" value="summary">
                             <Box width="100%">
                                 <ConfigurationSummary />
                             </Box>
                         </Tabs.Content>
 
-                        {/* dynamic weight adjustment */}
-                        <Tabs.Content value="weight">
-                            <Box width="100%">
-                                <DynamicWeightsButton />
-                            </Box>
-                        </Tabs.Content>
-
                         {/* dynamic importance adjustment */}
-                        <Tabs.Content value="importance">
+                        <Tabs.Content className="TabsContent" value="importance">
                             <Box width="100%">
                                 <ImportanceAdjustment />
                             </Box>
                         </Tabs.Content>
 
                         {/* dynamic value adjustment */}
-                        <Tabs.Content value="value">
+                        <Tabs.Content className="TabsContent" value="value">
                             <Box width="100%">
                                 <NodeValueAdjustment />
                             </Box>
