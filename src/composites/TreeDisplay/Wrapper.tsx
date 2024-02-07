@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { State } from "../../state";
 import { TreeDisplay } from "./TreeDisplay";
 import { ListDisplay } from "../ListDisplay/ListDisplay";
-import { NestedListDisplay } from "../ListDisplay/NestedListLayout";
-import { TreeDisplayRefactored } from "./TreeDisplayRefactored";
 import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
 import { LegendContainer } from "../LegendContainer/Legend";
@@ -17,6 +15,21 @@ export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+
+  // Dynamic width calculations considering the left sub-block can be closed
+  const leftWidth = isLeftSidebarOpen ? '20%' : '50px'; // Minimized when closed, allowing for a narrow trigger area
+  const middleWidth = (() => { // Enhanced calculation for middleWidth based on sidebar states
+    if (!isLeftSidebarOpen && !isRightSidebarOpen) {
+      return 'calc(100% - 50px)'; // Only the middle sub-block is visible, minus the minimal width of the left
+    } else if (isLeftSidebarOpen && !isRightSidebarOpen) {
+      return '80%'; // Left is open, right is closed
+    } else if (!isLeftSidebarOpen && isRightSidebarOpen) {
+      return 'calc(80% - 50px)'; // Right is open, left is minimized
+    }
+    return '60%'; // Default case when both sidebars are open
+  })();
+  const rightWidth = isRightSidebarOpen ? '20%' : '50px'; // Adjusted to keep space for the IconButton when closed
+
 
   return (
     <Flex direction="column" align="center" style={{ overflow: 'hidden', maxHeight: '100vh' }}>
@@ -46,7 +59,7 @@ export const Wrapper = () => {
         <Flex
           direction={'column'}
           style={{
-            width: isLeftSidebarOpen ? '20%' : '50px',
+            width: leftWidth,
             transition: 'width 0.3s ease-in-out',
             flexShrink: 0,
             position: 'relative',
@@ -60,7 +73,7 @@ export const Wrapper = () => {
                 backgroundColor: '#f0f0f0',
                 borderRight: '2px solid #ccc',
                 padding: '10px',
-                height: '100%', // Make sure sidebar takes full height
+                height: '100%',
                 overflowY: 'auto',
               }}
             >
@@ -104,21 +117,32 @@ export const Wrapper = () => {
         <Flex
           direction={'column'}
           align={'stretch'}
-          justify="between"
           style={{
             flexGrow: 1,
-            transition: 'flex-grow 0.3s ease-in-out',
-            minWidth: 10,
-            height: '90vh'
+            minWidth: '10%',
+            height: '90vh', // Ensure this is the total height of the middle sub-block
           }}>
 
-          {/* legend - risk level */}
-          <Flex direction={'column'} align={'center'} justify={'start'}>
+          {/* Legend - Risk Level: Occupying 10% of the Middle Sub-Block Height */}
+          <Flex
+            direction={'column'}
+            align={'center'}
+            justify={'start'}
+            style={{
+              height: '5%', // Adjusted for 10% of the middle sub-block height
+            }}>
             <LegendContainer />
           </Flex>
 
-          {/* layout tabs */}
-          <Flex direction={'column'} align={'start'} justify={'between'}>
+          {/* Layout Tabs: Occupying the remaining 90% of the Middle Sub-Block Height */}
+          <Flex
+            direction={'column'}
+            align={'start'}
+            justify={'between'}
+            style={{
+              height: '95%', // Adjusted for 90% of the middle sub-block height
+              overflow: 'hidden', // Prevents overflow outside the container
+            }}>
             <Tabs.Root defaultValue="alternativeOverview">
               <Tabs.List>
                 <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
@@ -127,62 +151,42 @@ export const Wrapper = () => {
                 <Tabs.Trigger value="list">List</Tabs.Trigger>
               </Tabs.List>
 
+              {/* Tab Content with Overflow Handling */}
               <Box
-                px="4" pt="3" pb="3"
-                style={{ width: '100%', height: 'auto', overflow: 'hidden' }}
+                style={{
+                  height: '100%', // Ensures the tab content takes full height of its container
+                  overflow: 'auto', // Allows scrolling within the tab content if it exceeds the container's height
+                }}
               >
-                <Tabs.Content value="overview">
-                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
-                    <OverviewTab />
-                  </Box>
-                </Tabs.Content>
-
-                <Tabs.Content value="alternativeOverview">
-                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
-                    <AlternativeOverviewTab />
-                  </Box>
-                </Tabs.Content>
-
-                <Tabs.Content value="tree">
-                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
-                    <TreeDisplay fileData={dataset} />
-                  </Box>
-                </Tabs.Content>
-
-                <Tabs.Content value="list">
-                  <Box style={{ width: '100%', height: '100%', overflow: 'auto' }}>
-                    <ListDisplay />
-                  </Box>
-                </Tabs.Content>
-
-
-
+                <Tabs.Content value="overview"><OverviewTab /></Tabs.Content>
+                <Tabs.Content value="alternativeOverview"><AlternativeOverviewTab /></Tabs.Content>
+                <Tabs.Content value="tree"><TreeDisplay fileData={dataset} /></Tabs.Content>
+                <Tabs.Content value="list"><ListDisplay /></Tabs.Content>
               </Box>
             </Tabs.Root>
           </Flex>
-
         </Flex>
+
 
 
         {/* Right Configuration Bar */}
         <Flex
           direction="column"
           style={{
-            width: isRightSidebarOpen ? '20%' : '50px',
-            height: '90vh',
+            width: rightWidth,
             transition: 'width 0.3s ease-in-out',
             position: 'relative',
             flexShrink: 0,
+            overflow: 'hidden',
+            height: '100%',
           }}>
           {/* Right Sidebar */}
           {isRightSidebarOpen && (
             <Flex
               style={{
                 flexDirection: 'column',
-                backgroundColor: '#f0f0f0',
-                borderLeft: '2px solid #ccc',
                 padding: '10px',
-                height: '100%', // Stretch to fill the height
+                height: '100%',
                 overflowY: 'auto',
               }}
             >
@@ -194,10 +198,11 @@ export const Wrapper = () => {
                 variant="soft"
                 style={{
                   position: 'absolute',
-                  top: '10px', // Adjust as needed
-                  right: '10px', // Adjust as needed
+                  top: '10px',
+                  right: isRightSidebarOpen ? '10px' : '-40px',
+                  transition: 'right 0.3s ease-in-out',
                 }}
-                onClick={() => setIsRightSidebarOpen(false)}
+                onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
               >
                 <GearIcon />
               </IconButton>
