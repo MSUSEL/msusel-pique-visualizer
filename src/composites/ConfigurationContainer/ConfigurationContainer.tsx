@@ -15,12 +15,7 @@ export const ConfigurationContainer = () => {
         // Change Flex direction to 'column' for vertical layout
         <Flex direction={'column'} gap={'3'} align={'start'}>
 
-            <Flex direction={'column'}>
-                <Box>
-                    <Text size={'5'}>Configuration</Text>
-                </Box>
-
-            </Flex>
+       
 
             <Flex>
                 <Tabs.Root className="TabsRoot" defaultValue="summary">

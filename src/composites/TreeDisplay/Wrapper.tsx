@@ -173,14 +173,15 @@ export const Wrapper = () => {
         <Flex
           direction="column"
           style={{
-            width: rightWidth,
+            width: isRightSidebarOpen ? rightWidth : '50px', // Width when sidebar is closed should just be the icon's space
             transition: 'width 0.3s ease-in-out',
             position: 'relative',
             flexShrink: 0,
-            overflow: 'hidden',
+            overflow: 'hidden', // This will hide the sidebar content when its width is decreased
             height: '100%',
           }}>
-          {/* Right Sidebar */}
+
+          {/* Right Sidebar Content */}
           {isRightSidebarOpen && (
             <Flex
               style={{
@@ -192,39 +193,27 @@ export const Wrapper = () => {
             >
               {/* Sidebar content */}
               <ConfigurationContainer />
-              {/* Close IconButton inside the sidebar for closing it */}
-              <IconButton
-                size="3"
-                variant="soft"
-                style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: isRightSidebarOpen ? '10px' : '-40px',
-                  transition: 'right 0.3s ease-in-out',
-                }}
-                onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
-              >
-                <GearIcon />
-              </IconButton>
             </Flex>
           )}
 
-          {/* GearIcon to open the sidebar, only shown when the sidebar is not open */}
-          {!isRightSidebarOpen && (
-            <IconButton
-              size="3"
-              variant="soft"
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '15px', // Adjust as needed, set to '0px' to align with the right edge of the sidebar
-              }}
-              onClick={() => setIsRightSidebarOpen(true)} // Open the sidebar
-            >
-              <GearIcon />
-            </IconButton>
-          )}
+          {/* GearIcon to toggle the sidebar */}
+          {/* Adjust the positioning so it's always visible */}
+          <IconButton
+            size="3"
+            variant="soft"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: isRightSidebarOpen ? '10px' : '10px', 
+              zIndex: 1, 
+              transition: 'right 0.3s ease-in-out',
+            }}
+            onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
+          >
+            <GearIcon />
+          </IconButton>
         </Flex>
+
 
 
 
