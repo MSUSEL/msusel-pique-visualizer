@@ -145,7 +145,6 @@ export const Wrapper = () => {
             }}>
             <Tabs.Root defaultValue="alternativeOverview">
               <Tabs.List>
-                <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
                 <Tabs.Trigger value="alternativeOverview">Alternative Overview</Tabs.Trigger>
                 <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
                 <Tabs.Trigger value="list">List</Tabs.Trigger>
@@ -158,7 +157,6 @@ export const Wrapper = () => {
                   overflow: 'auto', // Allows scrolling within the tab content if it exceeds the container's height
                 }}
               >
-                <Tabs.Content value="overview"><OverviewTab /></Tabs.Content>
                 <Tabs.Content value="alternativeOverview"><AlternativeOverviewTab /></Tabs.Content>
                 <Tabs.Content value="tree"><TreeDisplay fileData={dataset} /></Tabs.Content>
                 <Tabs.Content value="list"><ListDisplay /></Tabs.Content>
@@ -167,19 +165,34 @@ export const Wrapper = () => {
           </Flex>
         </Flex>
 
-
-
         {/* Right Configuration Bar */}
         <Flex
           direction="column"
           style={{
-            width: isRightSidebarOpen ? rightWidth : '50px', // Width when sidebar is closed should just be the icon's space
+            width: isRightSidebarOpen ? rightWidth : '50px', 
             transition: 'width 0.3s ease-in-out',
             position: 'relative',
             flexShrink: 0,
-            overflow: 'hidden', // This will hide the sidebar content when its width is decreased
+            overflow: 'hidden', 
             height: '100%',
           }}>
+
+          {/* GearIcon to toggle the sidebar */}
+          {/* Position to the left when sidebar is open, and keep on the right when closed */}
+          <IconButton
+            size="3"
+            variant="soft"
+            style={{
+              position: 'absolute',
+              top: '10px',
+              left: isRightSidebarOpen ? '10px' : '10px', 
+              zIndex: 2, 
+              transition: 'left 0.3s ease-in-out',
+            }}
+            onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
+          >
+            <GearIcon />
+          </IconButton>
 
           {/* Right Sidebar Content */}
           {isRightSidebarOpen && (
@@ -189,31 +202,14 @@ export const Wrapper = () => {
                 padding: '10px',
                 height: '100%',
                 overflowY: 'auto',
+                paddingLeft: '50px', 
               }}
             >
               {/* Sidebar content */}
               <ConfigurationContainer />
             </Flex>
           )}
-
-          {/* GearIcon to toggle the sidebar */}
-          {/* Adjust the positioning so it's always visible */}
-          <IconButton
-            size="3"
-            variant="soft"
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: isRightSidebarOpen ? '10px' : '10px', 
-              zIndex: 1, 
-              transition: 'right 0.3s ease-in-out',
-            }}
-            onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
-          >
-            <GearIcon />
-          </IconButton>
         </Flex>
-
 
 
 
