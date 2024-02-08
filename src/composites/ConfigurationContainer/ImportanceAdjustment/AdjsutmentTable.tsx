@@ -16,6 +16,7 @@ import {
 import { ResetIcon, DownloadIcon } from "@radix-ui/react-icons";
 import SingleTableRow from "./SingleRowInTable";
 import { Profile } from "../../../types";
+import * as schema from "../../../data/schema";
 
 interface Weights {
   [key: string]: number;
@@ -39,40 +40,43 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
   const dataset = useAtomValue(State.dataset);
   if (!dataset) return null;
 
-  // Define a function to calculate initial weights
-  const getInitialWeights = (useDataset: boolean = false) => {
+  const getInitialWeights = (
+    selectedProfile: Profile[] | undefined, // Use the Profile interface here
+    dataset: schema.base.Schema,
+    useDataset: boolean
+  ): { [key: string]: number } => {
     let weights: Weights = {};
     if (selectedProfile && selectedProfile.length > 0 && !useDataset) {
       // Use weights from the first selected profile
       const profileWeights = selectedProfile[0].importance;
-      Object.entries(profileWeights).forEach(([aspect, importance]) => {
-        weights[aspect] = importance;
-      });
+      weights = { ...profileWeights };
     } else {
-      // Fallback to dataset weights
       Object.entries(dataset.factors.tqi).forEach(([_, tqiEntry]) => {
         const entry = tqiEntry as TQIEntry;
-        Object.assign(weights, entry.weights);
+        Object.entries(entry.weights).forEach(([aspect, importance]) => {
+          weights[aspect] = importance;
+        });
       });
     }
+
     return weights;
   };
 
-  // State for slider values, commented out since we are using useMemo
-  // const [sliderValues, setSliderValues] = useState<Weights>(getInitialWeights);
   // useMemo to calculate initial weights based on selectedProfile or dataset
-  const initialWeights = useMemo(
-    () => getInitialWeights(selectedProfile && selectedProfile.length > 0),
-    [selectedProfile, dataset]
-  );
+  const sliderValues = useMemo(() => {
+    const useDataset = !isProfileApplied;
+    return getInitialWeights(selectedProfile, dataset, useDataset);
+  }, [selectedProfile, dataset, isProfileApplied]);
 
-  // useState to initialize sliderValues with initialWeights
-  const [sliderValues, setSliderValues] = useState<Weights>(initialWeights);
+  const [values, setValues] = useState<{ [key: string]: number }>(
+    () => sliderValues
+  );
 
   // Reset sliders to initial weights (dataset or selected profile)
   const resetAllAdjustments = () => {
-    setSliderValues(getInitialWeights(true)); // Force use of dataset weights
-    onResetApplied(); // Signal to parent that reset was triggered
+    const resetValues = getInitialWeights(selectedProfile, dataset, true); // Force dataset usage or define logic as needed
+    setValues(resetValues);
+    onResetApplied();
   };
 
   // Calculate total importance for normalization
@@ -96,16 +100,8 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
 
   // Handle slider value change
   const handleSliderChange = (name: string, newImportance: number) => {
-    setSliderValues((prev) => ({ ...prev, [name]: newImportance }));
+    setValues((prev) => ({ ...prev, [name]: newImportance }));
   };
-
-  // Update sliderValues when selectedProfile changes
-  if (isProfileApplied) {
-    const newInitialWeights = getInitialWeights();
-    if (JSON.stringify(newInitialWeights) !== JSON.stringify(sliderValues)) {
-      setSliderValues(newInitialWeights);
-    }
-  }
 
   // TQI calculation
   const currentTQI = Object.values(dataset.factors.tqi)[0]?.value || 0;
@@ -183,7 +179,7 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
                       dataset.factors.quality_aspects[name]?.description || ""
                     }
                     weightValue={weight}
-                    sliderValue={sliderValues[name]}
+                    sliderValue={values[name]}
                     recalculatedWeight={recalculatedWeights[name]}
                     onSliderChange={handleSliderChange}
                   />
@@ -236,7 +232,7 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
             {/* Add some spacing between buttons */}
             <Button
               variant="surface"
-              onClick={resetAllAdjustments} 
+              onClick={resetAllAdjustments}
               style={{ width: "100%", height: "30px" }}
             >
               <ResetIcon width="16" height="16" />
