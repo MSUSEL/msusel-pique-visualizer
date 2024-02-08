@@ -17,7 +17,7 @@ export const FileUploader = () => {
   const [errorDetails, setErrorDetails] = useState('');
 
   const handleFileSelect = () => {
-    selectFile({ accept: ".json", multiple: false }, ({ file }) => {
+    selectFile({ accept: ".json", multiple: false }, ({ file }: { file: File }) => {
       const fileReader = new FileReader();
       fileReader.onload = (e) => {
         const result = e.target?.result;
