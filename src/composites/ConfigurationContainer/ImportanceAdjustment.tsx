@@ -14,15 +14,17 @@ export const ImportanceAdjustment = () => {
     const [selectedProfile, setSelectedProfile] = useState<Profile | Profile[] | null>(null);
 
     // haddle the profile selection and apply
-    const [isProfileApplied, setIsProfileApplied] = useState(false);
+    // const [isProfileApplied, setIsProfileApplied] = useState(false);
 
     const handleProfileApply = (profile: Profile[] | null) => {
         setSelectedProfile(profile);
-        setIsProfileApplied(true);
+        // setIsProfileApplied(true);
     };
 
+    const isProfileApplied = selectedProfile !== null;
+
     const handleReset = () => {
-        setIsProfileApplied(false); // Reset the flag when the user clicks reset
+        setSelectedProfile(null); // Reset the flag when the user clicks reset
     };
 
 
