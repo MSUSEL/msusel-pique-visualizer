@@ -1,15 +1,14 @@
 import { Flex, Button, Callout, Strong } from "@radix-ui/themes";
-import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { InfoCircledIcon, FileTextIcon } from "@radix-ui/react-icons";
 import { useFileUpload } from "./use-file-uploader";
 import * as schema from "../../data/schema";
 import { useSetAtom } from "jotai";
 import { State } from "../../state";
 import React, { useState } from "react";
-import "./AlertDialog.css"
+import "./AlertDialog.css";
 
-
-export interface FileUploaderProps { }
+export interface FileUploaderProps {}
 
 interface ValidationErrorIssue {
   code: string;
@@ -25,16 +24,19 @@ export const FileUploader = () => {
   const setDataset = useSetAtom(State.dataset);
   const [fileName, setFileName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [errorDetails, setErrorDetails] = useState('');
+  const [errorDetails, setErrorDetails] = useState("");
 
-  const generateErrorSummary = (issues: ValidationErrorIssue[], fileName: string): string => {
+  const generateErrorSummary = (
+    issues: ValidationErrorIssue[],
+    fileName: string
+  ): string => {
     const issueCounts: Record<string, number> = {};
 
     const countIssues = (issues: ValidationErrorIssue[]) => {
-      issues.forEach(issue => {
+      issues.forEach((issue) => {
         issueCounts[issue.code] = (issueCounts[issue.code] || 0) + 1;
         if (issue.unionErrors) {
-          issue.unionErrors.forEach(unionError => {
+          issue.unionErrors.forEach((unionError) => {
             countIssues(unionError.issues);
           });
         }
@@ -44,9 +46,11 @@ export const FileUploader = () => {
     countIssues(issues);
 
     let summary = `The uploaded JSON file (${fileName}) contains the following issues:\n`;
-    Object.keys(issueCounts).forEach(code => {
+    Object.keys(issueCounts).forEach((code) => {
       const issueCount = issueCounts[code];
-      summary += `\n ${issueCount} ${code} issue${issueCount > 1 ? 's' : ''}.\n`;
+      summary += `\n ${issueCount} ${code} issue${
+        issueCount > 1 ? "s" : ""
+      }.\n`;
     });
 
     return summary;
@@ -59,61 +63,86 @@ export const FileUploader = () => {
   };
 
   const handleFileSelect = () => {
-    selectFile({ accept: ".json", multiple: false }, ({ file }: { file: File }) => {
-      const currentFileName = file.name; // Use a local variable to capture the file name
-      setFileName(currentFileName); // Still set the state for any other uses outside this callback
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        const result = e.target?.result;
-        try {
-          const parsed = JSON.parse(result as string);
-          const validationResult = schema.base.dataset.safeParse(parsed);
+    selectFile(
+      { accept: ".json", multiple: false },
+      ({ file }: { file: File }) => {
+        const fileReader = new FileReader();
 
-          if (validationResult.success) {
-            setDataset(validationResult.data);
-            setErrorMessage("");
-          } else {
-            // Use the local variable directly when generating the summary
-            const errorSummary = generateErrorSummary(validationResult.error.issues, currentFileName);
-            const errorDetails = JSON.stringify(validationResult.error.issues, null, 2);
-            setErrorDetails(errorDetails);
-            setErrorMessage(errorSummary);
+        fileReader.onload = (e) => {
+          const result = e.target?.result;
+          try {
+            const parsed = JSON.parse(result as string);
+            const validationResult = schema.base.dataset.safeParse(parsed);
+
+            const currentFileName = file.name;
+            setFileName(currentFileName);
+            if (validationResult.success) {
+              setDataset(validationResult.data);
+              setErrorMessage("");
+            } else {
+              // Use the local variable directly when generating the summary
+              const errorSummary = generateErrorSummary(
+                validationResult.error.issues,
+                currentFileName
+              );
+              const errorDetails = JSON.stringify(
+                validationResult.error.issues,
+                null,
+                2
+              );
+              setErrorDetails(errorDetails);
+              setErrorMessage(errorSummary);
+            }
+          } catch (error) {
+            console.error("Error reading the file", error);
+            setErrorMessage("An error occurred while reading the file.");
           }
-        } catch (error) {
-          console.error("Error reading the file", error);
-          setErrorMessage("An error occurred while reading the file.");
-        }
-      };
-      fileReader.readAsText(file);
-    });
+        };
+        fileReader.readAsText(file);
+      }
+    );
   };
 
-
-
-
   const downloadErrorDetails = () => {
-    const blob = new Blob([errorDetails], { type: 'application/json' });
+    const blob = new Blob([errorDetails], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = 'errorDetails.json';
+    link.download = "errorDetails.json";
     link.click();
     URL.revokeObjectURL(url);
   };
 
-
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <img src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg" alt="CISA Logo" width="100" height="100" style={{ marginRight: '20px' }} />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        width: "100vw",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg"
+          alt="CISA Logo"
+          width="100"
+          height="100"
+          style={{ marginRight: "20px" }}
+        />
         <h1>PIQUE Visualizer</h1>
-        <img src="https://raw.githubusercontent.com/MSUSEL/msusel-pique-visualizer/refactorZiyi/src/assets/PIQUE_svg.svg" alt="PIQUE Logo" width="100" height="100" style={{ marginLeft: '20px' }} />
+        <img
+          src="https://raw.githubusercontent.com/MSUSEL/msusel-pique-visualizer/refactorZiyi/src/assets/PIQUE_svg.svg"
+          alt="PIQUE Logo"
+          width="100"
+          height="100"
+          style={{ marginLeft: "20px" }}
+        />
       </div>
 
-
-      <Callout.Root
-        size="2">
+      <Callout.Root size="2">
         <Callout.Icon>
           <InfoCircledIcon />
         </Callout.Icon>
@@ -124,7 +153,12 @@ export const FileUploader = () => {
 
       <AlertDialog.Root>
         <AlertDialog.Trigger asChild>
-          <Button size="4" variant="surface" radius="large" onClick={handleFileSelect}>
+          <Button
+            size="4"
+            variant="surface"
+            radius="large"
+            onClick={handleFileSelect}
+          >
             <FileTextIcon /> Select File
           </Button>
         </AlertDialog.Trigger>
@@ -133,18 +167,25 @@ export const FileUploader = () => {
           <AlertDialog.Portal>
             <AlertDialog.Overlay className="AlertDialogOverlay" />
             <AlertDialog.Content className="AlertDialogContent">
-              <AlertDialog.Title className="AlertDialogTitle">Error Validating File</AlertDialog.Title>
+              <AlertDialog.Title className="AlertDialogTitle">
+                Error Validating File
+              </AlertDialog.Title>
               <AlertDialog.Description className="AlertDialogDescription">
-                {errorMessage.split('\n').map((line, index) => (
+                {errorMessage.split("\n").map((line, index) => (
                   <React.Fragment key={index}>
                     {line}
                     <br />
                   </React.Fragment>
                 ))}
-
               </AlertDialog.Description>
 
-              <div style={{ display: 'flex', gap: 25, justifyContent: 'flex-between' }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 25,
+                  justifyContent: "flex-between",
+                }}
+              >
                 <AlertDialog.Cancel asChild>
                   <Button className="Button mauve" onClick={resetAndSelectFile}>
                     Cancel, select another file
@@ -160,7 +201,6 @@ export const FileUploader = () => {
           </AlertDialog.Portal>
         )}
       </AlertDialog.Root>
-
     </div>
   );
 };
