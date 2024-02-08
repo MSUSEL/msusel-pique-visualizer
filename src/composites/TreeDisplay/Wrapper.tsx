@@ -202,7 +202,7 @@ export const Wrapper = () => {
                 padding: '10px',
                 height: '100%',
                 overflowY: 'auto',
-                paddingLeft: '50px', 
+                paddingLeft: '50px', // Adjust this value to match the width of your IconButton
               }}
             >
               {/* Sidebar content */}
