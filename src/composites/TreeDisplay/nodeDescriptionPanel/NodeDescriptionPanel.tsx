@@ -23,9 +23,6 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
       case "alphabetical":
         orderedNodes.sort((a, b) => (orderDirection === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
         break;
-      case "nodeType":
-        orderedNodes.sort((a, b) => (a.node_type > b.node_type ? 1 : -1));
-        break;
       case "value":
         orderedNodes.sort((a, b) => (orderDirection === "asc" ? a.value - b.value : b.value - a.value));
         break;
@@ -35,7 +32,12 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
 
     return orderedNodes.map((node, i) => (
       <div
-        ref={i === orderedNodes.length - 1 ? lastNodeRef : null}
+        ref={(ref) => {
+          if (i === orderedNodes.length - 1) {
+            lastNodeRef.current = ref;
+            console.log("lastNodeRef updated:", lastNodeRef.current);
+          }
+        }}
         className={`${
           orderBy === "default" && i === orderedNodes.length - 1
             ? orderedNodes.length > 2
