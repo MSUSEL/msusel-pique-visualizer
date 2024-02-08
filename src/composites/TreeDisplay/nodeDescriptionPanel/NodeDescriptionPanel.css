@@ -4,15 +4,11 @@
     width: 35vw;
 }
 
-.node-panel {
-    font-size: 0.8vw;
-    background-color: lightgreen;
-    border-bottom: black solid 2px;
-}
-
+.node-panel,
 .node-bottom-panel {
     font-size: 0.8vw;
     background-color: lightgreen;
+    border-bottom: 2px solid black;
 }
 
 .node-name {
@@ -30,3 +26,13 @@
     height: 75%;
 }
 
+.scrollable-panel {
+    overflow-y: auto;
+    max-height: 100vh; 
+  }
+
+  .highlight {
+    background-color: #ffe066;
+    border-color: #ffd43b; 
+    border-bottom: 2px solid black;
+  }
