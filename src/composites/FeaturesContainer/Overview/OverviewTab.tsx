@@ -13,7 +13,6 @@ interface FilterableItem {
     [key: string]: any;
 }
 
-
 interface Impact {
     aspectName: string;
     weight: number;
@@ -278,14 +277,15 @@ export const OverviewTab = () => {
 
             <Flex direction={"column"}>
                 {/* Toggle Button */}
-                <Button onClick={toggleOverviewList} style={{position: 'relative', top: 0, right: 0, width: 300}} variant='surface'>
+                <Button onClick={toggleOverviewList} style={{position: 'relative', top: 0, right: 0, width: 304, borderRadius: 0}} variant='surface'>
                     Overview List {isOverviewListOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
                 </Button>
 
-                {/* Overview List panel */}
-                <Box className='OverviewListContainer' style={{ display: isOverviewListOpen ? 'block' : 'none' }}>
-                    <OverviewList/>
+                {/* DSSide panel */}
+                <Box className='OverviewListContainer' style={{ flex: '0 0 auto', display: isOverviewListOpen ? 'block' : 'none' }}>
+                    {OverviewList(dataset)}
                 </Box>
+
             </Flex>
         </Flex>
     );

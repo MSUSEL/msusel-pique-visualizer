@@ -1,18 +1,18 @@
-export interface listProps {
+export interface ListProps {
     section: string;
     riskLvl: string;
-    overviewData: overviewData;
+    overviewData: OverviewData;
 }
 
-export interface dropDownState {
+export interface DropDownState {
     isMainDropVisible: boolean[];
 }
 
-export interface addDetState {
+export interface AddDetState {
     isAddDetVisible: boolean[];
 }
 
-export interface listNode {
+export interface ListNode {
     name: string;
     value: number;
     description: string;
@@ -21,11 +21,11 @@ export interface listNode {
     utility_function: string;
 }
 
-export interface overviewData {
+export interface OverviewData {
     qualityAspectsCount: number[];
     qualityFactorsCount: number[];
     measuresCount: number[];
-    qualityAspectNodes: listNode[];
-    qualityFactorNodes: listNode[];
-    measureNodes: listNode[];
+    qualityAspectNodes: ListNode[];
+    qualityFactorNodes: ListNode[];
+    measureNodes: ListNode[];
 }

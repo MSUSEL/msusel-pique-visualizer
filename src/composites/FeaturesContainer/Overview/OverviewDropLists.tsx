@@ -1,17 +1,13 @@
 // import { Component, ReactNode } from "react";
-import { overviewData, listNode } from './index.ts';
+import { OverviewData, ListNode } from './index.ts';
 import * as Accordion from "@radix-ui/react-accordion";
-import { Button, Theme, Box, Text, Strong } from '@radix-ui/themes';
+import { Theme, Box, Text, Strong } from '@radix-ui/themes';
 import { DotFilledIcon } from '@radix-ui/react-icons';
 import "./Overview.css"
 
-export function OverviewDropList(risk:string, section:string, props:overviewData): JSX.Element {
-
+export const OverviewDropList = (risk:string, section:string, props:OverviewData) => {
     /* Creates a new array of all nodes matching the given classification and risk level */
-    const targetArray: listNode[] = getRelatedArray(section, risk, props);
-
-    /* Finds suitable class name for css styling */
-    const childClass: string = getChildClass(risk);
+    const targetArray: ListNode[] = getRelatedArray(section, risk, props);
 
     if (targetArray.length === 0) {
         /* Returns a paragraph in place of a descriptive list */
@@ -23,12 +19,9 @@ export function OverviewDropList(risk:string, section:string, props:overviewData
     }
     else {
         const items = targetArray.map((item, index:number) => (
-            <Box className = {childClass} key={index}>
-                <Text as='p'><Strong>{item.name}</Strong>
-                    { /* Zooms tree graph to given node */ }
-                    <Button className='Button' variant='ghost'>View Node</Button>
-                </Text>
-                <Text as='p'><DotFilledIcon/>{"Value: " + item.value}</Text>
+            <Box className = "DroppedContent" key={index}>
+                <Text as='p'><Strong>{item.name}</Strong></Text>
+                <Text as='p'><DotFilledIcon/>{"Value: " + item.value.toPrecision(2) }</Text>
                 {item.description && (<Text as='p'><DotFilledIcon/>{"Description: " + item.description}</Text>)}
                 <Text as='p'><DotFilledIcon/>{"Evaluation Strategy: " + item.eval_strategy}</Text>
                 <Text as='p'><DotFilledIcon/>{"Normalizer: " + item.normalizer}</Text>
@@ -50,20 +43,8 @@ export function OverviewDropList(risk:string, section:string, props:overviewData
     }
 }
 
-function getChildClass(riskLvl: string): string
-{
-    switch (riskLvl){
-        case 'severe': return 'SevereTitleCard';
-        case 'high': return 'HighTitleCard';
-        case 'moderate': return 'ModerateTitleCard';
-        case 'minor': return 'MinorTitleCard';
-        case 'insignificant': return 'InsignificantTitleCard';
-        default: return 'getChildClass-error';
-    }
-}
-
-function getRelatedArray(section: string, riskLvl: string, overviewData: overviewData): listNode[] {
-    var tempArr:listNode[] = [], finalArray:listNode[] = [];
+function getRelatedArray(section: string, riskLvl: string, overviewData: OverviewData): ListNode[] {
+    let tempArr:ListNode[] = [], finalArray:ListNode[] = [];
     if (section === "quality_aspects") {tempArr = overviewData.qualityAspectNodes}
     else if (section === "product_factors") {tempArr = overviewData.qualityFactorNodes}
     else if (section === "measures") {tempArr = overviewData.measureNodes}

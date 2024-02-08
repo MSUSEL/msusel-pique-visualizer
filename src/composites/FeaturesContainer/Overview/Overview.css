@@ -14,16 +14,15 @@ h3 {
 }
 
 .OverviewListContainer {
-  height: 100%;
+  height: 700px;
+  border-style: groove;
 }
 
 #OverviewLists {
   height: 100%;
-  border-left: groove;
 }
 
 .AccordionRoot {
-  border-radius: 6px;
   width: 300px;
   background-color: var(--mauve-6);
   box-shadow: 0 2px 10px var(--black-a4);
@@ -37,17 +36,6 @@ h3 {
 .AccordionItem {
   overflow: hidden;
   margin-top: 1px;
-}
-
-.AccordionItem:first-child {
-  margin-top: 0;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-.AccordionItem:last-child {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
 }
 
 .AccordionItem:focus-within {
@@ -71,7 +59,6 @@ h3 {
   font-size: 15px;
   line-height: 1;
   box-shadow: 0 1px 0 var(--mauve-6);
-  border-radius: none;
   color: var(--black-a10)  
 }
 
@@ -82,8 +69,6 @@ h3 {
 .AccordionContent {
   overflow: hidden;
   font-size: 15px;
-  color: var(--mauve-11);
-  background-color: var(--mauve-2);
 }
 .AccordionContent[data-state='open'] {
   animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
@@ -93,7 +78,7 @@ h3 {
 }
 
 .AccordionContentText {
-  padding: 15px 20px;
+  background: none;
 }
 
 .AccordionChevron {
@@ -103,29 +88,83 @@ h3 {
   transform: rotate(180deg);
 }
 
-.SevereTitleCard,
+.AccordionContent.SevereBackground {
+  border-radius: 0;
+  background: linear-gradient(to right,
+    red 1%,
+    var(--mauve-4) 4% 
+  );
+}
 .AccordionTrigger.SevereTitleCard {
-  color: red;
+  border-radius: 0;
+  background: linear-gradient(to right,
+    red 1%,
+    var(--mauve-3) 4% 
+  );
 }
 
-.HighTitleCard,
+.AccordionContent.HighBackground {
+  border-radius: 0;
+  background: linear-gradient(to right,
+    orange 1%,
+    var(--mauve-4) 4% 
+  );
+}
 .AccordionTrigger.HighTitleCard {
-  color: orange;
+  border-radius: 0;
+  background: linear-gradient(to right,
+    orange 1%,
+    var(--mauve-3) 4% 
+  );
 }
 
-.ModerateTitleCard,
+.AccordionContent.ModerateBackground {
+  border-radius: 0;
+  background: linear-gradient(to right,
+    yellow 1%,
+    var(--mauve-4) 4% 
+  );
+}
 .AccordionTrigger.ModerateTitleCard {
-  color: yellow;
+  border-radius: 0;
+  background: linear-gradient(to right,
+    yellow 1%,
+    var(--mauve-3) 4% 
+  );
 }
 
-.MinorTitleCard,
+.AccordionContent.MinorBackground {
+  border-radius: 0;
+  background: linear-gradient(to right,
+    blue 1%,
+    var(--mauve-4) 4% 
+  );
+}
 .AccordionTrigger.MinorTitleCard {
-  color: blue;
+  border-radius: 0;
+  background: linear-gradient(to right,
+    blue 1%,
+    var(--mauve-3) 4% 
+  );
 }
 
-.InsignificantTitleCard,
+.AccordionContent.InsignificantBackground {
+  border-radius: 0;
+  background: linear-gradient(to right,
+    green 1%,
+    var(--mauve-4) 4% 
+  );
+}
 .AccordionTrigger.InsignificantTitleCard {
-  color: green;
+  border-radius: 0;
+  background: linear-gradient(to right,
+    green 1%,
+    var(--mauve-3) 4% 
+  );
+}
+
+.DroppedContent {
+  background-color: var(--mauve-4);
 }
 
 @keyframes slideDown {
