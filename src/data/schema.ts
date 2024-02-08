@@ -18,6 +18,7 @@ const utilityFunctionSchema = z.union([z.string(), utilityFunctionNewStructure])
 
 export namespace base {
   export const measureSingle = z.object({
+    name: z.string(),
     description: z.string(),
     eval_strategy: z.string(),
     normalizer: z.string(),
@@ -39,6 +40,7 @@ export namespace base {
   });
 
   export const diagnosticsSingle = z.object({
+    
     description: z.string(),
     eval_strategy: z.string(),
     name: z.string(),
