@@ -1,4 +1,4 @@
-import { Flex, Button, Callout, Dialog } from "@radix-ui/themes";
+import { Flex, Button, Callout, Strong } from "@radix-ui/themes";
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { InfoCircledIcon, FileTextIcon } from "@radix-ui/react-icons";
 import { useFileUpload } from "./use-file-uploader";
@@ -11,14 +11,57 @@ import "./AlertDialog.css"
 
 export interface FileUploaderProps { }
 
+interface ValidationErrorIssue {
+  code: string;
+  expected?: any;
+  received?: any;
+  path: (string | number)[];
+  message: string;
+  unionErrors?: { issues: ValidationErrorIssue[]; name: string }[];
+}
+
 export const FileUploader = () => {
   const [_, selectFile] = useFileUpload();
   const setDataset = useSetAtom(State.dataset);
+  const [fileName, setFileName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [errorDetails, setErrorDetails] = useState('');
 
+  const generateErrorSummary = (issues: ValidationErrorIssue[], fileName: string): string => {
+    const issueCounts: Record<string, number> = {};
+
+    const countIssues = (issues: ValidationErrorIssue[]) => {
+      issues.forEach(issue => {
+        issueCounts[issue.code] = (issueCounts[issue.code] || 0) + 1;
+        if (issue.unionErrors) {
+          issue.unionErrors.forEach(unionError => {
+            countIssues(unionError.issues);
+          });
+        }
+      });
+    };
+
+    countIssues(issues);
+
+    let summary = `The uploaded JSON file (${fileName}) contains the following issues:\n`;
+    Object.keys(issueCounts).forEach(code => {
+      const issueCount = issueCounts[code];
+      summary += `\n ${issueCount} ${code} issue${issueCount > 1 ? 's' : ''}.\n`;
+    });
+
+    return summary;
+  };
+
+  const resetAndSelectFile = () => {
+    setErrorMessage("");
+    setErrorDetails("");
+    setFileName("");
+  };
+
   const handleFileSelect = () => {
     selectFile({ accept: ".json", multiple: false }, ({ file }: { file: File }) => {
+      const currentFileName = file.name; // Use a local variable to capture the file name
+      setFileName(currentFileName); // Still set the state for any other uses outside this callback
       const fileReader = new FileReader();
       fileReader.onload = (e) => {
         const result = e.target?.result;
@@ -28,25 +71,23 @@ export const FileUploader = () => {
 
           if (validationResult.success) {
             setDataset(validationResult.data);
-            setErrorMessage(""); // Reset error message on success
-            // Optionally, close the dialog if you have a state to control its visibility
+            setErrorMessage("");
           } else {
-            // Prepare and display error summary and details
-            const errorSummary = "Validation failed. Please check the error log for more details.";
+            // Use the local variable directly when generating the summary
+            const errorSummary = generateErrorSummary(validationResult.error.issues, currentFileName);
             const errorDetails = JSON.stringify(validationResult.error.issues, null, 2);
             setErrorDetails(errorDetails);
             setErrorMessage(errorSummary);
-            // Show the dialog with errors
           }
         } catch (error) {
           console.error("Error reading the file", error);
           setErrorMessage("An error occurred while reading the file.");
-          // Show the dialog with error
         }
       };
       fileReader.readAsText(file);
     });
   };
+
 
 
 
@@ -94,12 +135,18 @@ export const FileUploader = () => {
             <AlertDialog.Content className="AlertDialogContent">
               <AlertDialog.Title className="AlertDialogTitle">Error Validating File</AlertDialog.Title>
               <AlertDialog.Description className="AlertDialogDescription">
-                {errorMessage}
+                {errorMessage.split('\n').map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
+
               </AlertDialog.Description>
 
               <div style={{ display: 'flex', gap: 25, justifyContent: 'flex-between' }}>
                 <AlertDialog.Cancel asChild>
-                  <Button className="Button mauve" onClick={handleFileSelect}>
+                  <Button className="Button mauve" onClick={resetAndSelectFile}>
                     Cancel, select another file
                   </Button>
                 </AlertDialog.Cancel>
