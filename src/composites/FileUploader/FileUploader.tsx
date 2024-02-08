@@ -6,6 +6,7 @@ import * as schema from "../../data/schema";
 import { useSetAtom } from "jotai";
 import { State } from "../../state";
 import React, { useState } from "react";
+import "./AlertDialog.css"
 
 
 export interface FileUploaderProps { }
@@ -88,60 +89,31 @@ export const FileUploader = () => {
         </AlertDialog.Trigger>
 
         {errorMessage && (
-          <AlertDialog.Content style={{ maxWidth: 450, padding: '16px', borderRadius: '6px', background: 'white', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-            <AlertDialog.Title>Error Validating File</AlertDialog.Title>
-            <AlertDialog.Description>
-              {errorMessage}
-            </AlertDialog.Description>
+          <AlertDialog.Portal>
+            <AlertDialog.Overlay className="AlertDialogOverlay" />
+            <AlertDialog.Content className="AlertDialogContent">
+              <AlertDialog.Title className="AlertDialogTitle">Error Validating File</AlertDialog.Title>
+              <AlertDialog.Description className="AlertDialogDescription">
+                {errorMessage}
+              </AlertDialog.Description>
 
-            <Flex gap="3" mt="4" justify="end">
-              <AlertDialog.Cancel asChild>
-                <Button variant="soft" color="gray">
-                  Close
-                </Button>
-              </AlertDialog.Cancel>
-              <Button variant="solid" color="red" onClick={downloadErrorDetails}>
-                Click to download the entire error log
-              </Button>
-            </Flex>
-          </AlertDialog.Content>
+              <div style={{ display: 'flex', gap: 25, justifyContent: 'flex-between' }}>
+                <AlertDialog.Cancel asChild>
+                  <Button className="Button mauve" onClick={handleFileSelect}>
+                    Cancel, select another file
+                  </Button>
+                </AlertDialog.Cancel>
+                <AlertDialog.Action asChild>
+                  <Button className="Button red" onClick={downloadErrorDetails}>
+                    Click to download the entire error log
+                  </Button>
+                </AlertDialog.Action>
+              </div>
+            </AlertDialog.Content>
+          </AlertDialog.Portal>
         )}
       </AlertDialog.Root>
 
-      {/*
-      <Button
-        size="4"
-        variant="surface"
-        radius="large"
-        onClick={() => {
-          selectFile({ accept: ".json", multiple: false }, ({ file }) => {
-            const fileReader = new FileReader();
-            fileReader.onload = (e) => {
-              const result = e.target?.result;
-              try {
-                const parsed = JSON.parse(result as string);
-                const validationResult = schema.base.dataset.safeParse(parsed);
-
-                if (validationResult.success) {
-                  setDataset(validationResult.data);
-                  setErrorMessage(""); // Reset error message on success
-                } else {
-                  // Log the detailed error messages
-                  console.error("Validation failed", validationResult.error.issues);
-                  setErrorMessage("Validation failed. Please check the console for more details.");
-                }
-              } catch (e) {
-                console.error("Error reading the file", e);
-                setErrorMessage("An error occurred while reading the file.");
-              }
-            };
-            fileReader.readAsText(file);
-          });
-        }}
-      >
-        <FileTextIcon /> Select File
-      </Button>
-*/}
     </div>
   );
 };
