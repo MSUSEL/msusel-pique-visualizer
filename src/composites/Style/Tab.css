@@ -20,30 +20,26 @@ input {
 .TabsList {
   display: flex;
   flex-wrap: wrap;
-  /* Allows tab items to wrap onto the next line */
   border-bottom: 1px solid var(--mauve-6);
-  gap: 10px;
-  /* Adds a gap between the tabs; adjust as necessary */
-  padding-bottom: 5px;
-  /* Adds some space below the tabs */
+  gap: 3px;
+  padding-bottom: 2px;
 }
 
 .TabsTrigger {
   font-family: inherit;
   background-color: white;
-  padding: 0 20px;
-  /* Horizontal padding, adjust as necessary */
+  padding: 0 10px;
   height: 45px;
   display: inline-flex;
-  /* Allows individual tab items to wrap like inline elements */
   align-items: center;
   justify-content: center;
   font-size: 15px;
   line-height: 1;
   color: var(--mauve-11);
   user-select: none;
-  margin-bottom: 5px;
-  /* Adds a little space below each tab if they wrap */
+  margin-bottom: 2px;
+  border: 1px solid var(--mauve-6); 
+  border-radius: 4px;
 }
 
 .TabsTrigger:first-child {

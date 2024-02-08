@@ -28,7 +28,7 @@ export const Wrapper = () => {
     }
     return '60%'; // Default case when both sidebars are open
   })();
-  const rightWidth = isRightSidebarOpen ? '20%' : '50px'; // Adjusted to keep space for the IconButton when closed
+  const rightWidth = isRightSidebarOpen ? '30%' : '50px'; // Adjusted to keep space for the IconButton when closed
 
 
   return (
@@ -46,7 +46,7 @@ export const Wrapper = () => {
       <Flex
         direction="row"
         align="start"
-        justify="center"
+        justify= "start" //"center"
         style={{
           height: '90vh',
           width: '100%',
@@ -118,9 +118,8 @@ export const Wrapper = () => {
           direction={'column'}
           align={'stretch'}
           style={{
-            flexGrow: 1,
-            minWidth: '10%',
-            height: '90vh', // Ensure this is the total height of the middle sub-block
+            width: middleWidth,
+            height: '90vh', 
           }}>
 
           {/* Legend - Risk Level: Occupying 10% of the Middle Sub-Block Height */}
