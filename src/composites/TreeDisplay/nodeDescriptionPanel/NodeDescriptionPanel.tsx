@@ -5,14 +5,15 @@ import { determineNodeInfo } from "./NodeDescriptionPanelHelpers";
 export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
   const [orderBy, setOrderBy] = useState<string>("default");
   const [orderDirection, setOrderDirection] = useState<string>("asc");
-  const lastNodeRef = useRef<HTMLDivElement | null>(null);
+  const [newestNodeIndex, setNewestNodeIndex] = useState<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to the last node whenever nodes change
   useEffect(() => {
-    if (lastNodeRef.current) {
-      lastNodeRef.current.scrollIntoView({ behavior: "smooth" });
+    if (newestNodeIndex !== null && scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      // console.log("Newest Node:", props.nodes[newestNodeIndex]);
     }
-  }, [props.nodes]);
+  }, [newestNodeIndex, props.nodes]);
 
   const makeNodePanelRectangles = useMemo(() => {
     let orderedNodes = [...props.nodes];
@@ -30,22 +31,14 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
         break;
     }
 
+    const index = orderedNodes.findIndex((node) => node === props.nodes[props.nodes.length - 1]);
+    setNewestNodeIndex(index);
+
     return orderedNodes.map((node, i) => (
       <div
-        ref={(ref) => {
-          if (i === orderedNodes.length - 1) {
-            lastNodeRef.current = ref;
-            console.log("lastNodeRef updated:", lastNodeRef.current);
-          }
-        }}
-        className={`${
-          orderBy === "default" && i === orderedNodes.length - 1
-            ? orderedNodes.length > 2
-              ? "node-bottom-panel highlight"
-              : "node-panel highlight"
-            : "node-panel"
-        }`}
         key={i}
+        className={`node-panel${i === index ? " highlight" : ""}`}
+        ref={i === index ? scrollRef : undefined}
       >
         {determineNodeInfo(node, props.impacts)}
       </div>
