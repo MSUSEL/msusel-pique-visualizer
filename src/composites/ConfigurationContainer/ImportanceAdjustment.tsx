@@ -31,6 +31,7 @@ export const ImportanceAdjustment = () => {
     Profile | Profile[] | null
   >(null);
 
+
   // Handler that updates the selectedProfile state
   const handleProfileApply = (profile: Profile[] | null) => {
     setSelectedProfile(profile);
@@ -105,7 +106,10 @@ export const ImportanceAdjustment = () => {
               <Separator my="3" size="4" />
 
               {/*Profile selection*/}
-              <ProfileSelection onProfileChange={handleProfileApply} />
+              <ProfileSelection
+                onProfileChange={handleProfileApply}
+                selectedProfile={selectedProfile}
+              />
 
               <Separator my="3" size="4" />
 

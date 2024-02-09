@@ -11,11 +11,19 @@ import profilesData from "../../../assets/PIQUE_json_files/ExampleProfile.json";
 
 interface ProfileSelectionProps {
   onProfileChange: (selectedProfiles: Profile[] | null) => void;
+  selectedProfile: Profile | Profile[] | null;
 }
 
 export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
   onProfileChange,
+  selectedProfile,
 }) => {
+  const selectValue = selectedProfile
+    ? Array.isArray(selectedProfile)
+      ? selectedProfile[0].type
+      : selectedProfile.type
+    : "";
+
   // Function to handle profile selection changes
   const handleProfileChange = (value: string) => {
     const filteredProfiles = profilesData.filter(
@@ -59,7 +67,10 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
             </Text>
           </Box>
           <Box>
-            <Select.Root onValueChange={handleProfileChange} defaultValue="">
+            <Select.Root
+              onValueChange={handleProfileChange}
+              value={selectValue}
+            >
               <Select.Trigger aria-label="Profile" className="trigger">
                 <ChevronDownIcon />
               </Select.Trigger>
