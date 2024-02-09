@@ -92,11 +92,16 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
   // Recalculate weights based on slider adjustments
   const recalculatedWeights = useMemo(() => {
     const newWeights: Weights = {};
-    Object.keys(sliderValues).forEach((name) => {
-      newWeights[name] = sliderValues[name] / totalImportance;
+    Object.keys(values).forEach((name) => {
+      // Make sure to use the updated `values` state
+      const totalImportance = Object.values(values).reduce(
+        (sum, importance) => sum + importance,
+        0
+      );
+      newWeights[name] = values[name] / totalImportance;
     });
     return newWeights;
-  }, [sliderValues, totalImportance]);
+  }, [values]);
 
   // Handle slider value change
   const handleSliderChange = (name: string, newImportance: number) => {
