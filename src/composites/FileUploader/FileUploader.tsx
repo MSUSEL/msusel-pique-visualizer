@@ -23,7 +23,6 @@ export const FileUploader = () => {
   const [_, selectFile] = useFileUpload();
   const setDataset = useSetAtom(State.dataset);
   const [fileName, setFileName] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [errorDetails, setErrorDetails] = useState("");
 
   const generateErrorSummary = (
@@ -57,7 +56,6 @@ export const FileUploader = () => {
   };
 
   const resetAndSelectFile = () => {
-    setErrorMessage("");
     setErrorDetails("");
     setFileName("");
   };
@@ -78,24 +76,18 @@ export const FileUploader = () => {
             setFileName(currentFileName);
             if (validationResult.success) {
               setDataset(validationResult.data);
-              setErrorMessage("");
+              setErrorDetails(""); // Clear error details on success
             } else {
-              // Use the local variable directly when generating the summary
-              const errorSummary = generateErrorSummary(
-                validationResult.error.issues,
-                currentFileName
-              );
-              const errorDetails = JSON.stringify(
+              const details = JSON.stringify(
                 validationResult.error.issues,
                 null,
                 2
               );
-              setErrorDetails(errorDetails);
-              setErrorMessage(errorSummary);
+              setErrorDetails(details);
             }
           } catch (error) {
             console.error("Error reading the file", error);
-            setErrorMessage("An error occurred while reading the file.");
+            // setErrorMessage("An error occurred while reading the file.");
           }
         };
         fileReader.readAsText(file);
@@ -112,6 +104,16 @@ export const FileUploader = () => {
     link.click();
     URL.revokeObjectURL(url);
   };
+
+  let errorMessage = "";
+  if (errorDetails) {
+    try {
+      const issues: ValidationErrorIssue[] = JSON.parse(errorDetails);
+      errorMessage = generateErrorSummary(issues, fileName);
+    } catch (error) {
+      console.error("Error parsing error details", error);
+    }
+  }
 
   return (
     <div
