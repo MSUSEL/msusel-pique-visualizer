@@ -1,13 +1,13 @@
-// import { Component, ReactNode } from "react";
-import { OverviewData, ListNode } from './index.ts';
+import React from "react";
+import { DropListData, OverviewData, ListNode } from './index.ts';
 import * as Accordion from "@radix-ui/react-accordion";
 import { Theme, Box, Text, Strong } from '@radix-ui/themes';
 import { DotFilledIcon } from '@radix-ui/react-icons';
 import "./Overview.css"
 
-export const OverviewDropList = (risk:string, section:string, props:OverviewData) => {
+export const OverviewDropList = (props:DropListData):React.ReactNode => {
     /* Creates a new array of all nodes matching the given classification and risk level */
-    const targetArray: ListNode[] = getRelatedArray(section, risk, props);
+    const targetArray: ListNode[] = getRelatedArray(props.section, props.riskLvl, props.ovData);
 
     if (targetArray.length === 0) {
         /* Returns a paragraph in place of a descriptive list */

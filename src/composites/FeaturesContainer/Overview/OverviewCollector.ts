@@ -1,9 +1,11 @@
 import { OverviewData } from './index.ts';
+import * as Schema from "../../../data/schema.ts";
+
 
 //Reads through dataset information and targets specific data
 // from it to display information more easily in surrounding 
 // overview functions.
-export function OverviewDataCollector(fileData):OverviewData {
+export function collectOverviewData(fileData: Schema.base.Schema):OverviewData {
     const overviewData: OverviewData = {
         qualityAspectsCount: [0, 0, 0, 0, 0],
         qualityFactorsCount: [0, 0, 0, 0, 0],
@@ -83,12 +85,9 @@ export function OverviewDataCollector(fileData):OverviewData {
                     else if (aspect.value >= 0.8 && aspect.value < 0.8) {overviewData.qualityAspectsCount[3]++;}
                     else if (aspect.value >= 0.8 && aspect.value <= 1.0) {overviewData.qualityAspectsCount[4]++;}
                 }
-                else console.log("Error in counter, factor group name not found.");
             }
-            
         }
     }
-    else console.log("Error verifying dataset");
     return overviewData;
 }
 

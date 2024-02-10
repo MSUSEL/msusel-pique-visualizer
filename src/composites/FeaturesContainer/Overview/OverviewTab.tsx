@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useAtomValue } from "jotai";
+import * as Schema from "../../../data/schema";
 import { State } from "../../../state";
 import { Flex, Text, Box, Button, Avatar, HoverCard, Link, Separator, Badge, Strong } from "@radix-ui/themes";
 import { ChevronUpIcon, ChevronDownIcon } from '@radix-ui/react-icons';
@@ -65,12 +66,11 @@ const generateChartData = (riskData: [number[], string[][]] | null) => {
 };
 
 export const OverviewTab = () => {
-    const dataset = useAtomValue(State.dataset);
+    const dataset: Schema.base.Schema = useAtomValue(State.dataset) as Schema.base.Schema;
     const tqiRiskData = useMemo(() => dataset ? classifyNestedObjRiskLevel(dataset.factors.tqi) : null, [dataset]);
     const qualityAspectsRiskData = useMemo(() => dataset ? classifyNestedObjRiskLevel(dataset.factors.quality_aspects) : null, [dataset]);
     const productFactorsRiskData = useMemo(() => dataset ? classifyNestedObjRiskLevel(dataset.factors.product_factors) : null, [dataset]);
     
-
     // Determine the risk level and name for TQI
     const tqiRiskLevel = useMemo(() => {
         if (!tqiRiskData || !dataset) return { level: '', name: '' };
@@ -283,9 +283,8 @@ export const OverviewTab = () => {
 
                 {/* DSSide panel */}
                 <Box className='OverviewListContainer' style={{ flex: '0 0 auto', display: isOverviewListOpen ? 'block' : 'none' }}>
-                    {OverviewList(dataset)}
+                    <OverviewList filedata={dataset}/>
                 </Box>
-
             </Flex>
         </Flex>
     );

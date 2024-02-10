@@ -1,3 +1,4 @@
+import * as Schema from "../../../data/schema"
 export interface ListProps {
     section: string;
     riskLvl: string;
@@ -6,6 +7,16 @@ export interface ListProps {
 
 export interface DropDownState {
     isMainDropVisible: boolean[];
+}
+
+export interface OvListData {
+    filedata: Schema.base.Schema
+}
+
+export interface DropListData {
+    riskLvl:string,
+    section:string,
+    ovData:OverviewData
 }
 
 export interface AddDetState {
