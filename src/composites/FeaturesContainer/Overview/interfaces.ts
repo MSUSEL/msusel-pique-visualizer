@@ -1,42 +1,42 @@
-import * as Schema from "../../../data/schema"
+import * as Schema from "../../../data/schema";
 export interface ListProps {
-    section: string;
-    riskLvl: string;
-    overviewData: OverviewData;
+  section: string;
+  riskLvl: string;
+  overviewData: OverviewData;
 }
 
 export interface DropDownState {
-    isMainDropVisible: boolean[];
+  isMainDropVisible: boolean[];
 }
 
 export interface OvListData {
-    filedata: Schema.base.Schema
+  filedata: Schema.base.Schema;
 }
 
 export interface DropListData {
-    riskLvl:string,
-    section:string,
-    ovData:OverviewData
+  riskLvl: string;
+  section: string;
+  ovData: OverviewData;
 }
 
 export interface AddDetState {
-    isAddDetVisible: boolean[];
+  isAddDetVisible: boolean[];
 }
 
 export interface ListNode {
-    name: string;
-    value: number;
-    description: string;
-    eval_strategy: string;
-    normalizer: string;
-    utility_function: string;
+  name: string;
+  value: number;
+  description: string;
+  eval_strategy: string;
+  normalizer: string;
+  utility_function: string;
 }
 
 export interface OverviewData {
-    qualityAspectsCount: number[];
-    qualityFactorsCount: number[];
-    measuresCount: number[];
-    qualityAspectNodes: ListNode[];
-    qualityFactorNodes: ListNode[];
-    measureNodes: ListNode[];
+  qualityAspectsCount: number[];
+  qualityFactorsCount: number[];
+  measuresCount: number[];
+  qualityAspectNodes: ListNode[];
+  qualityFactorNodes: ListNode[];
+  measureNodes: ListNode[];
 }
