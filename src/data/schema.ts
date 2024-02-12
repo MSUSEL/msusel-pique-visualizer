@@ -41,6 +41,37 @@ const utilityFunctionSchema = z.union([
   utilityFunctionNewStructure,
 ]);
 
+
+// Define the new structure of evaluation strategy
+const evalStrategyNewStructure = z.object({
+  //required
+  name: z.string(),
+  description: z.string(),
+  //optional
+});
+
+// Evaluation Strategy function schema: define 2 versions to accept both the old (only a string) and new (a nested structure) format
+const evalStrategySchema = z.union([
+  z.string(),
+  evalStrategyNewStructure,
+]);
+
+
+
+// Define the new structure of normalizer
+const normalizerNewStructure = z.object({
+  //required
+  name: z.string(),
+  description: z.string(),
+  //optional
+});
+
+// Normalizer schema: define 2 versions to accept both the old (only a string) and new (a nested structure) format
+const normalizerSchema = z.union([
+  z.string(),
+  normalizerNewStructure,
+]);
+
 export namespace base {
   /**
    * Defines a single factor within the dataset,
@@ -61,8 +92,8 @@ export namespace base {
   export const factorSingle = z.object({
     name: z.string(),
     value: z.number(),
-    eval_strategy: z.string(),
-    normalizer: z.string(),
+    eval_strategy: evalStrategySchema, //z.string(),
+    normalizer: normalizerSchema, //z.string(),
     utility_function: utilityFunctionSchema,
     description: z.string(),
     weights: z.record(z.string(), z.number()),
@@ -87,8 +118,8 @@ export namespace base {
   export const measureSingle = z.object({
     name: z.string(),
     description: z.string(),
-    eval_strategy: z.string(),
-    normalizer: z.string(),
+    eval_strategy: evalStrategySchema, //z.string(),
+    normalizer: normalizerSchema, //z.string(),
     positive: z.boolean(),
     thresholds: z.tuple([z.number(), z.number()]),
     utility_function: utilityFunctionSchema,
@@ -114,9 +145,9 @@ export namespace base {
 
   export const diagnosticsSingle = z.object({
     description: z.string(),
-    eval_strategy: z.string(),
+    eval_strategy: evalStrategySchema, //z.string(),
     name: z.string(),
-    normalizer: z.string(),
+    normalizer: normalizerSchema, //z.string(),
     toolName: z.string(),
     utility_function: utilityFunctionSchema,
     value: z.number(),
