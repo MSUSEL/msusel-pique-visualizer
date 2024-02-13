@@ -970,7 +970,6 @@ export function TreeDisplay(props) {
         .attr("dominant-baseline", "middle")
         .attr("text-anchor", "middle");
     }
-
     const handleClickingNodeForDescriptionPanel = (e) => {
       let nfpa = nodesForPanelBoxes;
 
@@ -981,19 +980,12 @@ export function TreeDisplay(props) {
         0
       ) {
         nfpa = nfpa.filter((e) => e.name !== clicked_id_name);
-      } else if (nodesForPanelBoxes.length < 5) {
-        nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
       } else {
-        alert(
-          "Max amount of descriptions in side panel (5).\n" +
-            "Remove nodes from side panel to add more."
-        );
-      }
-
-      nfpa.sort((a, b) => (a.name > b.name ? 1 : -1));
+        nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
+      } 
       setNodesForPanelBoxes(nfpa);
     };
-
+    
     const handleClickingPFParentClicker = (e) => {
       //console.log(e.path[0].id)
 

@@ -1,35 +1,78 @@
-import "./NodeDescriptionPanel.css"
-import {useEffect, useState} from "react";
-import {determineNodeInfo} from "./NodeDescriptionPanelHelpers";
+import "./NodeDescriptionPanel.css";
+import { useEffect, useState, useMemo, useRef } from "react";
+import { determineNodeInfo } from "./NodeDescriptionPanelHelpers";
 
-export default function NodeDescriptionPanel(props) {
+export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any }) {
+  const [orderBy, setOrderBy] = useState<string>("default");
+  const [orderDirection, setOrderDirection] = useState<string>("asc");
+  const [newestNodeIndex, setNewestNodeIndex] = useState<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-    const [nodes,setNodes] = useState([]);
+  useEffect(() => {
+    if (newestNodeIndex !== null && scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      // console.log("Newest Node:", props.nodes[newestNodeIndex]);
+    }
+  }, [newestNodeIndex, props.nodes]);
 
-    // Rerender this component whenever the nodes prop from TreeDisplay changes.
-    useEffect(() => {
-        setNodes(props.nodes)
-    },[props.nodes])
+  const makeNodePanelRectangles = useMemo(() => {
+    let orderedNodes = [...props.nodes];
 
-    function determinePanelHeight() {
-        const height = 100/nodes.length;
-        if (height > 34) return 33.33;
-        return height;
+    switch (orderBy) {
+      case "default":
+        break;
+      case "alphabetical":
+        orderedNodes.sort((a, b) => (orderDirection === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
+        break;
+      case "value":
+        orderedNodes.sort((a, b) => (orderDirection === "asc" ? a.value - b.value : b.value - a.value));
+        break;
+      default:
+        break;
     }
 
-    function makeNodePanelRectangles() {
-        return (nodes.map( (node,i = node.hashCode()) => (
-                <div className={`${i === nodes.length-1 ? (nodes.length > 2 ? "node-bottom-panel" : "node-panel") : "node-panel"}`} style={{height : `${determinePanelHeight()}%`}} key={i}>
-                    {determineNodeInfo(node,props.impacts)}
-                </div>
-                )
-            )
-        )
-    }
+    const index = orderedNodes.findIndex((node) => node === props.nodes[props.nodes.length - 1]);
+    setNewestNodeIndex(index);
 
-    return (
-        <div id = "node_description_panel">
-            {makeNodePanelRectangles()}
-        </div>
-    )
+    return orderedNodes.map((node, i) => (
+      <div
+        key={i}
+        className={`node-panel${i === index ? " highlight" : ""}`}
+        ref={i === index ? scrollRef : undefined}
+      >
+        {determineNodeInfo(node, props.impacts)}
+      </div>
+    ));
+  }, [props.nodes, orderBy, orderDirection, props.impacts]);
+
+  const handleOrderByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrderBy(e.target.value);
+  };
+
+  const handleOrderDirectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrderDirection(e.target.value);
+  };
+
+  return (
+    <div id="node_description_panel" className="scrollable-panel">
+      <label htmlFor="orderBy">Order By: </label>
+      <select id="orderBy" value={orderBy} onChange={handleOrderByChange}>
+        <option value="default">Insertion Order</option>
+        <option value="alphabetical">Alphabetical Order</option>
+        <option value="value">Value Order</option>
+      </select>
+
+      {(orderBy === "alphabetical" || orderBy === "value") && (
+        <>
+          <label htmlFor="orderDirection"> Order Direction: </label>
+          <select id="orderDirection" value={orderDirection} onChange={handleOrderDirectionChange}>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </>
+      )}
+
+      {makeNodePanelRectangles}
+    </div>
+  );
 }
