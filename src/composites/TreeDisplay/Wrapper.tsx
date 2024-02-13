@@ -32,21 +32,15 @@ export const Wrapper = () => {
   const rightWidth = isRightSidebarOpen ? "30%" : "50px"; // Adjusted to keep space for the IconButton when closed
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      style={{ overflow: "hidden", maxHeight: "100vh" }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       {/* Title and Icon Centered */}
-      <Flex
-        direction={"row"}
-        align={"center"}
-        justify={"center"}
-        gap={"3"}
+      <div
         style={{
-          height: "10vh",
-          width: "100%",
+          display: "flex",
+          flexGrow: 1,
           backgroundColor: "#f9f9f9",
+          justifyContent: "center",
+          alignItems: "center",
           marginBottom: "10px",
           overflowY: "auto",
         }}
@@ -66,19 +60,16 @@ export const Wrapper = () => {
           height="100"
           style={{ marginLeft: "20px" }}
         />
-      </Flex>
+      </div>
 
       {/* Main Content */}
-      <Flex
-        direction="row"
-        align="start"
-        justify="start" //"center"
+      <div
         style={{
-          height: "90vh",
-          width: "100%",
-          overflow: "hidden",
+          display: "flex",
+          flexGrow: 1,
+          overflowY: "auto",
+          height: "100%",
         }}
-        gap={"3"}
       >
         {/* Left Side Panel */}
         <Flex
@@ -147,55 +138,45 @@ export const Wrapper = () => {
           }}
         >
           {/* Legend - Risk Level: Occupying 10% of the Middle Sub-Block Height */}
-          <Flex
-            direction={"column"}
-            align={"center"}
-            justify={"start"}
+          <div
             style={{
-              height: "5%", // Adjusted for 10% of the middle sub-block height
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <LegendContainer />
-          </Flex>
+          </div>
 
           {/* Layout Tabs: Occupying the remaining 90% of the Middle Sub-Block Height */}
-          <Flex
-            direction={"column"}
-            align={"start"}
-            justify={"between"}
-            style={{
-              height: "95%", // Adjusted for 90% of the middle sub-block height
-              overflow: "hidden", // Prevents overflow outside the container
-            }}
-          >
-            <Tabs.Root defaultValue="alternativeOverview">
-              <Tabs.List>
-                <Tabs.Trigger value="alternativeOverview">
-                  Alternative Overview
-                </Tabs.Trigger>
-                <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
-                <Tabs.Trigger value="list">List</Tabs.Trigger>
-              </Tabs.List>
 
-              {/* Tab Content with Overflow Handling */}
-              <Box
-                style={{
-                  height: "100%", // Ensures the tab content takes full height of its container
-                  overflow: "auto", // Allows scrolling within the tab content if it exceeds the container's height
-                }}
-              >
-                <Tabs.Content value="alternativeOverview">
-                  <AlternativeOverviewTab />
-                </Tabs.Content>
-                <Tabs.Content value="tree">
-                  <TreeDisplay fileData={dataset} />
-                </Tabs.Content>
-                <Tabs.Content value="list">
-                  <ListDisplay />
-                </Tabs.Content>
-              </Box>
-            </Tabs.Root>
-          </Flex>
+          <Tabs.Root defaultValue="alternativeOverview">
+            <Tabs.List>
+              <Tabs.Trigger value="alternativeOverview">
+                Alternative Overview
+              </Tabs.Trigger>
+              <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
+              <Tabs.Trigger value="list">List</Tabs.Trigger>
+            </Tabs.List>
+
+            {/* Tab Content with Overflow Handling */}
+            <Box
+              style={{
+                height: "100%", // Ensures the tab content takes full height of its container
+                overflow: "auto", // Allows scrolling within the tab content if it exceeds the container's height
+              }}
+            >
+              <Tabs.Content value="alternativeOverview">
+                <AlternativeOverviewTab />
+              </Tabs.Content>
+              <Tabs.Content value="tree">
+                <TreeDisplay fileData={dataset} />
+              </Tabs.Content>
+              <Tabs.Content value="list">
+                <ListDisplay />
+              </Tabs.Content>
+            </Box>
+          </Tabs.Root>
         </Flex>
 
         {/* Right Configuration Bar */}
@@ -243,7 +224,7 @@ export const Wrapper = () => {
             </Flex>
           )}
         </Flex>
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 };
