@@ -525,6 +525,17 @@ export function TreeDisplay(props) {
      * Creating the TQI and quality factor nodes in the treeDisplay display.
      */
     // TQI node
+    // add a white background color for tqi
+    svg
+      .append("rect")
+      .attr("id", "tqi^" + treeNodes[0].name)
+      .attr("width", treeNodes[0].width)
+      .attr("height", treeNodes[0].height)
+      .attr("rx", 2)
+      .attr("x", treeNodes[0].x)
+      .attr("y", treeNodes[0].y)
+      .style("fill", "white");
+
     svg
       .append("rect")
       .attr("id", "tqi^" + treeNodes[0].name)
@@ -560,6 +571,17 @@ export function TreeDisplay(props) {
 
     // Quality aspect nodes
     for (let item = 1; item < treeNodes.length; item++) {
+      // add the white background color for 2nd level nodes to hide edges behhind the rect
+      svg
+        .append("rect")
+        .attr("id", "quality_aspects^" + treeNodes[item].name)
+        .attr("width", treeNodes[item].width)
+        .attr("height", treeNodes[item].height)
+        .attr("rx", 2)
+        .attr("x", treeNodes[item].x)
+        .attr("y", treeNodes[item].y)
+        .style("fill", "white");
+
       svg
         .append("rect")
         .attr("id", "quality_aspects^" + treeNodes[item].name)
@@ -833,6 +855,21 @@ export function TreeDisplay(props) {
                 );
 
               const diag_x = calc_diag_x(i);
+              // add the white background color to hide behind edges
+              svg
+                .append("rect")
+                .attr(
+                  "id",
+                  "diagnostics^" +
+                    props.fileData["diagnostics"][diagnostic_name].name
+                )
+                .attr("width", node_width)
+                .attr("height", node_height)
+                .attr("rx", 2)
+                .attr("x", diag_x)
+                .attr("y", diag_y)
+                .style("fill", "white");
+
               svg
                 .append("rect")
                 .attr(
@@ -887,6 +924,20 @@ export function TreeDisplay(props) {
           /**
            * Draw the measure nodes for the associated product factor.
            */
+          // add white bgc
+          svg
+            .append("rect")
+            .attr(
+              "id",
+              "measures^" + props.fileData.measures[measure_name].name
+            )
+            .attr("width", node_width)
+            .attr("height", node_height)
+            .attr("rx", 2)
+            .attr("x", x_cor)
+            .attr("y", y_cor)
+            .style("fill", "white");
+
           svg
             .append("rect")
             .attr(
@@ -936,6 +987,17 @@ export function TreeDisplay(props) {
      * Creating the product factor nodes in the treeDisplay display.
      */
     for (let i = 0; i < p_factors.length; i++) {
+      // add white bgc
+      svg
+        .append("rect")
+        .attr("id", "product_factors^" + p_factors[i].name)
+        .attr("width", p_factors[i].width)
+        .attr("height", p_factors[i].height)
+        .attr("rx", 2)
+        .attr("x", p_factors[i].x)
+        .attr("y", p_factors[i].y)
+        .style("fill", "white")
+        
       svg
         .append("rect")
         .attr("id", "product_factors^" + p_factors[i].name)
@@ -982,10 +1044,10 @@ export function TreeDisplay(props) {
         nfpa = nfpa.filter((e) => e.name !== clicked_id_name);
       } else {
         nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
-      } 
+      }
       setNodesForPanelBoxes(nfpa);
     };
-    
+
     const handleClickingPFParentClicker = (e) => {
       //console.log(e.path[0].id)
 
