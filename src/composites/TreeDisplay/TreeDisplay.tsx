@@ -1188,38 +1188,6 @@ export function TreeDisplay(props) {
       .on("mouseleave", handleNodeMouseLeave);
   };
 
-  // Rest the tree display by sorting nodes in ascending order
-  const ascendingSort = () => {
-    alert("Sort all nodes: left = smallest, right = largest");
-
-    //dowdloadTestCase(props)
-    var data = JSON.stringify(props);
-    var blob = new Blob([data], { type: "text/json; charset=utf-8" });
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "data.json";
-    a.hidden = true;
-    document.body.appendChild(a);
-    a.innerHTML = "someinnerhtml";
-    a.click();
-
-    setWidth(
-      nodesForPanelBoxes.length > 0
-        ? (window.innerWidth * 65) / 100
-        : window.innerWidth
-    );
-    setHeight(window.innerHeight * 0.75 * 0.99); // Original code before flexbox
-    //setHeight(window_height);   // Code with flexbox
-    setX(0);
-    setY(0);
-  };
-
-  // Reset tree display by filtering out zero values
-  const filterZero = () => {
-    let jsonTemp = JSON.stringify(props);
-    alert(jsonTemp.length);
-  };
-
   // Reset tree display to x,y,width,height when initially opening it.
   const resetTreeView = () => {
     setWidth(
