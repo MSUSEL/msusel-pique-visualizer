@@ -2,26 +2,32 @@
     "Paraphrased" code from Xuying's PIQUE-lite for the color code - thanks Xuying!
  */
 
-const Severe = {
-  name: "Severe",
-  color: "#E58F8F",
-};
-const High = {
-  name: "High",
-  color: "#EAA27D",
-};
-const Elevated = {
-  name: "Elevated",
-  color: "#E9DB7D",
-};
-const Guarded = {
-  name: "Guarded",
-  color: "#8DB1E0",
-};
-const Low = {
-  name: "Low",
-  color: "#8FBC94",
-};
+    const Severe = {
+      name: "Severe",
+      // color: "#E58F8F",
+      color: "#f3000d", //14
+    };
+    const High = {
+      name: "High",
+      // color: "#ffa500",
+      color: "#ff9c00", //29
+    };
+    const Elevated = {
+      name: "Elevated",
+      // color: "#E9DB7D",
+      color : "#ffee00", //47
+    };
+    const Guarded = {
+      name: "Guarded",
+      // color: "#8DB1E0",
+      color: "#008ff5", //19
+    };
+    const Low = {
+      name: "Low",
+      // color: "#8FBC94",
+      color: "#00a43319", //19
+
+    };
 
 export default function NodeRiskColor(score, scale = "normal") {
   const value = parseFloat(score);
