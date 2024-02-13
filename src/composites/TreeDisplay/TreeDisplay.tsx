@@ -398,7 +398,7 @@ export function TreeDisplay(props) {
         .append("path")
         .attr("id", "tqi_" + treeNodes[item].name + "_edge" + item)
         .attr("d", link)
-        .attr("stroke-width", "2px")
+        .attr("stroke-width", "1px")
         .attr("stroke", "black")
         .attr("fill", "none");
 
@@ -417,7 +417,7 @@ export function TreeDisplay(props) {
         .attr("font-size", "10px")
         .attr("xlink:href", "#tqi_" + treeNodes[item].name + "_edge" + item)
         .text(
-          Object.values(treeNodes[0].json_data.weights)[item - 1].toFixed(6)
+          Object.values(treeNodes[0].json_data.weights)[item - 1].toFixed(2)
         );
     }
 
@@ -447,7 +447,7 @@ export function TreeDisplay(props) {
           .append("path")
           .attr("id", treeNodes[aspect].name + "_edge" + factor)
           .attr("d", link)
-          .attr("stroke-width", "2px")
+          .attr("stroke-width", "1px")
           .attr("stroke", "black")
           .attr(
             "opacity",
@@ -457,7 +457,7 @@ export function TreeDisplay(props) {
                 p_factors[factor].name
               ]
                 ? 1
-                : 0.05
+                : 0 // initial 0.05, change to 0
             }`
           )
           .attr("fill", "none");
@@ -486,7 +486,7 @@ export function TreeDisplay(props) {
             .text(
               treeNodes[aspect].json_data.weights[
                 p_factors[factor].name
-              ].toFixed(6)
+              ].toFixed(2)
             );
         }
       }
@@ -561,7 +561,7 @@ export function TreeDisplay(props) {
 
     svg
       .append("text")
-      .text(treeNodes[0].json_data.value.toFixed(8))
+      .text(treeNodes[0].json_data.value.toFixed(4))
       .attr("font-size", "12px")
       .attr("x", treeNodes[0].x + node_width * 0.5)
       .attr("y", treeNodes[0].y + node_height * 0.6)
@@ -608,7 +608,7 @@ export function TreeDisplay(props) {
 
       svg
         .append("text")
-        .text(treeNodes[item].json_data.value.toFixed(8))
+        .text(treeNodes[item].json_data.value.toFixed(4))
         .attr("font-size", "12px")
         .attr("x", treeNodes[item].x + node_width * 0.5)
         .attr("y", treeNodes[item].y + node_height * 0.6)
@@ -692,7 +692,7 @@ export function TreeDisplay(props) {
               measureWithParentsShowing + "_parentEdge" + p_factors[pf].name
             )
             .attr("d", link)
-            .attr("stroke-width", "2px")
+            .attr("stroke-width", "1px")
             .attr("stroke", "black")
             .attr("fill", "none");
 
@@ -723,7 +723,7 @@ export function TreeDisplay(props) {
             .text(
               p_factors[pf].json_data.weights[
                 measureWithParentsShowing
-              ].toFixed(6)
+              ].toFixed(2)
             );
         }
       }
@@ -763,7 +763,7 @@ export function TreeDisplay(props) {
             .append("path")
             .attr("id", p_factors[pf].name + "_edge" + iter)
             .attr("d", link)
-            .attr("stroke-width", "2px")
+            .attr("stroke-width", "1px")
             .attr("stroke", "black")
             .attr("fill", "none");
 
@@ -785,7 +785,7 @@ export function TreeDisplay(props) {
             )
             .attr("font-size", "8px")
             .attr("xlink:href", "#" + p_factors[pf].name + "_edge" + iter)
-            .text(p_factors[pf].json_data.weights[measure_name].toFixed(6));
+            .text(p_factors[pf].json_data.weights[measure_name].toFixed(2));
 
           // ---------------------------------------------------
           /**
@@ -835,7 +835,7 @@ export function TreeDisplay(props) {
                 .append("path")
                 .attr("id", measure_name + "_edge" + iter)
                 .attr("d", link)
-                .attr("stroke-width", "2px")
+                .attr("stroke-width", "1px")
                 .attr("stroke", "black")
                 .attr("fill", "none");
 
@@ -851,7 +851,7 @@ export function TreeDisplay(props) {
                 .text(
                   props.fileData.measures[measure_name].weights[
                     diagnostic_name
-                  ].toFixed(6)
+                  ].toFixed(2)
                 );
 
               const diag_x = calc_diag_x(i);
@@ -907,7 +907,7 @@ export function TreeDisplay(props) {
                 .append("text")
                 .text(
                   props.fileData["diagnostics"][diagnostic_name].value.toFixed(
-                    8
+                    4
                   )
                 )
                 .attr("font-size", "11px")
@@ -970,7 +970,7 @@ export function TreeDisplay(props) {
 
           svg
             .append("text")
-            .text(props.fileData.measures[measure_name].value.toFixed(8))
+            .text(props.fileData.measures[measure_name].value.toFixed(4))
             .attr("font-size", "11px")
             .attr("x", x_cor + node_width * 0.5)
             .attr("y", y_cor + node_height * 0.6)
@@ -996,8 +996,8 @@ export function TreeDisplay(props) {
         .attr("rx", 2)
         .attr("x", p_factors[i].x)
         .attr("y", p_factors[i].y)
-        .style("fill", "white")
-        
+        .style("fill", "white");
+
       svg
         .append("rect")
         .attr("id", "product_factors^" + p_factors[i].name)
@@ -1024,7 +1024,7 @@ export function TreeDisplay(props) {
 
       svg
         .append("text")
-        .text(p_factors[i].json_data.value.toFixed(8))
+        .text(p_factors[i].json_data.value.toFixed(4))
         .attr("font-size", "11px")
         .attr("x", p_factors[i].x + p_factor_width * 0.5)
         .attr("y", p_factors[i].y + p_factor_height * 0.6)
