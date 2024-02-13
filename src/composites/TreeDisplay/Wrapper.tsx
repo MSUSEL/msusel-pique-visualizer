@@ -122,6 +122,7 @@ export const Wrapper = () => {
             height: '90vh', 
           }}>
 
+
           {/* Legend - Risk Level: Occupying 10% of the Middle Sub-Block Height */}
           <Flex
             direction={'column'}
@@ -191,6 +192,19 @@ export const Wrapper = () => {
             onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
           >
             <GearIcon />
+
+            <IconButton onClick={() => setIsSidebarOpen(false)} size="3" variant="soft">
+              <PinLeftIcon />
+            </IconButton>
+          </div>
+          <ButtonContainer />
+        </div>
+
+        {/* Hover Card */}
+        <HoverCard display={isSidebarOpen ? 'none' : 'flex'} onClick={() => setIsSidebarOpen(true)}>
+          <IconButton size="3" variant="soft">
+            <PinRightIcon />
+
           </IconButton>
 
           {/* Right Sidebar Content */}
@@ -212,8 +226,10 @@ export const Wrapper = () => {
 
 
 
+
       </Flex>
 
     </Flex>
+
   );
 };
