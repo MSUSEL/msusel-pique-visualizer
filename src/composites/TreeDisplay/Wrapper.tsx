@@ -159,7 +159,7 @@ export const Wrapper = () => {
 
           {/* Layout Tabs: Occupying the remaining 90% of the Middle Sub-Block Height */}
 
-          <Tabs.Root defaultValue="alternativeOverview">
+          <Tabs.Root defaultValue="overview">
             <Tabs.List>
               <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
               <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
