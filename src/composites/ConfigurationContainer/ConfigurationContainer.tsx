@@ -3,7 +3,6 @@ import { State } from "../../state";
 import { Flex, Text, Box, Strong } from "@radix-ui/themes";
 import * as Tabs from '@radix-ui/react-tabs';
 import { ConfigurationSummary } from "./Summary";
-import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
 import { ImportanceAdjustment } from "./ImportanceAdjustment";
 import { NodeValueAdjustment } from "./NodeValueAdjustment";
 import "../Style/Separator.css"
