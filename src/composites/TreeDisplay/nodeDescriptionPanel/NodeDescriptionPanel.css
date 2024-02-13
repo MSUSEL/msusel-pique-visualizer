@@ -28,11 +28,23 @@
 
 .scrollable-panel {
     overflow-y: auto;
-    max-height: 100vh; 
-  }
+    max-height: 100vh;
+}
 
-  .highlight {
-    background-color: #ffe066;
-    border-color: #ffd43b; 
-    border-bottom: 2px solid black;
-  }
+.highlight {
+    background-color: #C2F0C2;
+    position: relative;
+}
+
+.highlight::before,
+.highlight::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%; 
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.7);
+}
+
+.highlight::after {
+    bottom: 0;
+}

@@ -80,10 +80,7 @@ export function determineNodeInfo(node, impacts) {
     } else {
       return (
         <div>
-          <b>Utility Function: </b>
-          <a href="#" style={{textDecoration: 'underline'}} onClick={() => {}}>
-            pique.evaluation.DefaultUtility
-          </a>
+          <b>Utility Function:</b> pique.evaluation.DefaultUtility
         </div>
       );
     }
