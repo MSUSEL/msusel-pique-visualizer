@@ -6,10 +6,14 @@ import { ListDisplay } from "../ListDisplay/ListDisplay";
 import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
 import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
 import { LegendContainer } from "../LegendContainer/Legend";
-import { GearIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
-import { OverviewTab } from "../FeaturesContainer/OverviewTab";
+
+import { ViewVerticalIcon, BarChartIcon, GearIcon, HomeIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
+import { OverviewTab } from "../FeaturesContainer/Overview/OverviewTab";
+import { styled } from '@stitches/react';
+
 import { AlternativeOverviewTab } from "../FeaturesContainer/AlternativeOverviewTab";
 import { ConfigurationContainer } from "../ConfigurationContainer/ConfigurationContainer";
+
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
@@ -152,12 +156,25 @@ export const Wrapper = () => {
 
           <Tabs.Root defaultValue="alternativeOverview">
             <Tabs.List>
+
+              <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
+
               <Tabs.Trigger value="alternativeOverview">
                 Alternative Overview
               </Tabs.Trigger>
+
               <Tabs.Trigger value="tree">Tree</Tabs.Trigger>
               <Tabs.Trigger value="list">List</Tabs.Trigger>
             </Tabs.List>
+
+
+            <Box px="4" pt="3" pb="3">
+              <Tabs.Content value="overview">
+                <Box width="100%">
+                  <OverviewTab />
+                </Box>
+              </Tabs.Content>
+
 
             {/* Tab Content with Overflow Handling */}
             <Box
@@ -169,6 +186,7 @@ export const Wrapper = () => {
               <Tabs.Content value="alternativeOverview">
                 <AlternativeOverviewTab />
               </Tabs.Content>
+
               <Tabs.Content value="tree">
                 <TreeDisplay fileData={dataset} />
               </Tabs.Content>

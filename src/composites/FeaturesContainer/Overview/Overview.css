@@ -1,0 +1,156 @@
+@import "@radix-ui/colors/black-alpha.css";
+@import "@radix-ui/colors/mauve.css";
+@import "@radix-ui/colors/violet.css";
+
+/* reset */
+button,
+h3 {
+  all: unset;
+}
+
+.overviewContainer {
+  border-style: groove;
+  height: 95vh;
+}
+
+.OverviewListContainer {
+  height: 700px;
+  border-style: groove;
+}
+
+#OverviewLists {
+  height: 100%;
+}
+
+.AccordionRoot {
+  width: 300px;
+  background-color: var(--mauve-6);
+  box-shadow: 0 2px 10px var(--black-a4);
+}
+
+.AccordionTitle {
+  padding: 5px;
+  padding-top: 10px;
+}
+
+.AccordionItem {
+  overflow: hidden;
+  margin-top: 1px;
+}
+
+.AccordionItem:focus-within {
+  position: relative;
+  box-shadow: 0 0 0 2px var(--mauve-12);
+}
+
+.AccordionHeader {
+  display: flex;
+}
+
+.AccordionTrigger {
+  font-family: inherit;
+  background-color: transparent;
+  padding: 0 20px;
+  height: 45px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  line-height: 1;
+  box-shadow: 0 1px 0 var(--mauve-6);
+  color: var(--black-a10);
+}
+
+.AccordionTrigger:hover {
+  background-color: var(--mauve-2);
+}
+
+.AccordionContent {
+  overflow: hidden;
+  font-size: 15px;
+}
+.AccordionContent[data-state="open"] {
+  animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.AccordionContent[data-state="closed"] {
+  animation: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.AccordionContentText {
+  background: none;
+}
+
+.AccordionChevron {
+  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.AccordionTrigger[data-state="open"] > .AccordionChevron {
+  transform: rotate(180deg);
+}
+
+.AccordionContent.SevereBackground {
+  border-radius: 0;
+  background: linear-gradient(to right, red 1%, var(--mauve-4) 4%);
+}
+.AccordionTrigger.SevereTitleCard {
+  border-radius: 0;
+  background: linear-gradient(to right, red 1%, var(--mauve-3) 4%);
+}
+
+.AccordionContent.HighBackground {
+  border-radius: 0;
+  background: linear-gradient(to right, orange 1%, var(--mauve-4) 4%);
+}
+.AccordionTrigger.HighTitleCard {
+  border-radius: 0;
+  background: linear-gradient(to right, orange 1%, var(--mauve-3) 4%);
+}
+
+.AccordionContent.ModerateBackground {
+  border-radius: 0;
+  background: linear-gradient(to right, yellow 1%, var(--mauve-4) 4%);
+}
+.AccordionTrigger.ModerateTitleCard {
+  border-radius: 0;
+  background: linear-gradient(to right, yellow 1%, var(--mauve-3) 4%);
+}
+
+.AccordionContent.MinorBackground {
+  border-radius: 0;
+  background: linear-gradient(to right, blue 1%, var(--mauve-4) 4%);
+}
+.AccordionTrigger.MinorTitleCard {
+  border-radius: 0;
+  background: linear-gradient(to right, blue 1%, var(--mauve-3) 4%);
+}
+
+.AccordionContent.InsignificantBackground {
+  border-radius: 0;
+  background: linear-gradient(to right, green 1%, var(--mauve-4) 4%);
+}
+.AccordionTrigger.InsignificantTitleCard {
+  border-radius: 0;
+  background: linear-gradient(to right, green 1%, var(--mauve-3) 4%);
+}
+
+.DroppedContent {
+  background-color: var(--mauve-4);
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
