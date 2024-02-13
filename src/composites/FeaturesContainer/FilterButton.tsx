@@ -6,7 +6,7 @@ import * as React from "react";
 import * as Slider from '@radix-ui/react-slider';
 import '@radix-ui/colors/black-alpha.css';
 import '@radix-ui/colors/violet.css';
-import './Slider.css'
+import '../Style/Separator.css'
 import * as Accordion from '@radix-ui/react-accordion';
 import * as schema from '../../data/schema';
 import { findMinMaxValues } from "../Filtering/FindMinMaxValues";

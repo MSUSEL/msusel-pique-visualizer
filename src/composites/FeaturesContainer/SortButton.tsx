@@ -3,7 +3,7 @@ import { State } from "../../state";
 import { Flex, HoverCard, Link, Text, Strong, Em, RadioGroup, Box } from "@radix-ui/themes";
 import * as Separator from '@radix-ui/react-separator';
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import './Separator.css';
+import '../Style/Separator.css';
 
 export const SortButton = () => {
   // Retrieve both the value and setter for sortState
