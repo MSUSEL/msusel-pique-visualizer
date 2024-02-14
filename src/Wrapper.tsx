@@ -1,23 +1,24 @@
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { State } from "./state";
+import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
+import { GearIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
+import { useProcessedData } from "./data/useProcessedData";
+
+import { ButtonContainer } from "./composites/FeaturesContainer/ButtonContainer";
+
+import { OverviewTab } from "./composites/FeaturesContainer/Overview/OverviewTab";
+import { LegendContainer } from "./composites/LegendContainer/Legend";
 import { TreeDisplay } from "./composites/TreeDisplay/TreeDisplay";
 import { ListDisplay } from "./composites/ListDisplay/ListDisplay";
-import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
-import { ButtonContainer } from "./composites/FeaturesContainer/ButtonContainer";
-import { LegendContainer } from "./composites/LegendContainer/Legend";
-
-import { GearIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
-import { OverviewTab } from "./composites/FeaturesContainer/Overview/OverviewTab";
 
 import { ConfigurationContainer } from "./composites/ConfigurationContainer/ConfigurationContainer";
-import { useProcessedData } from "./data/useProcessedData";
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
   const processedData = useProcessedData();
-  if(!processedData) return null;
-  
+  if (!processedData) return null;
+
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
@@ -97,20 +98,20 @@ export const Wrapper = () => {
           }}
         >
           {/* Toggle Button for Sidebar, PinLeftIcon for open, PinRightIcon for close */}
-  <IconButton
-    size="3"
-    variant="soft"
-    style={{
-      position: "absolute",
-      top: "10px",
-      right: isLeftSidebarOpen ? "10px" : "0px",
-      zIndex: 2,
-      transition: "right 0.3s ease-in-out",
-    }}
-    onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
-  >
-    {isLeftSidebarOpen ? <PinLeftIcon /> : <PinRightIcon />}
-  </IconButton>
+          <IconButton
+            size="3"
+            variant="soft"
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: isLeftSidebarOpen ? "10px" : "0px",
+              zIndex: 2,
+              transition: "right 0.3s ease-in-out",
+            }}
+            onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
+          >
+            {isLeftSidebarOpen ? <PinLeftIcon /> : <PinRightIcon />}
+          </IconButton>
 
           {/* Sidebar Content */}
           {isLeftSidebarOpen && (
@@ -170,9 +171,11 @@ export const Wrapper = () => {
                   <OverviewTab />
                 </Box>
               </Tabs.Content>
+
               <Tabs.Content value="tree">
                 <TreeDisplay fileData={processedData} />
               </Tabs.Content>
+
               <Tabs.Content value="list">
                 <ListDisplay />
               </Tabs.Content>

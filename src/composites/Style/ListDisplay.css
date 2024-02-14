@@ -8,40 +8,40 @@ h3 {
   all: unset;
 }
 
-.AccordionRoot {
+.ListDisplay__AccordionRoot {
   border-radius: 6px;
   width: 100%;
   background-color: var(--mauve-6);
   box-shadow: 0 2px 10px var(--black-a4);
 }
 
-.AccordionItem {
+.ListDisplay__AccordionItem {
   overflow: hidden;
   margin-top: 1px;
 }
 
-.AccordionItem:first-child {
+.ListDisplay__AccordionItem:first-child {
   margin-top: 0;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
 
-.AccordionItem:last-child {
+.ListDisplay__AccordionItem:last-child {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
 
-.AccordionItem:focus-within {
+.ListDisplay__AccordionItem:focus-within {
   position: relative;
   z-index: 1;
   box-shadow: 0 0 0 2px var(--mauve-12);
 }
 
-.AccordionHeader {
+.ListDisplay__AccordionHeader {
   display: flex;
 }
 
-.AccordionTrigger {
+.ListDisplay__AccordionTrigger {
   font-family: inherit;
   background-color: transparent;
   padding: 0 20px;
@@ -58,32 +58,32 @@ h3 {
   width: 98%;
 }
 
-.AccordionTrigger:hover {
+.ListDisplay__AccordionTrigger:hover {
   background-color: var(--mauve-2);
 }
 
-.AccordionContent {
+.ListDisplay__AccordionContent {
   overflow: hidden;
   font-size: 15px;
   color: var(--mauve-11);
   background-color: var(--mauve-2);
 }
-.AccordionContent[data-state='open'] {
+.ListDisplay__AccordionContent[data-state='open'] {
   animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
 }
-.AccordionContent[data-state='closed'] {
+.ListDisplay__AccordionContent[data-state='closed'] {
   animation: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
 }
 
-.AccordionContentText {
+.ListDisplay__AccordionContentText {
   padding: 15px 20px;
 }
 
-.AccordionChevron {
+.ListDisplay__AccordionChevron {
   color: var(--violet-10);
   transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
 }
-.AccordionTrigger[data-state='open'] > .AccordionChevron {
+.ListDisplay__AccordionTrigger[data-state='open'] > .ListDisplay__AccordionChevron {
   transform: rotate(180deg);
 }
 
@@ -106,21 +106,21 @@ h3 {
 }
 
 
-.AccordionItem .AccordionItem {
+.ListDisplay__AccordionItem .ListDisplay__AccordionItem {
   margin-left: 30px; /* Use margin to push nested items to the right */
   border-left: 2px dashed var(--mauve-6);
 }
 
-.AccordionItem .AccordionTrigger,
-.AccordionItem .AccordionContent {
+.ListDisplay__AccordionItem .ListDisplay__AccordionTrigger,
+.ListDisplay__AccordionItem .ListDisplay__AccordionContent {
   background-color: var(--mauve-3); /* Consistent background color for all triggers and content */
 }
 
-.AccordionContent {
+.ListDisplay__AccordionContent {
   padding: 0; /* Remove padding and use margin for indentation instead */
 }
 
 /* You may need to adjust the top margin of nested content to align properly */
-.AccordionContent .AccordionContent {
+.ListDisplay__AccordionContent .ListDisplay__AccordionContent {
   margin-top: -1px;
 }

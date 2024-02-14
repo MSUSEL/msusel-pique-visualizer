@@ -1,5 +1,7 @@
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
+import { useState } from "react";
+
 import { Text } from "@radix-ui/themes";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
@@ -7,10 +9,11 @@ import {
   EyeClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { useState } from "react";
+
 import { useProcessedData } from "../../data/useProcessedData";
 import AdditionalDetailsItem from "./AdditionalDetailsItem";
-import "./ListDisplay.css"
+
+import "../Style/ListDisplay.css"
 
 export const ListDisplay = () => {
   // get dataset and processed dataset
@@ -32,22 +35,22 @@ export const ListDisplay = () => {
     expandedState: Record<string, boolean>
   ) => {
     return (
-      <Accordion.Root type="multiple" className="AccordionRoot">
+      <Accordion.Root type="multiple" className="ListDisplay__AccordionRoot">
         {Object.entries(Data).map(([key, value]) => {
           const isExpanded = expandedState[key] || false;
 
           return (
-            <Accordion.Item key={key} value={key} className="AccordionItem">
-              <Accordion.Header className="AccordionHeader">
+            <Accordion.Item key={key} value={key} className="ListDisplay__AccordionItem">
+              <Accordion.Header className="ListDisplay__AccordionHeader">
                 <Accordion.Trigger
-                  className="AccordionTrigger"
+                  className="ListDisplay__AccordionTrigger"
                   onClick={() => toggleItemFn(key)}
                 >
                   {value.name ?? "N/A"}: {value.value.toFixed(4) ?? "N/A"}
                   {isExpanded ? <EyeOpenIcon /> : <EyeClosedIcon />}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="AccordionContent">
+              <Accordion.Content className="ListDisplay__AccordionContent">
                 {isExpanded && renderAdditionalDetails(value)}
               </Accordion.Content>
             </Accordion.Item>
@@ -63,7 +66,7 @@ export const ListDisplay = () => {
     expandedState: Record<string, boolean>
   ) => {
     return (
-      <Accordion.Root type="multiple" className="AccordionRoot">
+      <Accordion.Root type="multiple" className="ListDisplay__AccordionRoot">
         {Object.entries(measuresData).map(([key, measure]) => {
           const isExpanded = expandedState[key] || false;
 
@@ -72,17 +75,17 @@ export const ListDisplay = () => {
           const measureValue = measure.value ?? "N/A";
 
           return (
-            <Accordion.Item key={key} value={key} className="AccordionItem">
-              <Accordion.Header className="AccordionHeader">
+            <Accordion.Item key={key} value={key} className="ListDisplay__AccordionItem">
+              <Accordion.Header className="ListDisplay__AccordionHeader">
                 <Accordion.Trigger
-                  className="AccordionTrigger"
+                  className="ListDisplay__AccordionTrigger"
                   onClick={() => toggleItemFn(key)}
                 >
                   {measureName}: {measureValue}
                   {isExpanded ? <EyeOpenIcon /> : <EyeClosedIcon />}
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="AccordionContent">
+              <Accordion.Content className="ListDisplay__AccordionContent">
                 {isExpanded && renderAdditionalDetails(measure)}
               </Accordion.Content>
             </Accordion.Item>
@@ -131,13 +134,13 @@ export const ListDisplay = () => {
       </Text>
 
       {/* Accordion for different data levels */}
-      <Accordion.Root type="multiple" className="AccordionRoot">
+      <Accordion.Root type="multiple" className="ListDisplay__AccordionRoot">
         {/* 1st level: tqi */}
-        <Accordion.Item value="tqi" className="AccordionItem">
+        <Accordion.Item value="tqi" className="ListDisplay__AccordionItem">
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               TQI
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon className="ListDisplay__AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
@@ -151,15 +154,15 @@ export const ListDisplay = () => {
         </Accordion.Item>
 
         {/* 2nd level: quality_aspects */}
-        <Accordion.Item value="quality_aspects" className="AccordionItem">
+        <Accordion.Item value="quality_aspects" className="ListDisplay__AccordionItem">
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               {
                 Object.keys(processedData?.factors?.quality_aspects || {})
                   .length
               }{" "}
               Characteristics
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon className="ListDisplay__AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
@@ -173,15 +176,15 @@ export const ListDisplay = () => {
         </Accordion.Item>
 
         {/* 3rd level: product_factors */}
-        <Accordion.Item value="product_factors" className="AccordionItem">
+        <Accordion.Item value="product_factors" className="ListDisplay__AccordionItem">
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               {
                 Object.keys(processedData?.factors?.product_factors || {})
                   .length
               }{" "}
               Factors
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon className="ListDisplay__AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
@@ -195,11 +198,11 @@ export const ListDisplay = () => {
         </Accordion.Item>
 
         {/* 4th level: measures */}
-        <Accordion.Item value="measures" className="AccordionItem">
+        <Accordion.Item value="measures" className="ListDisplay__AccordionItem">
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               {Object.keys(processedData?.measures || {}).length} Measures
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon className="ListDisplay__AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
@@ -213,11 +216,11 @@ export const ListDisplay = () => {
         </Accordion.Item>
 
         {/* 5th level: diagnostics */}
-        <Accordion.Item value="diagnostics" className="AccordionItem">
+        <Accordion.Item value="diagnostics" className="ListDisplay__AccordionItem">
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               {Object.keys(processedData?.diagnostics || {}).length} Diagnostics
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon className="ListDisplay__AccordionChevron" aria-hidden />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
