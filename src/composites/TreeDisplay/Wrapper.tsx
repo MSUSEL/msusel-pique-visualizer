@@ -38,17 +38,27 @@ export const Wrapper = () => {
   const middleWidth = `calc(100vw - (${leftWidth} + ${rightWidth}))`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100vw",
+        overflowX: "hidden",
+      }}
+    >
       {/* Title and Icon Centered */}
       <div
         style={{
           display: "flex",
           flexGrow: 1,
           backgroundColor: "#f9f9f9",
+          width: "100%",
           justifyContent: "center",
           alignItems: "center",
           marginBottom: "10px",
-          overflowY: "auto",
+          overflowY: "hidden",
+          overflowX: "hidden",
         }}
       >
         <img
@@ -75,6 +85,7 @@ export const Wrapper = () => {
           flexGrow: 1,
           overflowY: "auto",
           height: "100%",
+          overflowX: "hidden",
         }}
       >
         {/* Left Side Panel */}
@@ -129,6 +140,7 @@ export const Wrapper = () => {
         <Flex
           direction={"column"}
           align={"stretch"}
+          justify={"start"}
           style={{
             width: middleWidth,
             height: "90vh",
@@ -196,7 +208,7 @@ export const Wrapper = () => {
             style={{
               position: "absolute",
               top: "10px",
-              left: isRightSidebarOpen ? "10px" : "10px",
+              left: isRightSidebarOpen ? "10px" : "0px",
               zIndex: 2,
               transition: "left 0.3s ease-in-out",
             }}
