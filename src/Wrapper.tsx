@@ -1,11 +1,11 @@
 import { useAtomValue } from "jotai";
 import { useState } from "react";
-import { State } from "../../state";
-import { TreeDisplay } from "./TreeDisplay";
-import { ListDisplay } from "../ListDisplay/ListDisplay";
+import { State } from "./state";
+import { TreeDisplay } from "./composites/TreeDisplay/TreeDisplay";
+import { ListDisplay } from "./composites/ListDisplay/ListDisplay";
 import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
-import { ButtonContainer } from "../FeaturesContainer/ButtonContainer";
-import { LegendContainer } from "../LegendContainer/Legend";
+import { ButtonContainer } from "./composites/FeaturesContainer/ButtonContainer";
+import { LegendContainer } from "./composites/LegendContainer/Legend";
 
 import {
   ViewVerticalIcon,
@@ -15,10 +15,10 @@ import {
   PinLeftIcon,
   PinRightIcon,
 } from "@radix-ui/react-icons";
-import { OverviewTab } from "../FeaturesContainer/Overview/OverviewTab";
+import { OverviewTab } from "./composites/FeaturesContainer/Overview/OverviewTab";
 
 // import { AlternativeOverviewTab } from "../FeaturesContainer/AlternativeOverviewTab";
-import { ConfigurationContainer } from "../ConfigurationContainer/ConfigurationContainer";
+import { ConfigurationContainer } from "./composites/ConfigurationContainer/ConfigurationContainer";
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);

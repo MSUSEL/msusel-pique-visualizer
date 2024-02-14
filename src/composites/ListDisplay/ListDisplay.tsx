@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useProcessedData } from "../../data/useProcessedData";
 import AdditionalDetailsItem from "./AdditionalDetailsItem";
+import "./ListDisplay.css"
 
 export const ListDisplay = () => {
   // get dataset and processed dataset
