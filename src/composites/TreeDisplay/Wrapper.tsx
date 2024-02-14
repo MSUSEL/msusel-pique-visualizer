@@ -25,20 +25,17 @@ export const Wrapper = () => {
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
-  // Dynamic width calculations considering the left sub-block can be closed
-  const leftWidth = isLeftSidebarOpen ? "20%" : "50px"; // Minimized when closed, allowing for a narrow trigger area
-  const middleWidth = (() => {
-    // Enhanced calculation for middleWidth based on sidebar states
-    if (!isLeftSidebarOpen && !isRightSidebarOpen) {
-      return "calc(100% - 50px)"; // Only the middle sub-block is visible, minus the minimal width of the left
-    } else if (isLeftSidebarOpen && !isRightSidebarOpen) {
-      return "80%"; // Left is open, right is closed
-    } else if (!isLeftSidebarOpen && isRightSidebarOpen) {
-      return "calc(80% - 50px)"; // Right is open, left is minimized
-    }
-    return "60%"; // Default case when both sidebars are open
-  })();
-  const rightWidth = isRightSidebarOpen ? "30%" : "50px"; // Adjusted to keep space for the IconButton when closed
+  const leftSidebarWidthExpanded = "20vw"; // 20% of the viewport width
+  const rightSidebarWidthExpanded = "20vw"; // 20% of the viewport width
+  const sidebarWidthCollapsed = "50px";
+
+  const leftWidth = isLeftSidebarOpen
+    ? leftSidebarWidthExpanded
+    : sidebarWidthCollapsed;
+  const rightWidth = isRightSidebarOpen
+    ? rightSidebarWidthExpanded
+    : sidebarWidthCollapsed;
+  const middleWidth = `calc(100vw - (${leftWidth} + ${rightWidth}))`;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -82,57 +79,48 @@ export const Wrapper = () => {
       >
         {/* Left Side Panel */}
         <Flex
-          direction={"column"}
+          direction="column"
           style={{
-            width: leftWidth,
+            width: isLeftSidebarOpen ? leftWidth : "50px",
             transition: "width 0.3s ease-in-out",
-            flexShrink: 0,
             position: "relative",
-            height: "90vh",
+            flexShrink: 0,
+            overflow: "hidden",
+            height: "100%",
+            paddingRight: isLeftSidebarOpen ? "40px" : "0px",
           }}
         >
-          {/* Sidebar */}
+          {/* Toggle Button for Sidebar, PinLeftIcon for open, PinRightIcon for close */}
+          <IconButton
+            size="3"
+            variant="soft"
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: isLeftSidebarOpen ? "10px" : "auto", // Use right property when sidebar is open
+              left: isLeftSidebarOpen ? "auto" : "10px", // Use left property when sidebar is closed
+
+              transition: "left 0.3s ease-in-out",
+              zIndex: 2,
+              cursor: "pointer",
+            }}
+            onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
+          >
+            {isLeftSidebarOpen ? <PinLeftIcon /> : <PinRightIcon />}
+          </IconButton>
+
+          {/* Sidebar Content */}
           {isLeftSidebarOpen && (
             <Flex
+              direction="column"
               style={{
-                flexDirection: "column",
-                // backgroundColor: "#f0f0f0",
-                // borderRight: "2px solid #ccc",
                 padding: "10px",
                 height: "100%",
                 overflowY: "auto",
+                // paddingRight: "50px",
               }}
             >
-              <IconButton
-                onClick={() => setIsLeftSidebarOpen(false)}
-                size="3"
-                variant="soft"
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                }}
-              >
-                <PinLeftIcon />
-              </IconButton>
               <ButtonContainer />
-            </Flex>
-          )}
-
-          {/* Hover Card Panel */}
-          {!isLeftSidebarOpen && (
-            <Flex
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "15px",
-                cursor: "pointer",
-              }}
-              onClick={() => setIsLeftSidebarOpen(true)}
-            >
-              <IconButton size="3" variant="soft">
-                <PinRightIcon />
-              </IconButton>
             </Flex>
           )}
         </Flex>
@@ -225,10 +213,9 @@ export const Wrapper = () => {
                 padding: "10px",
                 height: "100%",
                 overflowY: "auto",
-                paddingLeft: "50px", // Adjust this value to match the width of your IconButton
+                paddingLeft: "50px",
               }}
             >
-              {/* Sidebar content */}
               <ConfigurationContainer />
             </Flex>
           )}
