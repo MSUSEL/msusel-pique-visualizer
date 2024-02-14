@@ -36,15 +36,10 @@
     position: relative;
 }
 
-.highlight::before,
-.highlight::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%; 
-    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.7);
-}
-
-.highlight::after {
-    bottom: 0;
-}
+.external-link-icon {
+    display: none;
+  }
+  
+  .info-block:hover .external-link-icon {
+    display: inline-block;
+  }
