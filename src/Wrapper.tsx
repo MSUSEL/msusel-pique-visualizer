@@ -94,37 +94,33 @@ export const Wrapper = () => {
             flexShrink: 0,
             overflow: "hidden",
             height: "100%",
-            paddingRight: isLeftSidebarOpen ? "40px" : "0px",
           }}
         >
           {/* Toggle Button for Sidebar, PinLeftIcon for open, PinRightIcon for close */}
-          <IconButton
-            size="3"
-            variant="soft"
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: isLeftSidebarOpen ? "10px" : "auto", // Use right property when sidebar is open
-              left: isLeftSidebarOpen ? "auto" : "10px", // Use left property when sidebar is closed
-
-              transition: "left 0.3s ease-in-out",
-              zIndex: 2,
-              cursor: "pointer",
-            }}
-            onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
-          >
-            {isLeftSidebarOpen ? <PinLeftIcon /> : <PinRightIcon />}
-          </IconButton>
+  <IconButton
+    size="3"
+    variant="soft"
+    style={{
+      position: "absolute",
+      top: "10px",
+      right: isLeftSidebarOpen ? "10px" : "0px",
+      zIndex: 2,
+      transition: "right 0.3s ease-in-out",
+    }}
+    onClick={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
+  >
+    {isLeftSidebarOpen ? <PinLeftIcon /> : <PinRightIcon />}
+  </IconButton>
 
           {/* Sidebar Content */}
           {isLeftSidebarOpen && (
             <Flex
-              direction="column"
               style={{
+                flexDirection: "column",
                 padding: "10px",
                 height: "100%",
                 overflowY: "auto",
-                // paddingRight: "50px",
+                paddingRight: "50px",
               }}
             >
               <ButtonContainer />
