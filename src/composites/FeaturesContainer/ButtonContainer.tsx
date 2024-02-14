@@ -17,15 +17,14 @@ import "../Style/Slider.css";
 import "../Style/Tab.css";
 
 export const ButtonContainer = () => {
-
   return (
     // Change Flex direction to 'column' for vertical layout
     <Flex direction="column" gap="3" align="start">
       <Tabs.Root className="TabsRoot" defaultValue="quick">
         <Tabs.List className="TabsList">
           <Tabs.Trigger value="quick" className="TabsTrigger">
-            {" "}
-            <MagicWandIcon />{" "}
+            <MagicWandIcon />
+            Quick Actions
           </Tabs.Trigger>
           <Tabs.Trigger value="sort" className="TabsTrigger">
             <CaretSortIcon />
@@ -36,8 +35,8 @@ export const ButtonContainer = () => {
             Filter
           </Tabs.Trigger>
           <Tabs.Trigger value="reset" className="TabsTrigger">
-            {" "}
-            <ResetIcon />{" "}
+            <ResetIcon />
+            Reset
           </Tabs.Trigger>
         </Tabs.List>
 

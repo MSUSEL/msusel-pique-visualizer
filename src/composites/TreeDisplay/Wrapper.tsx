@@ -96,8 +96,8 @@ export const Wrapper = () => {
             <Flex
               style={{
                 flexDirection: "column",
-                backgroundColor: "#f0f0f0",
-                borderRight: "2px solid #ccc",
+                // backgroundColor: "#f0f0f0",
+                // borderRight: "2px solid #ccc",
                 padding: "10px",
                 height: "100%",
                 overflowY: "auto",
