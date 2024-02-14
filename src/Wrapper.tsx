@@ -7,14 +7,7 @@ import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
 import { ButtonContainer } from "./composites/FeaturesContainer/ButtonContainer";
 import { LegendContainer } from "./composites/LegendContainer/Legend";
 
-import {
-  ViewVerticalIcon,
-  BarChartIcon,
-  GearIcon,
-  HomeIcon,
-  PinLeftIcon,
-  PinRightIcon,
-} from "@radix-ui/react-icons";
+import { GearIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
 import { OverviewTab } from "./composites/FeaturesContainer/Overview/OverviewTab";
 
 // import { AlternativeOverviewTab } from "../FeaturesContainer/AlternativeOverviewTab";
