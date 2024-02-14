@@ -10,11 +10,14 @@ import { LegendContainer } from "./composites/LegendContainer/Legend";
 import { GearIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
 import { OverviewTab } from "./composites/FeaturesContainer/Overview/OverviewTab";
 
-// import { AlternativeOverviewTab } from "../FeaturesContainer/AlternativeOverviewTab";
 import { ConfigurationContainer } from "./composites/ConfigurationContainer/ConfigurationContainer";
+import { useProcessedData } from "./data/useProcessedData";
 
 export const Wrapper = () => {
   const dataset = useAtomValue(State.dataset);
+  const processedData = useProcessedData();
+  if(!processedData) return null;
+  
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
@@ -172,7 +175,7 @@ export const Wrapper = () => {
                 </Box>
               </Tabs.Content>
               <Tabs.Content value="tree">
-                <TreeDisplay fileData={dataset} />
+                <TreeDisplay fileData={processedData} />
               </Tabs.Content>
               <Tabs.Content value="list">
                 <ListDisplay />
