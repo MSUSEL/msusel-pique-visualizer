@@ -7,6 +7,12 @@
   // import gaussian from "../../../assets/gaussianLine.png";
   // import gam from "../../../assets/gamLine.png";
 
+  const ExternalLink = ({ href, children }) => (
+    <a className="external-link" href={href} target="_blank">
+      {children} <ExternalLinkIcon className="external-link-icon" />
+    </a>
+  );
+
   export function determineNodeInfo(node, impacts) {
     const node_type = determineNodeType();
 
@@ -76,13 +82,14 @@
         return (
           <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
             <b>Utility Function: </b>
-            {node.utility_function} <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+            {node.utility_function} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
         );
       } else {
         return (
           <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
-            <b>Utility Function:</b> pique.evaluation.DefaultUtility <ExternalLinkIcon width="10" height="10" className="external-link-icon" />  
+            
+            <b>Utility Function:</b> pique.evaluation.DefaultUtility <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
         );
       }
@@ -117,36 +124,36 @@
         <div className="node-info">
         <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
             <b>Node Type: </b>
-            {node_type} <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+            {node_type} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
           <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
             <b>Value: </b>
-            {node.value.toFixed(5)} <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+            {node.value.toFixed(5)} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
           {node.description !== "" ? (
             <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
               <b>Description: </b>
-              {node.description} <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+              {node.description} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
             </div>
           ) : null}
           {node_type === "Measure" ? (
             <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
-              <b>Thresholds: </b>[{getThresholds(node)}] <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+              <b>Thresholds: </b>[{getThresholds(node)}] <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
             </div>
           ) : null}
           {node_type === "Diagnostic" ? (
             <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
               <b>Tool: </b>
-              {node.toolName} <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+              {node.toolName} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
             </div>
           ) : null}
           <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
             <b>Evaluation Strategy: </b>
-            {node.eval_strategy} <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+            {node.eval_strategy} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
           <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
             <b>Normalizer: </b>
-            {node.normalizer} <ExternalLinkIcon width="10" height="10" className="external-link-icon" />
+            {node.normalizer} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
           <div>
             {renderUtilityFunction()} 
