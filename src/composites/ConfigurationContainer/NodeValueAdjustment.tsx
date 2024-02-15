@@ -1,18 +1,25 @@
 import { useAtomValue } from "jotai";
 import { State } from "../../state";
-import { Flex, Text, Box, Strong } from "@radix-ui/themes";
-import "../Style/Separator.css"
+import { Flex, Text, Box, Strong, Switch } from "@radix-ui/themes";
+import "../Style/Separator.css";
 
 export const NodeValueAdjustment = () => {
-    const dataset = useAtomValue(State.dataset);
+  const dataset = useAtomValue(State.dataset);
 
-    return (
-        // Change Flex direction to 'column' for vertical layout
-        <Flex>
-            <Box>
-                <Text size={'3'}> Dynamic Values Adjustment</Text>
-            </Box>
+  return (
+   
+    <Flex direction={"column"}>
+      <Box>
+        <Text size={"3"}> Dynamic Values Adjustment</Text>
+      </Box>
 
-        </Flex >
-    );
+      <Box>
+        <Text as="label" size="2">
+          <Flex gap="2">
+            Turn on this switch to allow adjustment <Switch />
+          </Flex>
+        </Text>
+      </Box>
+    </Flex>
+  );
 };
