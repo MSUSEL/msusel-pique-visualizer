@@ -2,7 +2,7 @@ import React from "react";
 import { DropListData, OverviewData, ListNode } from "./index.ts";
 import * as Accordion from "@radix-ui/react-accordion";
 import { Theme, Box, Text, Strong } from "@radix-ui/themes";
-import { DotFilledIcon } from "@radix-ui/react-icons";
+import { Table } from "@radix-ui/themes";
 import "./Overview.css";
 
 export const OverviewDropList = (props: DropListData): React.ReactNode => {
@@ -23,46 +23,36 @@ export const OverviewDropList = (props: DropListData): React.ReactNode => {
   } else {
     const items = targetArray.map((item, index: number) => (
       <Box className="DroppedContent" key={index}>
-        <Text as="p">
-          <Strong>{item.name}</Strong>
-        </Text>
-        <Text as="p">
-          <DotFilledIcon />
-          {"Value: " + item.value.toPrecision(2)}
-        </Text>
-        {item.description && (
-          <Text as="p">
-            <DotFilledIcon />
-            {"Description: " + item.description}
-          </Text>
-        )}
-        <Text as="p">
-          <DotFilledIcon />
-          {"Evaluation Strategy: " + item.eval_strategy}
-        </Text>
-        <Text as="p">
-          <DotFilledIcon />
-          {"Normalizer: " + item.normalizer}
-        </Text>
-        <Text as="p">
-          <DotFilledIcon />
-          {"Utility Function: " + item.utility_function}
-        </Text>
+        <Strong style={{ padding: "8px" }}>{item.name}</Strong>
+        <Table.Root>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>Value: </Table.Cell>
+              <Table.Cell>{item.value.toPrecision(2)}</Table.Cell>
+            </Table.Row>
+            {item.description && (
+              <Table.Row>
+                <Table.Cell>Description: </Table.Cell>
+                <Table.Cell>{item.description}</Table.Cell>
+              </Table.Row>
+            )}
+            <Table.Row>
+              <Table.Cell>Evaluation Strategy: </Table.Cell>
+              <Table.Cell>{item.eval_strategy}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Normalizer: </Table.Cell>
+              <Table.Cell>{item.normalizer}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Utility Function: </Table.Cell>
+              <Table.Cell>{item.utility_function}</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table.Root>
       </Box>
     ));
-    return (
-      <Box>
-        <Theme
-          accentColor="gray"
-          grayColor="gray"
-          panelBackground="solid"
-          scaling="100%"
-          radius="full"
-        >
-          {items}
-        </Theme>
-      </Box>
-    );
+    return <Box>{items}</Box>;
   }
 };
 
