@@ -1,5 +1,5 @@
 #node_description_panel {
-    background-color: lightcyan;
+    background-color: transparent;
     border: black solid 3px;
     width: 35vw;
 }
@@ -7,7 +7,7 @@
 .node-panel,
 .node-bottom-panel {
     font-size: 0.8vw;
-    background-color: lightgreen;
+    background-color: transparent;
     border-bottom: 2px solid black;
 }
 
@@ -31,9 +31,20 @@
     max-height: 100vh;
 }
 
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
 .highlight {
-    background-color: #C2F0C2;
-    position: relative;
+    animation: shake 1s ease-in-out;
 }
 
 .external-link-icon {
