@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import * as Schema from "../../../data/schema";
 import { State } from "../../../state";
 import {
+  Theme,
   Flex,
   Text,
   Box,
@@ -14,10 +15,16 @@ import {
   Badge,
   Strong,
 } from "@radix-ui/themes";
-import { ChevronUpIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import {
+  ChevronUpIcon,
+  ChevronDownIcon,
+  HamburgerMenuIcon,
+  Cross1Icon,
+} from "@radix-ui/react-icons";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import { OverviewList } from ".";
 import "./Overview.css";
+import "@radix-ui/colors/mauve.css";
 
 interface FilterableItem {
   value: number;
@@ -422,21 +429,10 @@ export const OverviewTab = () => {
         </Flex>
       </Flex>
 
-      <Flex direction={"column"}>
+      <Flex direction={"row"} style={{ height: "65vh" }}>
         {/* Toggle Button */}
-        <Button
-          onClick={toggleOverviewList}
-          style={{
-            position: "relative",
-            top: 0,
-            right: 0,
-            width: 304,
-            borderRadius: 0,
-          }}
-          variant="surface"
-        >
-          Overview List{" "}
-          {isOverviewListOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
+        <Button onClick={toggleOverviewList} variant="surface">
+          {isOverviewListOpen ? <Cross1Icon /> : <HamburgerMenuIcon />}
         </Button>
 
         {/* DSSide panel */}

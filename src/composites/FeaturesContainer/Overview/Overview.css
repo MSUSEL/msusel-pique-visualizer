@@ -3,27 +3,18 @@
 @import "@radix-ui/colors/violet.css";
 
 /* reset */
-button,
-h3 {
+button {
   all: unset;
 }
 
-.overviewContainer {
-  border-style: groove;
-  height: 95vh;
-}
-
 .OverviewListContainer {
-  height: 700px;
-  border-style: groove;
-}
-
-#OverviewLists {
-  height: 100%;
+  border-style: solid;
+  border-width: 1px;
+  color: var(--mauve-11);
 }
 
 .AccordionRoot {
-  width: 300px;
+  width: 450px;
   background-color: var(--mauve-6);
   box-shadow: 0 2px 10px var(--black-a4);
 }
@@ -31,6 +22,7 @@ h3 {
 .AccordionTitle {
   padding: 5px;
   padding-top: 10px;
+  text-align: center;
 }
 
 .AccordionItem {
@@ -59,7 +51,7 @@ h3 {
   font-size: 15px;
   line-height: 1;
   box-shadow: 0 1px 0 var(--mauve-6);
-  color: var(--black-a10);
+  color: var(--mauve-11);
 }
 
 .AccordionTrigger:hover {
@@ -69,23 +61,6 @@ h3 {
 .AccordionContent {
   overflow: hidden;
   font-size: 15px;
-}
-.AccordionContent[data-state="open"] {
-  animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-.AccordionContent[data-state="closed"] {
-  animation: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-
-.AccordionContentText {
-  background: none;
-}
-
-.AccordionChevron {
-  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-.AccordionTrigger[data-state="open"] > .AccordionChevron {
-  transform: rotate(180deg);
 }
 
 .AccordionContent.SevereBackground {
@@ -134,7 +109,24 @@ h3 {
 }
 
 .DroppedContent {
-  background-color: var(--mauve-4);
+  background-color: transparent;
+  padding-bottom: 12px;
+  padding-left: 17px;
+  padding-top: 10px;
+}
+
+.AccordionContent[data-state="open"] {
+  animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.AccordionContent[data-state="closed"] {
+  animation: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.AccordionChevron {
+  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.AccordionTrigger[data-state="open"] > .AccordionChevron {
+  transform: rotate(180deg);
 }
 
 @keyframes slideDown {

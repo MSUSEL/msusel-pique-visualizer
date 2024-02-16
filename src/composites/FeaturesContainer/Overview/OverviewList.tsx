@@ -21,27 +21,21 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
 
   return (
     <ScrollArea
-      id="OverviewLists"
       type="always"
       scrollbars="vertical"
       radius="full"
       size="1"
+      color="gray"
     >
-      <Theme
-        accentColor="purple"
-        grayColor="gray"
-        panelBackground="solid"
-        scaling="100%"
-        radius="full"
-      >
-        {/* Quality Characteristics */}
-        <Heading className="AccordionTitle">Quality Characteristics</Heading>
+      {/* Quality Characteristics */}
+      <Heading className="AccordionTitle">Quality Characteristics</Heading>
 
-        <Accordion.Root
-          className="AccordionRoot"
-          type="multiple"
-          defaultValue={[]}
-        >
+      <Accordion.Root
+        className="AccordionRoot"
+        type="multiple"
+        defaultValue={[]}
+      >
+        {overviewData.qualityAspectsCount[0] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-1">
             <AccordionTrigger className="SevereTitleCard">
               <CrossCircledIcon />
@@ -55,7 +49,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.qualityAspectsCount[1] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-2">
             <AccordionTrigger className="HighTitleCard">
               <ExclamationTriangleIcon />
@@ -69,7 +65,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.qualityAspectsCount[2] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-3">
             <AccordionTrigger className="ModerateTitleCard">
               <QuestionMarkCircledIcon />
@@ -83,7 +81,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.qualityAspectsCount[3] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-4">
             <AccordionTrigger className="MinorTitleCard">
               <InfoCircledIcon />
@@ -97,7 +97,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.qualityAspectsCount[4] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-5">
             <AccordionTrigger className="InsignificantTitleCard">
               <CheckCircledIcon />
@@ -111,15 +113,17 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
-        </Accordion.Root>
+        )}
+      </Accordion.Root>
 
-        {/* Quality Factors */}
-        <Heading className="AccordionTitle">Quality Factors</Heading>
-        <Accordion.Root
-          className="AccordionRoot"
-          type="multiple"
-          defaultValue={[]}
-        >
+      {/* Quality Factors */}
+      <Heading className="AccordionTitle">Quality Factors</Heading>
+      <Accordion.Root
+        className="AccordionRoot"
+        type="multiple"
+        defaultValue={[]}
+      >
+        {overviewData.qualityFactorsCount[0] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-1" color="red">
             <AccordionTrigger className="SevereTitleCard">
               <CrossCircledIcon />
@@ -133,7 +137,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.qualityFactorsCount[1] != 0 && (
           <Accordion.Item
             className="AccordionItem"
             value="item-2"
@@ -151,7 +157,8 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
-
+        )}
+        {overviewData.qualityFactorsCount[2] != 0 && (
           <Accordion.Item
             className="AccordionItem"
             value="item-3"
@@ -169,7 +176,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.qualityFactorsCount[3] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-4" color="blue">
             <AccordionTrigger className="MinorTitleCard">
               <InfoCircledIcon />
@@ -183,7 +192,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.qualityFactorsCount[4] != 0 && (
           <Accordion.Item
             className="AccordionItem"
             value="item-5"
@@ -201,15 +212,17 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
-        </Accordion.Root>
+        )}
+      </Accordion.Root>
 
-        {/* Quality Factors Measures */}
-        <Heading className="AccordionTitle">Quality Factor Measures</Heading>
-        <Accordion.Root
-          className="AccordionRoot"
-          type="multiple"
-          defaultValue={[]}
-        >
+      {/* Quality Factors Measures */}
+      <Heading className="AccordionTitle">Quality Factor Measures</Heading>
+      <Accordion.Root
+        className="AccordionRoot"
+        type="multiple"
+        defaultValue={[]}
+      >
+        {overviewData.measuresCount[0] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-1">
             <AccordionTrigger className="SevereTitleCard">
               <CrossCircledIcon />
@@ -223,7 +236,8 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
-
+        )}
+        {overviewData.measuresCount[1] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-2">
             <AccordionTrigger className="HighTitleCard">
               <ExclamationTriangleIcon />
@@ -237,7 +251,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.measuresCount[2] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-3">
             <AccordionTrigger className="ModerateTitleCard">
               <QuestionMarkCircledIcon />
@@ -251,7 +267,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.measuresCount[3] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-4">
             <AccordionTrigger className="MinorTitleCard">
               <InfoCircledIcon />
@@ -265,7 +283,9 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
+        )}
 
+        {overviewData.measuresCount[4] != 0 && (
           <Accordion.Item className="AccordionItem" value="item-5">
             <AccordionTrigger className="InsignificantTitleCard">
               <CheckCircledIcon />
@@ -279,8 +299,8 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
               />
             </AccordionContent>
           </Accordion.Item>
-        </Accordion.Root>
-      </Theme>
+        )}
+      </Accordion.Root>
     </ScrollArea>
   );
 };
