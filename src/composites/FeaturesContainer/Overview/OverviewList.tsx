@@ -231,7 +231,7 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
             <AccordionContent className="SevereBackground">
               <OverviewDropList
                 riskLvl="severe"
-                section="product_factors"
+                section="measures"
                 ovData={overviewData}
               />
             </AccordionContent>
@@ -246,7 +246,7 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
             <AccordionContent className="HighBackground">
               <OverviewDropList
                 riskLvl="high"
-                section="product_factors"
+                section="measures"
                 ovData={overviewData}
               />
             </AccordionContent>
@@ -262,7 +262,7 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
             <AccordionContent className="ModerateBackground">
               <OverviewDropList
                 riskLvl="moderate"
-                section="product_factors"
+                section="measures"
                 ovData={overviewData}
               />
             </AccordionContent>
@@ -278,7 +278,7 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
             <AccordionContent className="MinorBackground">
               <OverviewDropList
                 riskLvl="minor"
-                section="product_factors"
+                section="measures"
                 ovData={overviewData}
               />
             </AccordionContent>
@@ -294,7 +294,7 @@ export const OverviewList = (props: OvListData): React.ReactNode => {
             <AccordionContent className="InsignificantBackground">
               <OverviewDropList
                 riskLvl="insignificant"
-                section="product_factors"
+                section="measures"
                 ovData={overviewData}
               />
             </AccordionContent>
