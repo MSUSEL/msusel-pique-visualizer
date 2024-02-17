@@ -3,7 +3,6 @@ import { useAtomValue } from "jotai";
 import * as Schema from "../../../data/schema";
 import { State } from "../../../state";
 import {
-  Theme,
   Flex,
   Text,
   Box,
@@ -15,12 +14,7 @@ import {
   Badge,
   Strong,
 } from "@radix-ui/themes";
-import {
-  ChevronUpIcon,
-  ChevronDownIcon,
-  HamburgerMenuIcon,
-  Cross1Icon,
-} from "@radix-ui/react-icons";
+import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import { OverviewList } from ".";
 import "./Overview.css";
@@ -139,7 +133,13 @@ export const OverviewTab = () => {
   );
 
   // Define colors for each slice of the pie chart
-  const COLORS = ["red", "orange", "yellow", "blue", "green"];
+  const COLORS: { [key: string]: string } = {
+    Severe: "red",
+    High: "orange",
+    Moderate: "yellow",
+    Minor: "blue",
+    Insignificant: "green",
+  };
 
   // Get top 3 problematic objects for characteristics and factors
   const topProblematicQualityAspects = useMemo(() => {
@@ -188,13 +188,20 @@ export const OverviewTab = () => {
       });
   }, [productFactorsRiskData, dataset]);
 
+  const filteredQualityAspects = qualityAspectsChartData.filter(
+    (entry) => entry.Count !== 0
+  );
+  const filteredProductFactors = productFactorsChartData.filter(
+    (entry) => entry.Count !== 0
+  );
+
   return (
     <Flex direction={"row"} gap={"3"}>
       <Flex
         direction={"column"}
         gap={"3"}
         align={"center"}
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginTop: "24px" }}
       >
         <Flex
           direction={"row"}
@@ -224,7 +231,7 @@ export const OverviewTab = () => {
           >
             <Box>
               {" "}
-              <Badge size="2">Charactertistics</Badge>{" "}
+              <Badge size="2">Characteristics</Badge>{" "}
             </Box>
             <Box>
               {/* Display risk counts here */}
@@ -244,14 +251,12 @@ export const OverviewTab = () => {
             gap={"5"}
             style={{ flexBasis: "30%" }}
           >
-            <Box>
-              <Text> Risk Level Distribution</Text>
-            </Box>
+            <Box>{/* <Text> Risk Level Distribution</Text> */}</Box>
             <Box>
               {/* Pie chart visualization */}
               <PieChart width={300} height={300}>
                 <Pie
-                  data={qualityAspectsChartData}
+                  data={filteredQualityAspects}
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
@@ -259,11 +264,8 @@ export const OverviewTab = () => {
                   dataKey="Count"
                   label
                 >
-                  {qualityAspectsChartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                  {filteredQualityAspects.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -281,38 +283,43 @@ export const OverviewTab = () => {
               <Text>Top 3 lowest Quality Characteristics:</Text>
             </Box>
             <Box>
-              {topProblematicQualityAspects.map((item, index) => (
-                <HoverCard.Root key={index}>
-                  <HoverCard.Trigger>
-                    <Button
-                      onClick={toggleOverviewList}
-                      style={{ background: "none" }}
-                    >
-                      <Text as="p">
-                        <Link href="#">
-                          {item.name}: {item.details.value.toFixed(3)}
-                        </Link>
+              <Flex direction="column" gap="7" align="start">
+                {topProblematicQualityAspects.map((item, index) => (
+                  <HoverCard.Root key={index}>
+                    <HoverCard.Trigger>
+                      <Button
+                        onClick={toggleOverviewList}
+                        style={{ background: "none" }}
+                      >
+                        <Text as="p">
+                          <Link href="#">
+                            {item.name}: {item.details.value.toFixed(3)}
+                          </Link>
+                        </Text>
+                      </Button>
+                    </HoverCard.Trigger>
+                    <HoverCard.Content>
+                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                        <Text as="p">
+                          <Strong>Name:</Strong> {item.name}
+                        </Text>
+                        <Text as="p">
+                          <Strong>Value:</Strong>{" "}
+                          {item.details.value.toFixed(3)}
+                        </Text>
+                        <Text as="p">
+                          <Strong>Impact to TQI:</Strong>{" "}
+                          {item.weight.toFixed(3)}
+                        </Text>
+                        <Text as="p">
+                          <Strong>Description:</Strong>{" "}
+                          {item.details.description}
+                        </Text>
                       </Text>
-                    </Button>
-                  </HoverCard.Trigger>
-                  <HoverCard.Content>
-                    <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                      <Text as="p">
-                        <Strong>Name:</Strong> {item.name}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Value:</Strong> {item.details.value.toFixed(3)}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Impact to TQI:</Strong> {item.weight.toFixed(3)}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Description:</Strong> {item.details.description}
-                      </Text>
-                    </Text>
-                  </HoverCard.Content>
-                </HoverCard.Root>
-              ))}
+                    </HoverCard.Content>
+                  </HoverCard.Root>
+                ))}
+              </Flex>
             </Box>
           </Flex>
         </Flex>
@@ -348,14 +355,12 @@ export const OverviewTab = () => {
             gap={"5"}
             style={{ flexBasis: "30%" }}
           >
-            <Box>
-              <Text> Risk Level Distribution</Text>
-            </Box>
+            <Box>{/* <Text> Risk Level Distribution</Text> */}</Box>
             <Box>
               {/* Pie chart visualization */}
               <PieChart width={300} height={300}>
                 <Pie
-                  data={productFactorsChartData}
+                  data={filteredProductFactors}
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
@@ -363,11 +368,8 @@ export const OverviewTab = () => {
                   dataKey="Count"
                   label
                 >
-                  {productFactorsChartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                  {filteredProductFactors.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -385,45 +387,49 @@ export const OverviewTab = () => {
               <Text>Top 3 lowest Factors:</Text>
             </Box>
             <Box>
-              {topProblematicProductFactors.map((item, index) => (
-                <HoverCard.Root key={index}>
-                  <HoverCard.Trigger>
-                    <Button
-                      onClick={toggleOverviewList}
-                      style={{ background: "none" }}
-                    >
-                      <Text as="p">
-                        <Link href="#">
-                          {item.name}: {item.details.value.toFixed(3)}
-                        </Link>
-                      </Text>
-                    </Button>
-                  </HoverCard.Trigger>
-                  <HoverCard.Content>
-                    <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                      <Text as="p">
-                        <Strong>Name:</Strong> {item.name}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Value:</Strong> {item.details.value.toFixed(3)}
-                      </Text>
-                      <Text as="p">
-                        <Strong>
-                          Impact to corresponding Characteristics:
-                        </Strong>
-                      </Text>
-                      {item.impacts.map((impact, idx) => (
-                        <Text as="p" key={idx}>
-                          {impact.aspectName}: {impact.weight.toFixed(3)}
+              <Flex direction="column" gap="7" align="start">
+                {topProblematicProductFactors.map((item, index) => (
+                  <HoverCard.Root key={index}>
+                    <HoverCard.Trigger>
+                      <Button
+                        onClick={toggleOverviewList}
+                        style={{ background: "none" }}
+                      >
+                        <Text as="p">
+                          <Link href="#">
+                            {item.name}: {item.details.value.toFixed(3)}
+                          </Link>
                         </Text>
-                      ))}
-                      <Text as="p">
-                        <Strong>Description:</Strong> {item.details.description}
+                      </Button>
+                    </HoverCard.Trigger>
+                    <HoverCard.Content>
+                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                        <Text as="p">
+                          <Strong>Name:</Strong> {item.name}
+                        </Text>
+                        <Text as="p">
+                          <Strong>Value:</Strong>{" "}
+                          {item.details.value.toFixed(3)}
+                        </Text>
+                        <Text as="p">
+                          <Strong>
+                            Impact to corresponding Characteristics:
+                          </Strong>
+                        </Text>
+                        {item.impacts.map((impact, idx) => (
+                          <Text as="p" key={idx}>
+                            {impact.aspectName}: {impact.weight.toFixed(3)}
+                          </Text>
+                        ))}
+                        <Text as="p">
+                          <Strong>Description:</Strong>{" "}
+                          {item.details.description}
+                        </Text>
                       </Text>
-                    </Text>
-                  </HoverCard.Content>
-                </HoverCard.Root>
-              ))}
+                    </HoverCard.Content>
+                  </HoverCard.Root>
+                ))}
+              </Flex>
             </Box>
           </Flex>
         </Flex>
