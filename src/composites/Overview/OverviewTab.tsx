@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useAtomValue } from "jotai";
-import * as Schema from "../../../data/schema";
-import { State } from "../../../state";
+import * as Schema from "../../data/schema";
+import { State } from "../../state";
 import {
   Theme,
   Flex,

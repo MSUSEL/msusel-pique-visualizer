@@ -7,7 +7,7 @@ import { useProcessedData } from "./data/useProcessedData";
 
 import { ButtonContainer } from "./composites/FeaturesContainer/ButtonContainer";
 
-import { OverviewTab } from "./composites/FeaturesContainer/Overview/OverviewTab";
+import { OverviewTab } from "./composites/Overview/OverviewTab";
 import { LegendContainer } from "./composites/LegendContainer/Legend";
 import { TreeDisplay } from "./composites/TreeDisplay/TreeDisplay";
 import { ListDisplay } from "./composites/ListDisplay/ListDisplay";

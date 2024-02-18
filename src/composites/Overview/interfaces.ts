@@ -1,4 +1,4 @@
-import * as Schema from "../../../data/schema";
+import * as Schema from "../../data/schema";
 export interface ListProps {
   section: string;
   riskLvl: string;

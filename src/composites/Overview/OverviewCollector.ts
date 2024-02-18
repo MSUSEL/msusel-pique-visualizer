@@ -1,5 +1,5 @@
 import { OverviewData } from "./index.ts";
-import * as Schema from "../../../data/schema.ts";
+import * as Schema from "../../data/schema.ts";
 
 //Reads through dataset information and targets specific data
 // from it to display information more easily in surrounding
