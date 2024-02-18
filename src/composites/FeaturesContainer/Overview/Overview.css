@@ -11,6 +11,7 @@ button {
   border-style: solid;
   border-width: 1px;
   color: var(--mauve-11);
+  height: 100%;
 }
 
 .AccordionRoot {
@@ -50,8 +51,9 @@ button {
   justify-content: space-between;
   font-size: 15px;
   line-height: 1;
-  box-shadow: 0 1px 0 var(--mauve-6);
-  color: var(--mauve-11);
+  /*box-shadow: 0 1px 0 var(--mauve-6);*/
+  /*color: var(--mauve-11);*/
+  color: gray
 }
 
 .AccordionTrigger:hover {

@@ -5,27 +5,27 @@
 const Severe = {
   name: "Severe",
   // color: "#E58F8F",
-  color: "#f3000d", //14
+  color: "#f3000d80", //14
 };
 const High = {
   name: "High",
   // color: "#ffa500",
-  color: "#ff9c00", //29
+  color: "#ff9c0080", //29
 };
 const Elevated = {
   name: "Elevated",
   // color: "#E9DB7D",
-  color: "#ffee00", //47
+  color: "#ffee0080", //47
 };
 const Guarded = {
   name: "Guarded",
   // color: "#8DB1E0",
-  color: "#008ff519", //19
+  color: "#008ff580", //19
 };
 const Low = {
   name: "Low",
   // color: "#8FBC94",
-  color: "#00a433", //19
+  color: "#00a43380", //19
   
 };
 

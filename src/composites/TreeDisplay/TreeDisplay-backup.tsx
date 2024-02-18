@@ -60,12 +60,10 @@ export function TreeDisplay(props) {
 
   const [measureWithParentsShowing, setMeasureWithParentsShowing] =
     useState(null);
-    
   const [
     measureWithParentsShowingCoordinates,
     setMeasureWithParentsShowingCoordinates,
   ] = useState([]);
-
   const [measuresWithMultipleParents] = useState(() => {
     let measures = {};
     for (let measure in props.fileData.measures) {
