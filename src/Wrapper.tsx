@@ -231,6 +231,7 @@ export const Wrapper = () => {
                 height: "100%",
                 overflowY: "auto",
                 paddingLeft: "50px",
+                zIndex: 1040,
               }}
             >
               <ConfigurationContainer />
