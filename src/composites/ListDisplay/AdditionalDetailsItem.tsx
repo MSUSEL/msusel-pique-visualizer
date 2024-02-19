@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 import { StyledTrigger, StyledContent, StyledItem } from "./StyledComponents";
@@ -15,14 +15,20 @@ const AdditionalDetailsItem: React.FC<AdditionalDetailsItemProps> = ({
   value,
   depth,
 }) => {
+  const [open, setOpen] = useState(false);
+
   const isNestedObject =
     typeof value === "object" && value !== null && !Array.isArray(value);
+
+  const handleTriggerClick = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
 
   if (isNestedObject) {
     return (
       <Accordion.Item key={String(itemKey)} value={String(itemKey)}>
-        <StyledTrigger style={{ marginLeft: `${depth * 10}px` }}>
-          {String(itemKey)} <ChevronDownIcon />
+        <StyledTrigger onClick={handleTriggerClick} style={{ marginLeft: `${depth * 10}px` }}>
+          {String(itemKey)} {open ? <ChevronUpIcon /> : <ChevronDownIcon />}
         </StyledTrigger>
         <StyledContent>
           {Object.entries(value).map(([nestedKey, nestedValue]) => (
