@@ -1,5 +1,3 @@
-import { useAtomValue } from "jotai";
-import { State } from "../../state";
 import { Flex, Box } from "@radix-ui/themes";
 import * as Tabs from "@radix-ui/react-tabs";
 import { SortButton } from "./SortButton";
@@ -12,9 +10,10 @@ import {
   MixerHorizontalIcon,
   ResetIcon,
 } from "@radix-ui/react-icons";
-import * as Separator from "@radix-ui/react-separator";
+import * as Separator from '@radix-ui/react-separator';
 import "../Style/Slider.css";
-import "../Style/Tab.css";
+import "../Style/LeftButtonBarTab.css";
+import "../Style/Separator.css"
 
 export const ButtonContainer = () => {
   return (
@@ -26,21 +25,23 @@ export const ButtonContainer = () => {
             <MagicWandIcon />
             Quick Actions
           </Tabs.Trigger>
-          <Tabs.Trigger value="sort" className="TabsTrigger">
+          {/* <Tabs.Trigger value="sort" className="TabsTrigger">
             <CaretSortIcon />
             Sort
           </Tabs.Trigger>
           <Tabs.Trigger value="filter" className="TabsTrigger">
             <MixerHorizontalIcon />
             Filter
-          </Tabs.Trigger>
+          </Tabs.Trigger> 
           <Tabs.Trigger value="reset" className="TabsTrigger">
             <ResetIcon />
             Reset
+          </Tabs.Trigger> */}
+          <Tabs.Trigger value="sortandfilter" className="TabsTrigger">
+            <MixerHorizontalIcon />
+            Sort and Filter
           </Tabs.Trigger>
         </Tabs.List>
-
-        {/* Quick Actions */}
 
         <Flex>
           <Tabs.Content value="quick" className="TabsContent">
@@ -49,22 +50,34 @@ export const ButtonContainer = () => {
             </Box>
           </Tabs.Content>
 
-          {/* Sort */}
-          <Tabs.Content value="sort" className="TabsContent">
+          {/* <Tabs.Content value="sort" className="TabsContent">
             <Box width="100%">
               <SortButton />
             </Box>
           </Tabs.Content>
 
-          {/* Filter */}
           <Tabs.Content value="filter" className="TabsContent">
             <Box width="100%">
               <FilterButton />
             </Box>
-          </Tabs.Content>
+          </Tabs.Content> 
 
-          {/* Reset */}
           <Tabs.Content value="reset" className="TabsContent">
+            <Box width="100%">
+              <ResetButton />
+            </Box>
+          </Tabs.Content>*/}
+
+          <Tabs.Content value="sortandfilter" className="TabsContent">
+            <Flex direction={"column"}></Flex>
+            <Box width="100%">
+              <SortButton />
+            </Box>
+            <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
+            <Box width="100%">
+              <FilterButton />
+            </Box>
+            <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
             <Box width="100%">
               <ResetButton />
             </Box>
