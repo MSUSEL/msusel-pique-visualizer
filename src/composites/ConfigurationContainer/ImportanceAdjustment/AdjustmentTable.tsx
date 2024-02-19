@@ -79,16 +79,6 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
     onResetApplied();
   };
 
-  // Calculate total importance for normalization
-  const totalImportance = useMemo(
-    () =>
-      Object.values(sliderValues).reduce(
-        (sum, importance) => sum + importance,
-        0
-      ),
-    [sliderValues]
-  );
-
   // Recalculate weights based on slider adjustments
   const recalculatedWeights = useMemo(() => {
     const newWeights: Weights = {};
@@ -120,6 +110,24 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
       0
     );
   }, [recalculatedWeights, dataset]);
+
+  // Function to handle the download action
+  const handleDownload = () => {
+    const dataToDownload = {
+      recalculatedWeights,
+    };
+
+    const json = JSON.stringify(dataToDownload, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "adjuested-weights.json"; // todo: implement naming formats to indicate what are changed.
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <Flex direction={"column"} align={"center"}>
@@ -247,6 +255,7 @@ export const AdjustmentTable: React.FC<AdjustmentTableProps> = ({
           <Box>
             <Button
               variant={"surface"}
+              onClick={handleDownload}
               style={{ width: "100%", height: "30px" }}
             >
               <DownloadIcon width="16" height="16" />
