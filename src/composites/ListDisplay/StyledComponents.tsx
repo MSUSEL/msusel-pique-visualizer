@@ -4,13 +4,12 @@ import { styled } from '@stitches/react';
 
 // Styled components to differentiate between different levels
 export const StyledTrigger = styled(Accordion.Trigger, {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'white',
     padding: '10px',
-    borderRadius: '4px',
     cursor: 'pointer',
     fontWeight: 'bold',
-    margin: '5px 0',
-    '&[data-state="closed"]': { backgroundColor: '#e0e0e0' },
+    margin: '0px 0',
+    '&[data-state="closed"]': { backgroundColor: 'white' },
     '&[data-state="open"]': { backgroundColor: '#d0d0d0' },
 });
 
