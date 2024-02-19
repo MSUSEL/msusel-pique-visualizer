@@ -2,7 +2,12 @@ import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { State } from "./state";
 import { Box, IconButton, Tabs, Flex, Heading } from "@radix-ui/themes";
-import { GearIcon, PinLeftIcon, PinRightIcon } from "@radix-ui/react-icons";
+import {
+  GearIcon,
+  PinLeftIcon,
+  PinRightIcon,
+  HamburgerMenuIcon,
+} from "@radix-ui/react-icons";
 import { useProcessedData } from "./data/useProcessedData";
 
 import { ButtonContainer } from "./composites/FeaturesContainer/ButtonContainer";
@@ -22,8 +27,8 @@ export const Wrapper = () => {
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
-  const leftSidebarWidthExpanded = "20vw"; // 20% of the viewport width
-  const rightSidebarWidthExpanded = "20vw"; // 20% of the viewport width
+  const leftSidebarWidthExpanded = "25vw"; // 20% of the viewport width
+  const rightSidebarWidthExpanded = "30vw"; // 20% of the viewport width
   const sidebarWidthCollapsed = "50px";
 
   const leftWidth = isLeftSidebarOpen
@@ -32,7 +37,8 @@ export const Wrapper = () => {
   const rightWidth = isRightSidebarOpen
     ? rightSidebarWidthExpanded
     : sidebarWidthCollapsed;
-  const middleWidth = `calc(100vw - (${leftWidth} + ${rightWidth}))`;
+  // const middleWidth = `calc(100vw - (${leftWidth} + ${rightWidth}))`;
+  const middleWidth = `calc(100vw - (${leftWidth})`;
 
   return (
     <div
@@ -188,11 +194,14 @@ export const Wrapper = () => {
           direction="column"
           style={{
             width: isRightSidebarOpen ? rightWidth : "50px",
+            height: "100vh", // instead of 100%
+            position: "fixed", //relative
+            top: "0",
+            right: "0",
             transition: "width 0.3s ease-in-out",
-            position: "relative",
-            flexShrink: 0,
+            zIndex: 1050,
+            // flexShrink: 0,
             overflow: "hidden",
-            height: "100%",
           }}
         >
           {/* GearIcon to toggle the sidebar */}
@@ -204,12 +213,13 @@ export const Wrapper = () => {
               position: "absolute",
               top: "10px",
               left: isRightSidebarOpen ? "10px" : "0px",
-              zIndex: 2,
-              transition: "left 0.3s ease-in-out",
+              // right: isRightSidebarOpen ? 'calc(100% - 40px)' : '10px',
+              zIndex: 1050,
+              transition: "right 0.3s ease-in-out", //left
             }}
             onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
           >
-            <GearIcon />
+            <HamburgerMenuIcon />
           </IconButton>
 
           {/* Right Sidebar Content */}

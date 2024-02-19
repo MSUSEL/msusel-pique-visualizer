@@ -6,43 +6,43 @@ import { ConfigurationSummary } from "./Summary";
 import { ImportanceAdjustment } from "./ImportanceAdjustment";
 import { NodeValueAdjustment } from "./NodeValueAdjustment";
 import "../Style/Separator.css";
-import "../Style/Tab.css";
+import "../Style/ConfigTab.css";
 
 export const ConfigurationContainer = () => {
   return (
     // Change Flex direction to 'column' for vertical layout
     <Flex direction={"column"} gap={"3"} align={"start"}>
       <Flex>
-        <Tabs.Root className="TabsRoot" defaultValue="summary">
-          <Tabs.List className="TabsList">
-            <Tabs.Trigger className="TabsTrigger" value="summary">
+        <Tabs.Root className="ConfigTab--TabsRoot" defaultValue="summary">
+          <Tabs.List className="ConfigTab--TabsList">
+            <Tabs.Trigger className="ConfigTab--TabsTrigger" value="summary">
               <Strong>(In Progress)</Strong> Summary
             </Tabs.Trigger>
-            <Tabs.Trigger className="TabsTrigger" value="importance">
+            <Tabs.Trigger className="ConfigTab--TabsTrigger" value="importance">
               Importance Adjustment
             </Tabs.Trigger>
-            <Tabs.Trigger className="TabsTrigger" value="value">
+            {/* <Tabs.Trigger className="ConfigTab--TabsTrigger" value="value">
               <Strong>(In Progress)</Strong> Value Adjustment
-            </Tabs.Trigger>
+            </Tabs.Trigger> */}
           </Tabs.List>
 
           <Flex>
             {/* Current Configuration Summary */}
-            <Tabs.Content className="TabsContent" value="summary">
+            <Tabs.Content className="ConfigTab--TabsContent" value="summary">
               <Box width="100%">
                 <ConfigurationSummary />
               </Box>
             </Tabs.Content>
 
             {/* dynamic importance adjustment */}
-            <Tabs.Content className="TabsContent" value="importance">
+            <Tabs.Content className="ConfigTab--TabsContent" value="importance">
               <Box width="100%">
                 <ImportanceAdjustment />
               </Box>
             </Tabs.Content>
 
             {/* dynamic value adjustment */}
-            <Tabs.Content className="TabsContent" value="value">
+            <Tabs.Content className="ConfigTab--TabsContent" value="value">
               <Box width="100%">
                 <NodeValueAdjustment />
               </Box>

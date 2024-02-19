@@ -175,7 +175,7 @@ export const FilterButton = () => {
 
       <Flex direction={"column"} align={"start"}>
         {/* Filter by risk level */}
-        <Box style={{ width: "100%" }}>
+        <Box style={{ width: "100%" }}> 
           <DropdownMenu.Root>
             <DropdownMenu.Trigger>
               <Button
