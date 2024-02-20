@@ -19,6 +19,14 @@ import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import { OverviewList } from ".";
 import "./Overview.css";
 import "@radix-ui/colors/mauve.css";
+import {
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatArrow,
+  StatGroup,
+} from "@chakra-ui/react";
 
 interface FilterableItem {
   value: number;
@@ -689,7 +697,7 @@ export const OverviewTab = () => {
             style={{ flexBasis: "30%" }}
           >
             <Box>
-              <Text>Top 3 Problematic Factors:</Text>
+              <Text>Top 3 Problematic Diagnostics:</Text>
             </Box>
             <Box>
               <Flex direction="column" gap="7" align="start">
@@ -702,7 +710,13 @@ export const OverviewTab = () => {
                       >
                         <Text as="p">
                           <Link href="#">
-                            {item.name}: {item.details.value.toFixed(3)}
+                            {/* {item.name}: {item.details.value.toFixed(3)} */}
+                            <Stat>
+                              <StatLabel>{item.name}</StatLabel>
+                              <StatNumber>
+                                {item.details.value.toFixed(3)}
+                              </StatNumber>
+                            </Stat>
                           </Link>
                         </Text>
                       </Button>
