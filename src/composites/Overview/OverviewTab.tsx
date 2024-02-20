@@ -185,11 +185,11 @@ export const OverviewTab = () => {
 
   // Define colors for each slice of the pie chart
   const COLORS: { [key: string]: string } = {
-    Severe: "red",
-    High: "orange",
-    Moderate: "yellow",
-    Minor: "blue",
-    Insignificant: "green",
+    Severe: "#f3000d80",
+    High: "#ff9c0080",
+    Moderate: "#ffee0080",
+    Minor: "#008ff580",
+    Insignificant: "#00a43380",
   };
 
   // Get top 3 problematic objects for characteristics, factors, measures, and diagnostics
@@ -412,7 +412,7 @@ export const OverviewTab = () => {
                       >
                         <Text as="p">
                           <Link href="#">
-                            {item.name}: {item.details.value.toFixed(3)}
+                            {item.name}: <Strong style={{ color: '#0070f3', fontSize: "1.2em" }}>{item.details.value.toFixed(3)}</Strong>
                           </Link>
                         </Text>
                       </Button>
