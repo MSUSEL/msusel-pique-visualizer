@@ -60,7 +60,7 @@ export function TreeDisplay(props) {
 
   const [measureWithParentsShowing, setMeasureWithParentsShowing] =
     useState(null);
-    
+
   const [
     measureWithParentsShowingCoordinates,
     setMeasureWithParentsShowingCoordinates,
@@ -563,7 +563,7 @@ export function TreeDisplay(props) {
 
     svg
       .append("text")
-      .text(treeNodes[0].json_data.value.toFixed(4))
+      .text(treeNodes[0].json_data.value.toFixed(2))
       .attr("font-size", "12px")
       .attr("x", treeNodes[0].x + node_width * 0.5)
       .attr("y", treeNodes[0].y + node_height * 0.6)
@@ -610,7 +610,7 @@ export function TreeDisplay(props) {
 
       svg
         .append("text")
-        .text(treeNodes[item].json_data.value.toFixed(4))
+        .text(treeNodes[item].json_data.value.toFixed(2))
         .attr("font-size", "12px")
         .attr("x", treeNodes[item].x + node_width * 0.5)
         .attr("y", treeNodes[item].y + node_height * 0.6)
@@ -909,7 +909,7 @@ export function TreeDisplay(props) {
                 .append("text")
                 .text(
                   props.fileData["diagnostics"][diagnostic_name].value.toFixed(
-                    4
+                    0
                   )
                 )
                 .attr("font-size", "11px")
@@ -972,7 +972,7 @@ export function TreeDisplay(props) {
 
           svg
             .append("text")
-            .text(props.fileData.measures[measure_name].value.toFixed(4))
+            .text(props.fileData.measures[measure_name].value.toFixed(2))
             .attr("font-size", "11px")
             .attr("x", x_cor + node_width * 0.5)
             .attr("y", y_cor + node_height * 0.6)
@@ -1026,7 +1026,7 @@ export function TreeDisplay(props) {
 
       svg
         .append("text")
-        .text(p_factors[i].json_data.value.toFixed(4))
+        .text(p_factors[i].json_data.value.toFixed(2))
         .attr("font-size", "11px")
         .attr("x", p_factors[i].x + p_factor_width * 0.5)
         .attr("y", p_factors[i].y + p_factor_height * 0.6)
