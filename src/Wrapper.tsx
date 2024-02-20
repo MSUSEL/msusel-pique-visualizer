@@ -219,7 +219,7 @@ export const Wrapper = () => {
             }}
             onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
           >
-            <HamburgerMenuIcon />
+            <GearIcon />
           </IconButton>
 
           {/* Right Sidebar Content */}

@@ -13,47 +13,38 @@ export const OverviewDropList = (props: DropListData): React.ReactNode => {
     props.ovData
   );
 
-  if (targetArray.length === 0) {
-    /* Returns a paragraph in place of a descriptive list */
-    return (
-      <Accordion.Item value="noNodes">
-        No nodes match this risk level
-      </Accordion.Item>
-    );
-  } else {
-    const items = targetArray.map((item, index: number) => (
-      <Box className="DroppedContent" key={index}>
-        <Strong style={{ padding: "8px" }}>{item.name}</Strong>
-        <Table.Root>
-          <Table.Body>
+  const items = targetArray.map((item, index: number) => (
+    <Box className="DroppedContent" key={index}>
+      <Strong style={{ padding: "8px" }}>{item.name}</Strong>
+      <Table.Root>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell>Value: </Table.Cell>
+            <Table.Cell>{item.value.toPrecision(2)}</Table.Cell>
+          </Table.Row>
+          {item.description && (
             <Table.Row>
-              <Table.Cell>Value: </Table.Cell>
-              <Table.Cell>{item.value.toPrecision(2)}</Table.Cell>
+              <Table.Cell>Description: </Table.Cell>
+              <Table.Cell>{item.description}</Table.Cell>
             </Table.Row>
-            {item.description && (
-              <Table.Row>
-                <Table.Cell>Description: </Table.Cell>
-                <Table.Cell>{item.description}</Table.Cell>
-              </Table.Row>
-            )}
-            <Table.Row>
-              <Table.Cell>Evaluation Strategy: </Table.Cell>
-              <Table.Cell>{item.eval_strategy}</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Normalizer: </Table.Cell>
-              <Table.Cell>{item.normalizer}</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Utility Function: </Table.Cell>
-              <Table.Cell>{item.utility_function}</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table.Root>
-      </Box>
-    ));
-    return <Box>{items}</Box>;
-  }
+          )}
+          <Table.Row>
+            <Table.Cell>Evaluation Strategy: </Table.Cell>
+            <Table.Cell>{item.eval_strategy}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>Normalizer: </Table.Cell>
+            <Table.Cell>{item.normalizer}</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>Utility Function: </Table.Cell>
+            <Table.Cell>{item.utility_function}</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>
+    </Box>
+  ));
+  return <Box>{items}</Box>;
 };
 
 function getRelatedArray(

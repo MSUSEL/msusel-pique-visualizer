@@ -3,7 +3,6 @@ import { useAtomValue } from "jotai";
 import * as Schema from "../../data/schema";
 import { State } from "../../state";
 import {
-  Theme,
   Flex,
   Text,
   Box,
@@ -15,12 +14,7 @@ import {
   Badge,
   Strong,
 } from "@radix-ui/themes";
-import {
-  ChevronUpIcon,
-  ChevronDownIcon,
-  HamburgerMenuIcon,
-  Cross1Icon,
-} from "@radix-ui/react-icons";
+import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import { OverviewList } from ".";
 import "./Overview.css";
@@ -49,24 +43,51 @@ function classifyNestedObjRiskLevel(
 
   for (const key in obj) {
     const item = obj[key];
-    if (item.value < 0.2) {
+    if (item.value <= 0.2) {
       riskCounts[0]++;
       riskSubObjNames[0].push(item.name);
-    } else if (item.value >= 0.2 && item.value < 0.4) {
+    } else if (item.value > 0.2 && item.value <= 0.4) {
       riskCounts[1]++;
       riskSubObjNames[1].push(item.name);
-    } else if (item.value >= 0.4 && item.value < 0.6) {
+    } else if (item.value > 0.4 && item.value <= 0.6) {
       riskCounts[2]++;
       riskSubObjNames[2].push(item.name);
-    } else if (item.value >= 0.6 && item.value < 0.8) {
+    } else if (item.value > 0.6 && item.value <= 0.8) {
       riskCounts[3]++;
       riskSubObjNames[3].push(item.name);
-    } else if (item.value >= 0.8) {
+    } else if (item.value > 0.8) {
       riskCounts[4]++;
       riskSubObjNames[4].push(item.name);
     }
   }
+  return [riskCounts, riskSubObjNames];
+}
 
+function classifyDiagnosticsRiskLevel(
+  obj: Record<string, FilterableItem>
+): [number[], string[][]] {
+  const riskCounts = [0, 0, 0, 0, 0];
+  const riskSubObjNames: string[][] = [[], [], [], [], []];
+
+  for (const key in obj) {
+    const item = obj[key];
+    if (item.value < 0.2) {
+      riskCounts[4]++;
+      riskSubObjNames[4].push(item.name);
+    } else if (item.value <= 0.5) {
+      riskCounts[3]++;
+      riskSubObjNames[3].push(item.name);
+    } else if (item.value <= 0.8) {
+      riskCounts[2]++;
+      riskSubObjNames[2].push(item.name);
+    } else if (item.value <= 1.5) {
+      riskCounts[1]++;
+      riskSubObjNames[1].push(item.name);
+    } else {
+      riskCounts[0]++;
+      riskSubObjNames[0].push(item.name);
+    }
+  }
   return [riskCounts, riskSubObjNames];
 }
 
@@ -107,6 +128,14 @@ export const OverviewTab = () => {
         : null,
     [dataset]
   );
+  const measuresRiskData = useMemo(
+    () => (dataset ? classifyNestedObjRiskLevel(dataset.measures) : null),
+    [dataset]
+  );
+  const diagnosticsRiskData = useMemo(
+    () => (dataset ? classifyDiagnosticsRiskLevel(dataset.diagnostics) : null),
+    [dataset]
+  );
 
   // Determine the risk level and name for TQI
   const tqiRiskLevel = useMemo(() => {
@@ -137,11 +166,25 @@ export const OverviewTab = () => {
     () => generateChartData(productFactorsRiskData),
     [productFactorsRiskData]
   );
+  const measuresChartData = useMemo(
+    () => generateChartData(measuresRiskData),
+    [measuresRiskData]
+  );
+  const diagnosticsChartData = useMemo(
+    () => generateChartData(diagnosticsRiskData),
+    [diagnosticsRiskData]
+  );
 
   // Define colors for each slice of the pie chart
-  const COLORS = ["red", "orange", "yellow", "blue", "green"];
+  const COLORS: { [key: string]: string } = {
+    Severe: "red",
+    High: "orange",
+    Moderate: "yellow",
+    Minor: "blue",
+    Insignificant: "green",
+  };
 
-  // Get top 3 problematic objects for characteristics and factors
+  // Get top 3 problematic objects for characteristics, factors, measures, and diagnostics
   const topProblematicQualityAspects = useMemo(() => {
     if (!qualityAspectsRiskData || !dataset) return [];
 
@@ -188,13 +231,89 @@ export const OverviewTab = () => {
       });
   }, [productFactorsRiskData, dataset]);
 
+  const topProblematicMeasures = useMemo(() => {
+    if (!measuresRiskData || !dataset) return [];
+
+    const [_, riskSubObjNames] = measuresRiskData;
+    return riskSubObjNames
+      .flat()
+      .map((measureName) => {
+        const details = dataset.measures[measureName];
+        return {
+          name: measureName,
+          value: details.value,
+          details,
+        };
+      })
+      .sort((a, b) => a.value - b.value)
+      .slice(0, 3)
+      .map(({ name, details }) => {
+        const impacts: Impact[] = [];
+        Object.entries(dataset.factors.product_factors).forEach(
+          ([productFactorName, productFactor]) => {
+            if (name in productFactor.weights) {
+              impacts.push({
+                aspectName: productFactorName,
+                weight: productFactor.weights[name],
+              });
+            }
+          }
+        );
+        return { name, details, impacts };
+      });
+  }, [measuresRiskData, dataset]);
+
+  const topProblematicDiagnostics = useMemo(() => {
+    if (!diagnosticsRiskData || !dataset) return [];
+
+    const [_, riskSubObjNames] = diagnosticsRiskData;
+    return riskSubObjNames
+      .flat()
+      .map((diagnosticsName) => {
+        const details = dataset.diagnostics[diagnosticsName];
+        return {
+          name: diagnosticsName,
+          value: details.value,
+          details,
+        };
+      })
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3)
+      .map(({ name, details }) => {
+        const impacts: Impact[] = [];
+        Object.entries(dataset.measures).forEach(([measureName, measure]) => {
+          if (name in measure.weights) {
+            impacts.push({
+              aspectName: measureName,
+              weight: measure.weights[name],
+            });
+          }
+        });
+        return { name, details, impacts };
+      });
+  }, [diagnosticsRiskData, dataset]);
+
+  // filter out risk level counts = 0
+  const filteredQualityAspects = qualityAspectsChartData.filter(
+    (entry) => entry.Count !== 0
+  );
+  const filteredProductFactors = productFactorsChartData.filter(
+    (entry) => entry.Count !== 0
+  );
+  const filteredMeasures = measuresChartData.filter(
+    (entry) => entry.Count !== 0
+  );
+  const filteredDiagnostics = diagnosticsChartData.filter(
+    (entry) => entry.Count !== 0
+  );
+
   return (
     <Flex direction={"row"} gap={"3"}>
       <Flex
         direction={"column"}
         gap={"3"}
         align={"center"}
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginTop: "24px" }}
       >
         <Flex
           direction={"row"}
@@ -214,7 +333,7 @@ export const OverviewTab = () => {
         </Flex>
 
         <Separator my="3" size="4" />
-
+        {/* characteristics */}
         <Flex direction={"row"} style={{ width: "100%" }} justify="between">
           <Flex
             direction={"column"}
@@ -224,7 +343,7 @@ export const OverviewTab = () => {
           >
             <Box>
               {" "}
-              <Badge size="2">Charactertistics</Badge>{" "}
+              <Badge size="2">Characteristics</Badge>{" "}
             </Box>
             <Box>
               {/* Display risk counts here */}
@@ -245,13 +364,10 @@ export const OverviewTab = () => {
             style={{ flexBasis: "30%" }}
           >
             <Box>
-              <Text> Risk Level Distribution</Text>
-            </Box>
-            <Box>
               {/* Pie chart visualization */}
               <PieChart width={300} height={300}>
                 <Pie
-                  data={qualityAspectsChartData}
+                  data={filteredQualityAspects}
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
@@ -259,11 +375,8 @@ export const OverviewTab = () => {
                   dataKey="Count"
                   label
                 >
-                  {qualityAspectsChartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                  {filteredQualityAspects.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -278,47 +391,45 @@ export const OverviewTab = () => {
             style={{ flexBasis: "30%" }}
           >
             <Box>
-              <Text>Top 3 lowest Quality Characteristics:</Text>
+              <Text>Top 3 Problematic Quality Characteristics:</Text>
             </Box>
             <Box>
-              {topProblematicQualityAspects.map((item, index) => (
-                <HoverCard.Root key={index}>
-                  <HoverCard.Trigger>
-                    <Button
-                      onClick={toggleOverviewList}
-                      style={{ background: "none" }}
-                    >
-                      <Text as="p">
-                        <Link href="#">
-                          {item.name}: {item.details.value.toFixed(3)}
-                        </Link>
+              <Flex direction="column" gap="7" align="start">
+                {topProblematicQualityAspects.map((item, index) => (
+                  <HoverCard.Root key={index}>
+                    <HoverCard.Trigger>
+                      <Button
+                        onClick={toggleOverviewList}
+                        style={{ background: "none" }}
+                      >
+                        <Text as="p">
+                          <Link href="#">
+                            {item.name}: {item.details.value.toFixed(3)}
+                          </Link>
+                        </Text>
+                      </Button>
+                    </HoverCard.Trigger>
+                    <HoverCard.Content>
+                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                        <Text as="p">
+                          <Strong>Impact to Measures:</Strong>{" "}
+                          {item.weight.toFixed(3)}
+                        </Text>
+                        <Text as="p">
+                          <Strong>Description:</Strong>{" "}
+                          {item.details.description}
+                        </Text>
                       </Text>
-                    </Button>
-                  </HoverCard.Trigger>
-                  <HoverCard.Content>
-                    <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                      <Text as="p">
-                        <Strong>Name:</Strong> {item.name}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Value:</Strong> {item.details.value.toFixed(3)}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Impact to TQI:</Strong> {item.weight.toFixed(3)}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Description:</Strong> {item.details.description}
-                      </Text>
-                    </Text>
-                  </HoverCard.Content>
-                </HoverCard.Root>
-              ))}
+                    </HoverCard.Content>
+                  </HoverCard.Root>
+                ))}
+              </Flex>
             </Box>
           </Flex>
         </Flex>
 
         <Separator my="3" size="4" />
-
+        {/* factors */}
         <Flex direction={"row"} style={{ width: "100%" }} justify="between">
           <Flex
             direction={"column"}
@@ -349,13 +460,10 @@ export const OverviewTab = () => {
             style={{ flexBasis: "30%" }}
           >
             <Box>
-              <Text> Risk Level Distribution</Text>
-            </Box>
-            <Box>
               {/* Pie chart visualization */}
               <PieChart width={300} height={300}>
                 <Pie
-                  data={productFactorsChartData}
+                  data={filteredProductFactors}
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
@@ -363,11 +471,8 @@ export const OverviewTab = () => {
                   dataKey="Count"
                   label
                 >
-                  {productFactorsChartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                  {filteredProductFactors.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -382,48 +487,245 @@ export const OverviewTab = () => {
             style={{ flexBasis: "30%" }}
           >
             <Box>
-              <Text>Top 3 lowest Factors:</Text>
+              <Text>Top 3 Problematic Factors:</Text>
             </Box>
             <Box>
-              {topProblematicProductFactors.map((item, index) => (
-                <HoverCard.Root key={index}>
-                  <HoverCard.Trigger>
-                    <Button
-                      onClick={toggleOverviewList}
-                      style={{ background: "none" }}
-                    >
-                      <Text as="p">
-                        <Link href="#">
-                          {item.name}: {item.details.value.toFixed(3)}
-                        </Link>
-                      </Text>
-                    </Button>
-                  </HoverCard.Trigger>
-                  <HoverCard.Content>
-                    <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                      <Text as="p">
-                        <Strong>Name:</Strong> {item.name}
-                      </Text>
-                      <Text as="p">
-                        <Strong>Value:</Strong> {item.details.value.toFixed(3)}
-                      </Text>
-                      <Text as="p">
-                        <Strong>
-                          Impact to corresponding Characteristics:
-                        </Strong>
-                      </Text>
-                      {item.impacts.map((impact, idx) => (
-                        <Text as="p" key={idx}>
-                          {impact.aspectName}: {impact.weight.toFixed(3)}
+              <Flex direction="column" gap="7" align="start">
+                {topProblematicProductFactors.map((item, index) => (
+                  <HoverCard.Root key={index}>
+                    <HoverCard.Trigger>
+                      <Button
+                        onClick={toggleOverviewList}
+                        style={{ background: "none" }}
+                      >
+                        <Text as="p">
+                          <Link href="#">
+                            {item.name}: {item.details.value.toFixed(3)}
+                          </Link>
                         </Text>
-                      ))}
-                      <Text as="p">
-                        <Strong>Description:</Strong> {item.details.description}
+                      </Button>
+                    </HoverCard.Trigger>
+                    <HoverCard.Content>
+                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                        <Text as="p">
+                          <Strong>
+                            Impact to corresponding Characteristics:
+                          </Strong>
+                        </Text>
+                        {item.impacts.map((impact, idx) => (
+                          <Text as="p" key={idx}>
+                            {impact.aspectName}: {impact.weight.toFixed(3)}
+                          </Text>
+                        ))}
+                        <Text as="p">
+                          <Strong>Description:</Strong>{" "}
+                          {item.details.description}
+                        </Text>
                       </Text>
-                    </Text>
-                  </HoverCard.Content>
-                </HoverCard.Root>
+                    </HoverCard.Content>
+                  </HoverCard.Root>
+                ))}
+              </Flex>
+            </Box>
+          </Flex>
+        </Flex>
+
+        <Separator my="3" size="4" />
+        {/* measure */}
+        <Flex direction={"row"} style={{ width: "100%" }} justify="between">
+          <Flex
+            direction={"column"}
+            align={"center"}
+            gap={"5"}
+            style={{ flexBasis: "30%" }}
+          >
+            <Box>
+              {" "}
+              <Badge size="2">Measures</Badge>{" "}
+            </Box>
+            <Box>
+              {/* Display risk counts here */}
+              {measuresChartData.map((data, index) => (
+                <Text key={index}>
+                  <Text as="p">
+                    {data.name}: {data.Count}
+                  </Text>
+                </Text>
               ))}
+            </Box>
+          </Flex>
+
+          <Flex
+            direction={"column"}
+            align={"center"}
+            gap={"5"}
+            style={{ flexBasis: "30%" }}
+          >
+            <Box>
+              {/* Pie chart visualization */}
+              <PieChart width={300} height={300}>
+                <Pie
+                  data={filteredMeasures}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="Count"
+                  label
+                >
+                  {filteredMeasures.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </Box>
+          </Flex>
+
+          <Flex
+            direction={"column"}
+            align={"center"}
+            gap={"5"}
+            style={{ flexBasis: "30%" }}
+          >
+            <Box>
+              <Text>Top 3 Problematic Measures:</Text>
+            </Box>
+            <Box>
+              <Flex direction="column" gap="7" align="start">
+                {topProblematicMeasures.map((item, index) => (
+                  <HoverCard.Root key={index}>
+                    <HoverCard.Trigger>
+                      <Button
+                        onClick={toggleOverviewList}
+                        style={{ background: "none" }}
+                      >
+                        <Text as="p">
+                          <Link href="#">
+                            {item.name}: {item.details.value.toFixed(3)}
+                          </Link>
+                        </Text>
+                      </Button>
+                    </HoverCard.Trigger>
+                    <HoverCard.Content>
+                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                        <Text as="p">
+                          <Strong>Impact to corresponding factors:</Strong>
+                        </Text>
+                        {item.impacts.map((impact, idx) => (
+                          <Text as="p" key={idx}>
+                            {impact.aspectName}: {impact.weight.toFixed(3)}
+                          </Text>
+                        ))}
+                        <Text as="p">
+                          <Strong>Description:</Strong>{" "}
+                          {item.details.description}
+                        </Text>
+                      </Text>
+                    </HoverCard.Content>
+                  </HoverCard.Root>
+                ))}
+              </Flex>
+            </Box>
+          </Flex>
+        </Flex>
+
+        <Separator my="3" size="4" />
+        {/* diagnostics */}
+        <Flex direction={"row"} style={{ width: "100%" }} justify="between">
+          <Flex
+            direction={"column"}
+            align={"center"}
+            gap={"5"}
+            style={{ flexBasis: "30%" }}
+          >
+            <Box>
+              {" "}
+              <Badge size="2">Diagnostics</Badge>{" "}
+            </Box>
+            <Box>
+              {/* Display risk counts here */}
+              {diagnosticsChartData.map((data, index) => (
+                <Text key={index}>
+                  <Text as="p">
+                    {data.name}: {data.Count}
+                  </Text>
+                </Text>
+              ))}
+            </Box>
+          </Flex>
+
+          <Flex
+            direction={"column"}
+            align={"center"}
+            gap={"5"}
+            style={{ flexBasis: "30%" }}
+          >
+            <Box>
+              {/* Pie chart visualization */}
+              <PieChart width={300} height={300}>
+                <Pie
+                  data={filteredDiagnostics}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="Count"
+                  label
+                >
+                  {filteredDiagnostics.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </Box>
+          </Flex>
+
+          <Flex
+            direction={"column"}
+            align={"center"}
+            gap={"5"}
+            style={{ flexBasis: "30%" }}
+          >
+            <Box>
+              <Text>Top 3 Problematic Factors:</Text>
+            </Box>
+            <Box>
+              <Flex direction="column" gap="7" align="start">
+                {topProblematicDiagnostics.map((item, index) => (
+                  <HoverCard.Root key={index}>
+                    <HoverCard.Trigger>
+                      <Button
+                        onClick={toggleOverviewList}
+                        style={{ background: "none" }}
+                      >
+                        <Text as="p">
+                          <Link href="#">
+                            {item.name}: {item.details.value.toFixed(3)}
+                          </Link>
+                        </Text>
+                      </Button>
+                    </HoverCard.Trigger>
+                    <HoverCard.Content>
+                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                        <Text as="p">
+                          <Strong>Impact to corresponding measures:</Strong>
+                        </Text>
+                        {item.impacts.map((impact, idx) => (
+                          <Text as="p" key={idx}>
+                            {impact.aspectName}: {impact.weight.toFixed(3)}
+                          </Text>
+                        ))}
+                        <Text as="p">
+                          <Strong>Description:</Strong>{" "}
+                          {item.details.description}
+                        </Text>
+                      </Text>
+                    </HoverCard.Content>
+                  </HoverCard.Root>
+                ))}
+              </Flex>
             </Box>
           </Flex>
         </Flex>
