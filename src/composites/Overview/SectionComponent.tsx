@@ -35,6 +35,7 @@ interface Impact {
 interface TopProblematicItem {
   name: string;
   details: FilterableItem;
+  weight?: number;
   impacts?: Impact[];
 }
 
@@ -127,12 +128,19 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                 </HoverCard.Trigger>
                 <HoverCard.Content>
                   <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                    {item.impacts?.map((impact, impactIndex) => (
-                      <Text as="p" key={impactIndex}>
-                        <Strong>Impact to {impact.aspectName} :</Strong>{" "}
-                        {impact.weight.toFixed(3)}
+                    {item.impacts && item.impacts.length > 0 ? (
+                      item.impacts.map((impact, impactIndex) => (
+                        <Text as="p" key={impactIndex}>
+                          <Strong>Impact to {impact.aspectName}:</Strong>{" "}
+                          {impact.weight.toFixed(3)}
+                        </Text>
+                      ))
+                    ) : item.weight !== undefined ? (
+                      <Text as="p">
+                        <Strong>Impact to TQI:</Strong> {item.weight.toFixed(3)}
                       </Text>
-                    ))}
+                    ) : null}
+
                     <Text as="p">
                       <Strong>Description:</Strong>{" "}
                       {item.details.description || "Not Provided"}
