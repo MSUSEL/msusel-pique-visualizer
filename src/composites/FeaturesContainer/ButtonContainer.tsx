@@ -1,47 +1,89 @@
-import { useAtomValue } from "jotai";
-import { State } from "../../state";
-import { Flex } from "@radix-ui/themes";
+import { Flex, Box } from "@radix-ui/themes";
+import * as Tabs from "@radix-ui/react-tabs";
 import { SortButton } from "./SortButton";
 import { FilterButton } from "./FilterButton";
 import { ResetButton } from "./ResetButton";
 import { QuickActionButton } from "./QuickActionButton";
-import { DynamicWeightsButton } from "./DynamicWeightsAdjustSettingWindow";
+import {
+  MagicWandIcon,
+  CaretSortIcon,
+  MixerHorizontalIcon,
+  ResetIcon,
+} from "@radix-ui/react-icons";
 import * as Separator from '@radix-ui/react-separator';
-import "./Separator.css"
+import "../Style/Slider.css";
+import "../Style/LeftButtonBarTab.css";
+import "../Style/Separator.css"
 
 export const ButtonContainer = () => {
-  const dataset = useAtomValue(State.dataset);
-
   return (
     // Change Flex direction to 'column' for vertical layout
     <Flex direction="column" gap="3" align="start">
-      {/* Quick Actions */}
-      
-      <QuickActionButton />
-      <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
-       
+      <Tabs.Root className="TabsRoot" defaultValue="quick">
+        <Tabs.List className="TabsList">
+          <Tabs.Trigger value="quick" className="TabsTrigger">
+            <MagicWandIcon />
+            Quick Actions
+          </Tabs.Trigger>
+          {/* <Tabs.Trigger value="sort" className="TabsTrigger">
+            <CaretSortIcon />
+            Sort
+          </Tabs.Trigger>
+          <Tabs.Trigger value="filter" className="TabsTrigger">
+            <MixerHorizontalIcon />
+            Filter
+          </Tabs.Trigger> 
+          <Tabs.Trigger value="reset" className="TabsTrigger">
+            <ResetIcon />
+            Reset
+          </Tabs.Trigger> */}
+          <Tabs.Trigger value="sortandfilter" className="TabsTrigger">
+            <MixerHorizontalIcon />
+            Sort and Filter
+          </Tabs.Trigger>
+        </Tabs.List>
 
-      {/* Sorting */}
-      <SortButton />
-      <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
-       
+        <Flex>
+          <Tabs.Content value="quick" className="TabsContent">
+            <Box width="100%">
+              <QuickActionButton />
+            </Box>
+          </Tabs.Content>
 
-      {/* Filtering */}
-      <FilterButton />
-      <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
-       
-      {/* reset */}
-      <ResetButton />
-      <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
-       
+          {/* <Tabs.Content value="sort" className="TabsContent">
+            <Box width="100%">
+              <SortButton />
+            </Box>
+          </Tabs.Content>
 
-      {/* descriptive statistics */}
-      {/* <DesStatButton /> */}
-      {/* <Separator orientation="horizontal" /> */} {/* Changed to horizontal */}
+          <Tabs.Content value="filter" className="TabsContent">
+            <Box width="100%">
+              <FilterButton />
+            </Box>
+          </Tabs.Content> 
 
-      {/* Others */}
-      {/* <HideZeroWeightsSwitch /> */}
-      <DynamicWeightsButton />
+          <Tabs.Content value="reset" className="TabsContent">
+            <Box width="100%">
+              <ResetButton />
+            </Box>
+          </Tabs.Content>*/}
+
+          <Tabs.Content value="sortandfilter" className="TabsContent">
+            <Flex direction={"column"}></Flex>
+            <Box width="100%">
+              <SortButton />
+            </Box>
+            <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
+            <Box width="100%">
+              <FilterButton />
+            </Box>
+            <Separator.Root className="SeparatorRoot" style={{ margin: '15px 0' }} />
+            <Box width="100%">
+              <ResetButton />
+            </Box>
+          </Tabs.Content>
+        </Flex>
+      </Tabs.Root>
     </Flex>
   );
 };

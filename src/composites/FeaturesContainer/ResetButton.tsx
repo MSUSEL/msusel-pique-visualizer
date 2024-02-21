@@ -101,24 +101,24 @@ export const ResetButton = () => {
                 </HoverCard.Root>
             </Box>
 
-            <Flex direction={"row"} align={"center"} justify="between" style={{ width: '100%' }}>
-                <Box style={{ flexBasis: '30%' }}>
+            <Flex direction={"row"} align={"center"} justify="center" style={{ width: '100%' }}>
+                <Box>
                     <Button size="2" variant="soft" highContrast onClick={handleSortingReset} style={{ width: '100%' }}>
                         <ResetIcon width="12" height="12" />  Sorting
                     </Button>
                 </Box>
 
-                <Box style={{ flexBasis: '30%' }}>
+                <Box >
                     <Button size="2" variant="soft" highContrast onClick={handleFilteringReset} style={{ width: '100%' }}>
                         <ResetIcon width="12" height="12" /> Filtering
                     </Button>
                 </Box>
 
-                <Box style={{ flexBasis: '30%' }}>
+                {/* <Box>
                     <Button size="2" variant="soft" highContrast onClick={handleReset} style={{ width: '100%' }}>
                         <ResetIcon width="12" height="12" /> Both
                     </Button>
-                </Box>
+                </Box> */}
             </Flex>
 
         </Flex>

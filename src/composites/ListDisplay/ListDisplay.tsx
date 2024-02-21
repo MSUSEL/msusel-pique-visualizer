@@ -1,210 +1,177 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { State } from "../../state";
+import { useState } from "react";
+
 import { Text } from "@radix-ui/themes";
-import * as Accordion from '@radix-ui/react-accordion';
-import { ChevronDownIcon, EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
+import * as Accordion from "@radix-ui/react-accordion";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
 
-import { useState, useMemo } from 'react';
+import { useProcessedData } from "../../data/useProcessedData";
+import { renderDetails, renderMeasuresDetails } from "./RenderDetails";
 
-import { sort } from "../Sorting/Sorting";
-import { filterByWeightRange } from "../Filtering/FilterByWeightRange";
-import { filterByRiskLevels } from "../Filtering/FilterByRiskLevel";
-import { filterByValueRange } from "../Filtering/FilterByValueRange";
-
-import { hideZeroWeightEdges } from "../Filtering/HideZeroWeightEdges";
-
-
-import AdditionalDetailsItem from './AdditionalDetailsItem';
-import * as schema from '../../data/schema';
-
+import "../Style/ListDisplay.css";
 
 export const ListDisplay = () => {
+  // get dataset and processed dataset
   const dataset = useAtomValue(State.dataset);
-  const sortState = useAtomValue(State.sortingState);
-  const filterState = useAtomValue(State.filteringState);
-  const checkboxStates = useAtomValue(State.filteringByRiskLevelCheckboxStates); // Changed to useAtomValue
-  const hideZeroWeightEdgeState = useAtomValue(State.hideZeroWeightEdgeState);
-  const minValueState = useAtomValue(State.minValueState);
-  const maxValueState = useAtomValue(State.maxValueState);
-  const minWeightState = useAtomValue(State.minWeightState);
-  const maxWeightState = useAtomValue(State.maxWeightState);
+  const processedData = useProcessedData();
 
   // State to manage the expanded state of accordion items
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
+    {}
+  );
 
   const toggleItem = (key: string) => {
-    setExpandedItems(prev => ({ ...prev, [key]: !prev[key] }));
+    setExpandedItems((prev) => ({ ...prev, [key]: !prev[key] }));
   };
-
-  const processedData = useMemo(() => {
-    if (!dataset) return null;
-
-    let data = sort(sortState, dataset);
-
-    const isHiding = hideZeroWeightEdgeState === 'hidding';
-    data = hideZeroWeightEdges(data, isHiding);
-
-    data = filterByRiskLevels(data, checkboxStates);
-
-    data = filterByValueRange(data, minValueState, maxValueState);
-
-    data = filterByWeightRange(data, minWeightState, maxWeightState);
-
-    return data;
-  }, [dataset, sortState, filterState, checkboxStates, hideZeroWeightEdgeState,
-    minValueState, maxValueState, minWeightState, maxWeightState]);
-
-
-  const renderDetails = (Data: { [key: string]: any }, toggleItemFn: (key: string) => void, expandedState: Record<string, boolean>) => {
-    return (
-      <Accordion.Root type="multiple" className="AccordionRoot">
-        {Object.entries(Data).map(([key, value]) => {
-          const isExpanded = expandedState[key] || false;
-
-          return (
-            <Accordion.Item key={key} value={key} className="AccordionItem">
-              <Accordion.Header className="AccordionHeader">
-                <Accordion.Trigger className="AccordionTrigger" onClick={() => toggleItemFn(key)}>
-                  {value.name ?? 'N/A'}: {value.value.toFixed(4) ?? 'N/A'}
-                  {isExpanded ? <EyeOpenIcon /> : <EyeClosedIcon />}
-                </Accordion.Trigger>
-              </Accordion.Header>
-              <Accordion.Content className="AccordionContent">
-                {isExpanded && renderAdditionalDetails(value)}
-              </Accordion.Content>
-            </Accordion.Item>
-          );
-        })}
-      </Accordion.Root>
-    );
-  };
-
-
-
-  const renderMeasuresDetails = (measuresData: { [key: string]: any }, toggleItemFn: (key: string) => void, expandedState: Record<string, boolean>) => {
-    return (
-      <Accordion.Root type="multiple" className="AccordionRoot">
-        {Object.entries(measuresData).map(([key, measure]) => {
-          const isExpanded = expandedState[key] || false;
-
-          // Use the key as a fallback if the name property is missing
-          const measureName = measure.name ?? key;
-          const measureValue = measure.value ?? 'N/A';
-
-          return (
-            <Accordion.Item key={key} value={key} className="AccordionItem">
-              <Accordion.Header className="AccordionHeader">
-                <Accordion.Trigger className="AccordionTrigger" onClick={() => toggleItemFn(key)}>
-                  {measureName}: {measureValue}
-                  {isExpanded ? <EyeOpenIcon /> : <EyeClosedIcon />}
-                </Accordion.Trigger>
-              </Accordion.Header>
-              <Accordion.Content className="AccordionContent">
-                {isExpanded && renderAdditionalDetails(measure)}
-              </Accordion.Content>
-            </Accordion.Item>
-          );
-        })}
-      </Accordion.Root>
-    );
-  };
-
-
-
-  const renderAdditionalDetails = (details: { [key: string]: any }, depth: number = 0) => {
-    return (
-      <Accordion.Root type="multiple">
-        {Object.entries(details).map(([key, value]) => {
-          return <AdditionalDetailsItem key={key} itemKey={key} value={value} depth={depth} />;
-        })}
-      </Accordion.Root>
-    );
-  };
-
 
   if (!processedData) {
     return <div>Loading data...</div>;
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       {/* Title */}
-      <Text weight="medium" align="center" size="5" as="div">{dataset?.name}</Text>
+      <Text weight="medium" align="center" size="6" as="div" style={{color: "#444140"}}>
+        {dataset?.name}
+      </Text>
 
       {/* Accordion for different data levels */}
-      <Accordion.Root type="multiple" className="AccordionRoot">
+      <Accordion.Root type="multiple" className="ListDisplay__AccordionRoot">
         {/* 1st level: tqi */}
-        <Accordion.Item value="tqi" className="AccordionItem">
+        <Accordion.Item value="tqi" className="ListDisplay__AccordionItem">
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               TQI
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon
+                className="ListDisplay__AccordionChevron"
+                aria-hidden
+              />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
             {processedData?.factors?.tqi &&
-              renderDetails(processedData.factors.tqi, toggleItem, expandedItems)}
+              renderDetails(
+                processedData.factors.tqi,
+                toggleItem,
+                expandedItems,
+                false
+              )}
           </Accordion.Content>
         </Accordion.Item>
 
         {/* 2nd level: quality_aspects */}
-        <Accordion.Item value="quality_aspects" className="AccordionItem">
+        <Accordion.Item
+          value="quality_aspects"
+          className="ListDisplay__AccordionItem"
+        >
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
-              {Object.keys(processedData?.factors?.quality_aspects || {}).length} Characteristics
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
+              {
+                Object.keys(processedData?.factors?.quality_aspects || {})
+                  .length
+              }{" "}
+              Characteristics
+              <ChevronDownIcon
+                className="ListDisplay__AccordionChevron"
+                aria-hidden
+              />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
             {processedData?.factors?.quality_aspects &&
-              renderDetails(processedData.factors.quality_aspects, toggleItem, expandedItems)}
+              renderDetails(
+                processedData.factors.quality_aspects,
+                toggleItem,
+                expandedItems,
+                false
+              )}
           </Accordion.Content>
         </Accordion.Item>
 
         {/* 3rd level: product_factors */}
-        <Accordion.Item value="product_factors" className="AccordionItem">
+        <Accordion.Item
+          value="product_factors"
+          className="ListDisplay__AccordionItem"
+        >
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
-              {Object.keys(processedData?.factors?.product_factors || {}).length}  Factors
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
+              {
+                Object.keys(processedData?.factors?.product_factors || {})
+                  .length
+              }{" "}
+              Factors
+              <ChevronDownIcon
+                className="ListDisplay__AccordionChevron"
+                aria-hidden
+              />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
             {processedData?.factors?.product_factors &&
-              renderDetails(processedData.factors.product_factors, toggleItem, expandedItems)}
+              renderDetails(
+                processedData.factors.product_factors,
+                toggleItem,
+                expandedItems,
+                false
+              )}
           </Accordion.Content>
         </Accordion.Item>
 
         {/* 4th level: measures */}
-        <Accordion.Item value="measures" className="AccordionItem">
+        <Accordion.Item value="measures" className="ListDisplay__AccordionItem">
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               {Object.keys(processedData?.measures || {}).length} Measures
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon
+                className="ListDisplay__AccordionChevron"
+                aria-hidden
+              />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
             {processedData?.measures &&
-              renderMeasuresDetails(processedData.measures, toggleItem, expandedItems)}
+              renderMeasuresDetails(
+                processedData.measures,
+                toggleItem,
+                expandedItems,
+                false
+              )}
           </Accordion.Content>
         </Accordion.Item>
 
         {/* 5th level: diagnostics */}
-        <Accordion.Item value="diagnostics" className="AccordionItem">
+        <Accordion.Item
+          value="diagnostics"
+          className="ListDisplay__AccordionItem"
+        >
           <Accordion.Header>
-            <Accordion.Trigger className="AccordionTrigger">
+            <Accordion.Trigger className="ListDisplay__AccordionTrigger">
               {Object.keys(processedData?.diagnostics || {}).length} Diagnostics
-              <ChevronDownIcon className="AccordionChevron" aria-hidden />
+              <ChevronDownIcon
+                className="ListDisplay__AccordionChevron"
+                aria-hidden
+              />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content>
             {processedData?.diagnostics &&
-              renderDetails(processedData.diagnostics, toggleItem, expandedItems)}
+              renderDetails(
+                processedData.diagnostics,
+                toggleItem,
+                expandedItems,
+                true
+              )}
           </Accordion.Content>
         </Accordion.Item>
-
       </Accordion.Root>
     </div>
   );
-
 };

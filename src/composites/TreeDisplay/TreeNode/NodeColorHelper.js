@@ -4,23 +4,29 @@
 
 const Severe = {
   name: "Severe",
-  color: "#E58F8F",
+  // color: "#E58F8F",
+  color: "#f3000d80", //14
 };
 const High = {
   name: "High",
-  color: "#EAA27D",
+  // color: "#ffa500",
+  color: "#ff9c0080", //29
 };
 const Elevated = {
   name: "Elevated",
-  color: "#E9DB7D",
+  // color: "#E9DB7D",
+  color: "#ffee0080", //47
 };
 const Guarded = {
   name: "Guarded",
-  color: "#8DB1E0",
+  // color: "#8DB1E0",
+  color: "#008ff580", //19
 };
 const Low = {
   name: "Low",
-  color: "#8FBC94",
+  // color: "#8FBC94",
+  color: "#00a43380", //19
+  
 };
 
 export default function NodeRiskColor(score, scale = "normal") {

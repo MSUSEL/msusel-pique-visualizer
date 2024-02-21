@@ -5,7 +5,8 @@ import { BoxIcon, CaretDownIcon, SwitchIcon } from "@radix-ui/react-icons";
 import { HideZeroWeightsSwitch } from "./HideZeroWeightsSwitch";
 import React from 'react';
 import * as Separator from '@radix-ui/react-separator';
-import './Separator.css';
+import '../Style/Separator.css';
+import '../Style/Slider.css';
 
 export const QuickActionButton = () => {
 

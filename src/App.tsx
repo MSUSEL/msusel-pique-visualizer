@@ -3,7 +3,7 @@ import { FileUploader } from "./composites/FileUploader";
 import { useAtom, useAtomValue } from "jotai";
 import { State } from "./state";
 import * as R from "ramda";
-import { Wrapper } from "./composites/TreeDisplay/Wrapper";
+import { Wrapper } from "./Wrapper";
 import { Box } from "@radix-ui/themes";
 import { TreeDisplayProto } from "./composites/TreeDisplayProto/TreeDisplayProto";
 import { ReactFlowProvider } from "reactflow";
