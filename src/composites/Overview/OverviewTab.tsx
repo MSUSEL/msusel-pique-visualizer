@@ -355,7 +355,10 @@ export const OverviewTab = () => {
               <Badge size="2">Characteristics</Badge>{" "}
             </Box>
             <Box>
-              <LevelAccordion nestedobj={dataset.factors.quality_aspects}  isDiagnostics={false}/>
+              <LevelAccordion
+                nestedobj={dataset.factors.quality_aspects}
+                isDiagnostics={false}
+              />
             </Box>
           </Flex>
 
@@ -406,7 +409,12 @@ export const OverviewTab = () => {
                       >
                         <Text as="p">
                           <Link href="#">
-                            {item.name}: <Strong style={{ color: '#0070f3', fontSize: "1.2em" }}>{item.details.value.toFixed(3)}</Strong>
+                            {item.name}:{" "}
+                            <Strong
+                              style={{ color: "#0070f3", fontSize: "1.2em" }}
+                            >
+                              {item.details.value.toFixed(3)}
+                            </Strong>
                           </Link>
                         </Text>
                       </Button>
@@ -445,7 +453,10 @@ export const OverviewTab = () => {
             </Box>
             <Box>
               {/* Display risk counts here */}
-              <LevelAccordion nestedobj={dataset.factors.product_factors}  isDiagnostics={false}/>
+              <LevelAccordion
+                nestedobj={dataset.factors.product_factors}
+                isDiagnostics={false}
+              />
             </Box>
           </Flex>
 
@@ -541,7 +552,10 @@ export const OverviewTab = () => {
             </Box>
             <Box>
               {/* Display risk counts here */}
-              <LevelAccordion nestedobj={dataset.measures}  isDiagnostics={false}/>
+              <LevelAccordion
+                nestedobj={dataset.measures}
+                isDiagnostics={false}
+              />
             </Box>
           </Flex>
 
@@ -635,7 +649,10 @@ export const OverviewTab = () => {
             </Box>
             <Box>
               {/* Display risk counts here */}
-              <LevelAccordion nestedobj={dataset.diagnostics} isDiagnostics={true} />
+              <LevelAccordion
+                nestedobj={dataset.diagnostics}
+                isDiagnostics={true}
+              />
             </Box>
           </Flex>
 
@@ -721,13 +738,14 @@ export const OverviewTab = () => {
         </Flex>
       </Flex>
 
+      {/* Ziyi's note: commented out for rn, lets see whether we need this any more 
       <Flex direction={"row"} style={{ height: "65vh" }}>
-        {/* Toggle Button */}
+        
         <Button onClick={toggleOverviewList} variant="surface">
           {isOverviewListOpen ? <Cross1Icon /> : <HamburgerMenuIcon />}
         </Button>
 
-        {/* DSSide panel */}
+       
         <Box
           className="OverviewListContainer"
           style={{
@@ -737,7 +755,7 @@ export const OverviewTab = () => {
         >
           <OverviewList filedata={dataset} />
         </Box>
-      </Flex>
+      </Flex> */}
     </Flex>
   );
 };

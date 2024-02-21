@@ -4,7 +4,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 import {
   getNormalColorBasedOnValue,
   getDiagnosticColorBasedOnValue,
-} from "./GetColorVasedOnValue";
+} from "../LegendContainer/GetColorVasedOnValue";
 
 import { renderSignleObjectDetails } from "./RenderSignleObjectDetails";
 import "../Style/ListDisplay.css";

@@ -11,7 +11,7 @@ import AdditionalDetailsItem from "./AdditionalDetailsItem";
 import {
   getNormalColorBasedOnValue,
   getDiagnosticColorBasedOnValue,
-} from "./GetColorVasedOnValue";
+} from "../LegendContainer/GetColorVasedOnValue";
 
 import "../Style/ListDisplay.css";
 
