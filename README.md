@@ -124,16 +124,23 @@ reduces the size of the json file while preserving the results.
 
 
 ---
+### Initial Display: Project Overview
+Upon submitting the compact output of PIQUE, its results will be displayed on the screen. An overview\
+of the evaluation results are displayed by default. In the overview tab, the users are able to visualize\
+the distribution of project characteristics, factors, measures and diagnostics in terms of risk levels.
 
-### Initial Display
-Upon submitting the compact output of PIQUE, its results will be displayed on the screen. The results\
-are displayed in a hierarchical tree structure that shows how the software quality score was created.
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/development/src/assets/PIQUE-Visualizer-Pictures/overview_tab.png" width="60%">
+---
+
+### Tree Display
+Additionally, users are able to switch different tabs to select diaplay of the results. The first option\
+is to display the results in a hierarchical tree structure that shows how the software quality score was created.
 
 <img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/initial_display.png" width="60%">
 
 ---
 
-### Viewing Children
+#### Viewing Children
 Clicking on an applicable node (rectangle), its children and their respective edges will display on\
 the screen. If these children are not already visible, they will be put into view. The edge weights will\
 be shown along the edge.
@@ -142,7 +149,7 @@ be shown along the edge.
 
 ---
 
-### Viewing Parents
+#### Viewing Parents
 Clicking on the circle in the top left corner of a node will display its edges to the node's parents.\
 The edge weights will be shown along the edge.
 
@@ -150,12 +157,21 @@ The edge weights will be shown along the edge.
 
 ---
 
-### Information Panel
+#### Information Panel
 Clicking on the square in the top right corner of a node will display more information about the node in\
 a side panel. Depending on what type of node it is will determine which information is shown, however almost\
 all nodes will show a quality impact score showing how much they are bringing the total quality score down.
 
 <img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/main/public/PIQUE-Visualizer-Pictures/show_side_panel.png" width="60%">
+
+---
+
+### List Display
+Additionally, users are able to switch different tabs to select diaplay of the results. The second option\
+is to display the results in a list structure that shows how the software quality score was created.
+
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/development/public/PIQUE-Visualizer-Pictures/list_display.png" width="60%">
+
 
 # Setup
 Clone this repository to your local machine. You will also need node and npm installed on your computer.\
