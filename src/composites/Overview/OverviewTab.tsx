@@ -14,20 +14,11 @@ import {
   Badge,
   Strong,
 } from "@radix-ui/themes";
-import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
-import { PieChart, Pie, Tooltip, Cell } from "recharts";
-import { OverviewList } from ".";
 import "./Overview.css";
 import "@radix-ui/colors/mauve.css";
-import {
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  StatArrow,
-  StatGroup,
-} from "@chakra-ui/react";
-import LevelAccordion from "./LevelAccordion";
+import { ClassifyNestedObjRiskLevel } from "./ClassifyNestedObjRiskLevel";
+import { COLORS } from "./PieChartColor";
+import SectionComponent from "./SectionComponent";
 
 interface FilterableItem {
   value: number;
@@ -38,66 +29,6 @@ interface FilterableItem {
 interface Impact {
   aspectName: string;
   weight: number;
-}
-
-// define a function classifyRiskLevels for a high-level object, such as tqi, quality_aspects, product_factors
-// input: an object: NestedObject
-// ouput: two arrays or a dictionary: risk level counts, and objects.names in each level
-
-function classifyNestedObjRiskLevel(
-  obj: Record<string, FilterableItem>
-): [number[], string[][]] {
-  const riskCounts = [0, 0, 0, 0, 0];
-  const riskSubObjNames: string[][] = [[], [], [], [], []];
-
-  for (const key in obj) {
-    const item = obj[key];
-    if (item.value <= 0.2) {
-      riskCounts[0]++;
-      riskSubObjNames[0].push(item.name);
-    } else if (item.value > 0.2 && item.value <= 0.4) {
-      riskCounts[1]++;
-      riskSubObjNames[1].push(item.name);
-    } else if (item.value > 0.4 && item.value <= 0.6) {
-      riskCounts[2]++;
-      riskSubObjNames[2].push(item.name);
-    } else if (item.value > 0.6 && item.value <= 0.8) {
-      riskCounts[3]++;
-      riskSubObjNames[3].push(item.name);
-    } else if (item.value > 0.8) {
-      riskCounts[4]++;
-      riskSubObjNames[4].push(item.name);
-    }
-  }
-  return [riskCounts, riskSubObjNames];
-}
-
-function classifyDiagnosticsRiskLevel(
-  obj: Record<string, FilterableItem>
-): [number[], string[][]] {
-  const riskCounts = [0, 0, 0, 0, 0];
-  const riskSubObjNames: string[][] = [[], [], [], [], []];
-
-  for (const key in obj) {
-    const item = obj[key];
-    if (item.value < 0.2) {
-      riskCounts[4]++;
-      riskSubObjNames[4].push(item.name);
-    } else if (item.value <= 0.5) {
-      riskCounts[3]++;
-      riskSubObjNames[3].push(item.name);
-    } else if (item.value <= 0.8) {
-      riskCounts[2]++;
-      riskSubObjNames[2].push(item.name);
-    } else if (item.value <= 1.5) {
-      riskCounts[1]++;
-      riskSubObjNames[1].push(item.name);
-    } else {
-      riskCounts[0]++;
-      riskSubObjNames[0].push(item.name);
-    }
-  }
-  return [riskCounts, riskSubObjNames];
 }
 
 function hasWeights(obj: any): obj is { weights: Record<string, number> } {
@@ -119,30 +50,34 @@ export const OverviewTab = () => {
   const dataset: Schema.base.Schema = useAtomValue(
     State.dataset
   ) as Schema.base.Schema;
+
   const tqiRiskData = useMemo(
-    () => (dataset ? classifyNestedObjRiskLevel(dataset.factors.tqi) : null),
+    () =>
+      dataset ? ClassifyNestedObjRiskLevel(dataset.factors.tqi, false) : null,
     [dataset]
   );
   const qualityAspectsRiskData = useMemo(
     () =>
       dataset
-        ? classifyNestedObjRiskLevel(dataset.factors.quality_aspects)
+        ? ClassifyNestedObjRiskLevel(dataset.factors.quality_aspects, false)
         : null,
     [dataset]
   );
   const productFactorsRiskData = useMemo(
     () =>
       dataset
-        ? classifyNestedObjRiskLevel(dataset.factors.product_factors)
+        ? ClassifyNestedObjRiskLevel(dataset.factors.product_factors, false)
         : null,
     [dataset]
   );
   const measuresRiskData = useMemo(
-    () => (dataset ? classifyNestedObjRiskLevel(dataset.measures) : null),
+    () =>
+      dataset ? ClassifyNestedObjRiskLevel(dataset.measures, false) : null,
     [dataset]
   );
   const diagnosticsRiskData = useMemo(
-    () => (dataset ? classifyDiagnosticsRiskLevel(dataset.diagnostics) : null),
+    () =>
+      dataset ? ClassifyNestedObjRiskLevel(dataset.diagnostics, true) : null,
     [dataset]
   );
 
@@ -184,33 +119,33 @@ export const OverviewTab = () => {
     [diagnosticsRiskData]
   );
 
-  // Define colors for each slice of the pie chart
-  const COLORS: { [key: string]: string } = {
-    Severe: "#f3000d80",
-    High: "#ff9c0080",
-    Moderate: "#ffee0080",
-    Minor: "#008ff580",
-    Insignificant: "#00a43380",
-  };
-
   // Get top 3 problematic objects for characteristics, factors, measures, and diagnostics
+  // characteristics, factors, measures: smallest value
+  // diagnostics: largest value
+  // ziyi's note: this part should be sliced as a sub-component, and being imported and called in this file
   const topProblematicQualityAspects = useMemo(() => {
     if (!qualityAspectsRiskData || !dataset) return [];
 
-    // Assuming there's only one subobject in dataset.factors.tqi
-    const tqiSubObject = Object.values(dataset.factors.tqi)[0];
-    const tqiWeights = hasWeights(tqiSubObject) ? tqiSubObject.weights : {};
-
     const [_, riskSubObjNames] = qualityAspectsRiskData;
-    return riskSubObjNames
+    const sortedAndFiltered = riskSubObjNames
       .flat()
-      .slice(0, 3)
       .map((name) => {
         const details = dataset.factors.quality_aspects[name];
-        const weight = name in tqiWeights ? tqiWeights[name] : 0;
+        return {
+          name,
+          value: details.value,
+          details,
+        };
+      })
+      .sort((a, b) => a.value - b.value)
+      .slice(0, 3);
+    return sortedAndFiltered.map(({ name, details }) => {
+      const tqiSubObject = Object.values(dataset.factors.tqi)[0];
+      const tqiWeights = hasWeights(tqiSubObject) ? tqiSubObject.weights : {};
+      const weight = name in tqiWeights ? tqiWeights[name] : 0;
 
-        return { name, details, weight: weight };
-      });
+      return { name, details, weight };
+    });
   }, [qualityAspectsRiskData, dataset]);
 
   const topProblematicProductFactors = useMemo(() => {
@@ -219,24 +154,30 @@ export const OverviewTab = () => {
     const [_, riskSubObjNames] = productFactorsRiskData;
     return riskSubObjNames
       .flat()
-      .slice(0, 3)
       .map((productFactorName) => {
         const details = dataset.factors.product_factors[productFactorName];
+        return {
+          name: productFactorName,
+          value: details.value,
+          details,
+        };
+      })
+      .sort((a, b) => a.value - b.value)
+      .slice(0, 3)
+      .map(({ name, details }) => {
         const impacts: Impact[] = [];
-
-        // Iterate over each quality aspect
         Object.entries(dataset.factors.quality_aspects).forEach(
           ([qualityAspectName, qualityAspect]) => {
-            if (productFactorName in qualityAspect.weights) {
+            if (name in qualityAspect.weights) {
               impacts.push({
                 aspectName: qualityAspectName,
-                weight: qualityAspect.weights[productFactorName],
+                weight: qualityAspect.weights[name],
               });
             }
           }
         );
 
-        return { name: productFactorName, details, impacts };
+        return { name, details, impacts };
       });
   }, [productFactorsRiskData, dataset]);
 
@@ -343,399 +284,47 @@ export const OverviewTab = () => {
 
         <Separator my="3" size="4" />
         {/* characteristics */}
-        <Flex direction={"row"} style={{ width: "100%" }} justify="between">
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {" "}
-              <Badge size="2">Characteristics</Badge>{" "}
-            </Box>
-            <Box>
-              <LevelAccordion
-                nestedobj={dataset.factors.quality_aspects}
-                isDiagnostics={false}
-              />
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {/* Pie chart visualization */}
-              <PieChart width={300} height={300}>
-                <Pie
-                  data={filteredQualityAspects}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="Count"
-                  label
-                >
-                  {filteredQualityAspects.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              <Text>Top 3 Problematic Quality Characteristics:</Text>
-            </Box>
-            <Box>
-              <Flex direction="column" gap="7" align="start">
-                {topProblematicQualityAspects.map((item, index) => (
-                  <HoverCard.Root key={index}>
-                    <HoverCard.Trigger>
-                      <Button
-                        onClick={toggleOverviewList}
-                        style={{ background: "none" }}
-                      >
-                        <Text as="p">
-                          <Link href="#">
-                            {item.name}:{" "}
-                            <Strong
-                              style={{ color: "#0070f3", fontSize: "1.2em" }}
-                            >
-                              {item.details.value.toFixed(3)}
-                            </Strong>
-                          </Link>
-                        </Text>
-                      </Button>
-                    </HoverCard.Trigger>
-                    <HoverCard.Content>
-                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                        <Text as="p">
-                          <Strong>Impact to Measures:</Strong>{" "}
-                          {item.weight.toFixed(3)}
-                        </Text>
-                        <Text as="p">
-                          <Strong>Description:</Strong>{" "}
-                          {item.details.description}
-                        </Text>
-                      </Text>
-                    </HoverCard.Content>
-                  </HoverCard.Root>
-                ))}
-              </Flex>
-            </Box>
-          </Flex>
-        </Flex>
+        <SectionComponent
+          title="Characteristics"
+          nestedObj={dataset.factors.quality_aspects}
+          chartData={filteredQualityAspects}
+          colors={COLORS}
+          topProblematicItems={topProblematicQualityAspects}
+          isDiagnostics={false}
+        />
 
         <Separator my="3" size="4" />
         {/* factors */}
-        <Flex direction={"row"} style={{ width: "100%" }} justify="between">
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {" "}
-              <Badge size="2">Factors</Badge>{" "}
-            </Box>
-            <Box>
-              {/* Display risk counts here */}
-              <LevelAccordion
-                nestedobj={dataset.factors.product_factors}
-                isDiagnostics={false}
-              />
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {/* Pie chart visualization */}
-              <PieChart width={300} height={300}>
-                <Pie
-                  data={filteredProductFactors}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="Count"
-                  label
-                >
-                  {filteredProductFactors.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              <Text>Top 3 Problematic Factors:</Text>
-            </Box>
-            <Box>
-              <Flex direction="column" gap="7" align="start">
-                {topProblematicProductFactors.map((item, index) => (
-                  <HoverCard.Root key={index}>
-                    <HoverCard.Trigger>
-                      <Button
-                        onClick={toggleOverviewList}
-                        style={{ background: "none" }}
-                      >
-                        <Text as="p">
-                          <Link href="#">
-                            {item.name}: {item.details.value.toFixed(3)}
-                          </Link>
-                        </Text>
-                      </Button>
-                    </HoverCard.Trigger>
-                    <HoverCard.Content>
-                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                        <Text as="p">
-                          <Strong>
-                            Impact to corresponding Characteristics:
-                          </Strong>
-                        </Text>
-                        {item.impacts.map((impact, idx) => (
-                          <Text as="p" key={idx}>
-                            {impact.aspectName}: {impact.weight.toFixed(3)}
-                          </Text>
-                        ))}
-                        <Text as="p">
-                          <Strong>Description:</Strong>{" "}
-                          {item.details.description}
-                        </Text>
-                      </Text>
-                    </HoverCard.Content>
-                  </HoverCard.Root>
-                ))}
-              </Flex>
-            </Box>
-          </Flex>
-        </Flex>
+        <SectionComponent
+          title="Factors"
+          nestedObj={dataset.factors.product_factors}
+          chartData={filteredProductFactors}
+          colors={COLORS}
+          topProblematicItems={topProblematicProductFactors}
+          isDiagnostics={false}
+        />
 
         <Separator my="3" size="4" />
         {/* measure */}
-        <Flex direction={"row"} style={{ width: "100%" }} justify="between">
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {" "}
-              <Badge size="2">Measures</Badge>{" "}
-            </Box>
-            <Box>
-              {/* Display risk counts here */}
-              <LevelAccordion
-                nestedobj={dataset.measures}
-                isDiagnostics={false}
-              />
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {/* Pie chart visualization */}
-              <PieChart width={300} height={300}>
-                <Pie
-                  data={filteredMeasures}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="Count"
-                  label
-                >
-                  {filteredMeasures.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              <Text>Top 3 Problematic Measures:</Text>
-            </Box>
-            <Box>
-              <Flex direction="column" gap="7" align="start">
-                {topProblematicMeasures.map((item, index) => (
-                  <HoverCard.Root key={index}>
-                    <HoverCard.Trigger>
-                      <Button
-                        onClick={toggleOverviewList}
-                        style={{ background: "none" }}
-                      >
-                        <Text as="p">
-                          <Link href="#">
-                            {item.name}: {item.details.value.toFixed(3)}
-                          </Link>
-                        </Text>
-                      </Button>
-                    </HoverCard.Trigger>
-                    <HoverCard.Content>
-                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                        <Text as="p">
-                          <Strong>Impact to corresponding factors:</Strong>
-                        </Text>
-                        {item.impacts.map((impact, idx) => (
-                          <Text as="p" key={idx}>
-                            {impact.aspectName}: {impact.weight.toFixed(3)}
-                          </Text>
-                        ))}
-                        <Text as="p">
-                          <Strong>Description:</Strong>{" "}
-                          {item.details.description}
-                        </Text>
-                      </Text>
-                    </HoverCard.Content>
-                  </HoverCard.Root>
-                ))}
-              </Flex>
-            </Box>
-          </Flex>
-        </Flex>
+        <SectionComponent
+          title="Measures"
+          nestedObj={dataset.measures}
+          chartData={filteredMeasures}
+          colors={COLORS}
+          topProblematicItems={topProblematicMeasures}
+          isDiagnostics={false}
+        />
 
         <Separator my="3" size="4" />
         {/* diagnostics */}
-        <Flex direction={"row"} style={{ width: "100%" }} justify="between">
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {" "}
-              <Badge size="2">Diagnostics</Badge>{" "}
-            </Box>
-            <Box>
-              {/* Display risk counts here */}
-              <LevelAccordion
-                nestedobj={dataset.diagnostics}
-                isDiagnostics={true}
-              />
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              {/* Pie chart visualization */}
-              <PieChart width={300} height={300}>
-                <Pie
-                  data={filteredDiagnostics}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="Count"
-                  label
-                >
-                  {filteredDiagnostics.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[entry.name]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </Box>
-          </Flex>
-
-          <Flex
-            direction={"column"}
-            align={"center"}
-            gap={"5"}
-            style={{ flexBasis: "30%" }}
-          >
-            <Box>
-              <Text>Top 3 Problematic Diagnostics:</Text>
-            </Box>
-            <Box>
-              <Flex direction="column" gap="7" align="start">
-                {topProblematicDiagnostics.map((item, index) => (
-                  <HoverCard.Root key={index}>
-                    <HoverCard.Trigger>
-                      <Button
-                        onClick={toggleOverviewList}
-                        style={{ background: "none" }}
-                      >
-                        <Text as="p">
-                          <Link href="#">
-                            {/* {item.name}: {item.details.value.toFixed(3)} */}
-                            <Stat>
-                              <StatLabel>{item.name}</StatLabel>
-                              <StatNumber>
-                                {item.details.value.toFixed(3)}
-                              </StatNumber>
-                            </Stat>
-                          </Link>
-                        </Text>
-                      </Button>
-                    </HoverCard.Trigger>
-                    <HoverCard.Content>
-                      <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                        <Text as="p">
-                          <Strong>Impact to corresponding measures:</Strong>
-                        </Text>
-                        {item.impacts.map((impact, idx) => (
-                          <Text as="p" key={idx}>
-                            {impact.aspectName}: {impact.weight.toFixed(3)}
-                          </Text>
-                        ))}
-                        <Text as="p">
-                          <Strong>Description:</Strong>{" "}
-                          {item.details.description}
-                        </Text>
-                      </Text>
-                    </HoverCard.Content>
-                  </HoverCard.Root>
-                ))}
-              </Flex>
-            </Box>
-          </Flex>
-        </Flex>
+        <SectionComponent
+          title="Factors"
+          nestedObj={dataset.diagnostics}
+          chartData={filteredDiagnostics}
+          colors={COLORS}
+          topProblematicItems={topProblematicDiagnostics}
+          isDiagnostics={true}
+        />
       </Flex>
 
       {/* Ziyi's note: commented out for rn, lets see whether we need this any more 

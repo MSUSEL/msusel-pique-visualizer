@@ -1,4 +1,3 @@
-import React from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import "../Style/LevelAccordion.css";
 
@@ -30,14 +29,14 @@ const classifyRiskLevels = (
     let riskLevel = "";
 
     if (isDiagnostics) {
-      // Use the modified classification for diagnostics
+      // classification for diagnostics
       if (value >= 1.5) riskLevel = "Severe";
       else if (value > 0.8) riskLevel = "High";
       else if (value > 0.5) riskLevel = "Medium";
       else if (value > 0.2) riskLevel = "Low";
       else riskLevel = "Insignificant";
     } else {
-      // Use the original classification
+      // classification for others
       if (value <= 0.2) riskLevel = "Severe";
       else if (value <= 0.4) riskLevel = "High";
       else if (value <= 0.6) riskLevel = "Medium";
@@ -51,10 +50,10 @@ const classifyRiskLevels = (
   return riskLevels;
 };
 
-// Function to recursively render object properties
+// render object properties recursively
 const renderObjectDetails = (obj: { [key: string]: any }, keyPrefix = "") => {
   return Object.entries(obj).map(([key, value]) => {
-    // Check if the value is an object and not an array or null
+    
     if (typeof value === "object" && value !== null && !Array.isArray(value)) {
       return (
         <div key={`${keyPrefix}${key}`}>
@@ -65,7 +64,7 @@ const renderObjectDetails = (obj: { [key: string]: any }, keyPrefix = "") => {
         </div>
       );
     } else {
-      // Directly render the value if it is not an object
+
       return (
         <div key={`${keyPrefix}${key}`}>
           <strong>{key}:</strong> {value.toString()}
