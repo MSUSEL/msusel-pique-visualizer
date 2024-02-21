@@ -1,5 +1,6 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import "../Style/LevelAccordion.css";
+import { ChevronUpIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 
 interface FilterableItem {
   name: string;
@@ -53,7 +54,6 @@ const classifyRiskLevels = (
 // render object properties recursively
 const renderObjectDetails = (obj: { [key: string]: any }, keyPrefix = "") => {
   return Object.entries(obj).map(([key, value]) => {
-    
     if (typeof value === "object" && value !== null && !Array.isArray(value)) {
       return (
         <div key={`${keyPrefix}${key}`}>
@@ -64,7 +64,6 @@ const renderObjectDetails = (obj: { [key: string]: any }, keyPrefix = "") => {
         </div>
       );
     } else {
-
       return (
         <div key={`${keyPrefix}${key}`}>
           <strong>{key}:</strong> {value.toString()}
@@ -94,6 +93,7 @@ const LevelAccordion = ({
           <Accordion.Header className="Level--AccordionHeader">
             <Accordion.Trigger className="Level--AccordionTrigger">
               {riskLevel} ({Object.keys(items).length})
+              <ChevronDownIcon className="Level--AccordionChevron" />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content className="Level--AccordionContent">
@@ -106,7 +106,8 @@ const LevelAccordion = ({
                 >
                   <Accordion.Header className="Level--AccordionHeader">
                     <Accordion.Trigger className="Level--AccordionTrigger">
-                      {details.name}
+                      {details.name}: {details.value.toFixed(2)}
+                      <ChevronDownIcon className="Level--AccordionChevron" />
                     </Accordion.Trigger>
                   </Accordion.Header>
                   <Accordion.Content className="Level--AccordionContent">

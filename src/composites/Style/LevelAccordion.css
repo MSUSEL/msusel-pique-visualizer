@@ -9,26 +9,17 @@ h3 {
 }
 
 .Level--AccordionRoot {
-  border-radius: 6px;
-  width: 500px;
+  border-radius: 0; /* No rounded corners for the accordion container */
+  width: 500px; /* Adjust width as needed */
   background-color: var(--mauve-6);
   box-shadow: 0 2px 10px var(--black-a4);
+  margin: 1px 0; /* Adjust spacing between each accordion for clarity */
 }
 
 .Level--AccordionItem {
   overflow: hidden;
   margin-top: 1px;
-}
-
-.Level--AccordionItem:first-child {
-  margin-top: 0;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-.Level--AccordionItem:last-child {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  border-radius: 0; /* No rounded corners for each item */
 }
 
 .Level--AccordionItem:focus-within {
@@ -55,6 +46,7 @@ h3 {
   color: var(--violet-11);
   box-shadow: 0 1px 0 var(--mauve-6);
   background-color: white;
+  cursor: pointer; /* Ensure it's clear this element is interactive */
 }
 
 .Level--AccordionTrigger:hover {
@@ -65,14 +57,13 @@ h3 {
   font-size: 15px;
   color: var(--mauve-11);
   background-color: var(--mauve-2);
-  max-height: 400px;
+  max-height: 400px; /* Adjust height as needed */
   overflow-y: auto;
+  padding-left: 20px; /* Indent content to emphasize nesting */
 }
-.Level--AccordionContent[data-state='open'] {
-  animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-.Level--AccordionContent[data-state='closed'] {
-  animation: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
+
+.Level--AccordionContent[data-state='open'], .Level--AccordionContent[data-state='closed'] {
+  animation: none; /* If you prefer to remove the slide animations */
 }
 
 .Level--AccordionContentText {
@@ -80,27 +71,16 @@ h3 {
 }
 
 .Level--AccordionChevron {
-  color: var(--violet-10);
-  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-.Level--AccordionTrigger[data-state='open'] > .Level--AccordionChevron {
-  transform: rotate(180deg);
+  transition: transform 0.2s ease-in-out;
 }
 
-@keyframes slideDown {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--radix-accordion-content-height);
-  }
+.Level--AccordionTrigger[data-state='open'] .Level--AccordionChevron {
+  transform: rotate(180deg); /* Indicates the item is open */
 }
 
-@keyframes slideUp {
-  from {
-    height: var(--radix-accordion-content-height);
-  }
-  to {
-    height: 0;
-  }
+/* Nested Accordion Styles */
+.Level--AccordionRoot .Level--AccordionRoot {
+  background-color: var(--mauve-5); 
+  width: calc(100% - 20px); 
+  margin-left: 20px; 
 }
