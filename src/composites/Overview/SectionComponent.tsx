@@ -120,7 +120,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                       <Link href="#">
                         {item.name}:{" "}
                         <Strong style={{ color: "#0070f3", fontSize: "1.2em" }}>
-                          {item.details.value.toFixed(3)}
+                          {item.details.value.toFixed(2)}
                         </Strong>
                       </Link>
                     </Text>
