@@ -1,0 +1,106 @@
+@import '@radix-ui/colors/black-alpha.css';
+@import '@radix-ui/colors/mauve.css';
+@import '@radix-ui/colors/violet.css';
+
+/* reset */
+button,
+h3 {
+  all: unset;
+}
+
+.Level--AccordionRoot {
+  border-radius: 6px;
+  width: 500px;
+  background-color: var(--mauve-6);
+  box-shadow: 0 2px 10px var(--black-a4);
+}
+
+.Level--AccordionItem {
+  overflow: hidden;
+  margin-top: 1px;
+}
+
+.Level--AccordionItem:first-child {
+  margin-top: 0;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.Level--AccordionItem:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.Level--AccordionItem:focus-within {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 0 2px var(--mauve-12);
+}
+
+.Level--AccordionHeader {
+  display: flex;
+}
+
+.Level--AccordionTrigger {
+  font-family: inherit;
+  background-color: transparent;
+  padding: 0 20px;
+  height: 45px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--violet-11);
+  box-shadow: 0 1px 0 var(--mauve-6);
+  background-color: white;
+}
+
+.Level--AccordionTrigger:hover {
+  background-color: var(--mauve-2);
+}
+
+.Level--AccordionContent {
+  font-size: 15px;
+  color: var(--mauve-11);
+  background-color: var(--mauve-2);
+  max-height: 400px;
+  overflow-y: auto;
+}
+.Level--AccordionContent[data-state='open'] {
+  animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.Level--AccordionContent[data-state='closed'] {
+  animation: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.Level--AccordionContentText {
+  padding: 15px 20px;
+}
+
+.Level--AccordionChevron {
+  color: var(--violet-10);
+  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.Level--AccordionTrigger[data-state='open'] > .Level--AccordionChevron {
+  transform: rotate(180deg);
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

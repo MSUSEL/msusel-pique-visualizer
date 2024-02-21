@@ -27,6 +27,7 @@ import {
   StatArrow,
   StatGroup,
 } from "@chakra-ui/react";
+import LevelAccordion from "./LevelAccordion";
 
 interface FilterableItem {
   value: number;
@@ -354,14 +355,7 @@ export const OverviewTab = () => {
               <Badge size="2">Characteristics</Badge>{" "}
             </Box>
             <Box>
-              {/* Display risk counts here */}
-              {qualityAspectsChartData.map((data, index) => (
-                <Text key={index}>
-                  <Text as="p">
-                    {data.name}: {data.Count}
-                  </Text>
-                </Text>
-              ))}
+              <LevelAccordion nestedobj={dataset.factors.quality_aspects}  isDiagnostics={false}/>
             </Box>
           </Flex>
 
@@ -451,13 +445,7 @@ export const OverviewTab = () => {
             </Box>
             <Box>
               {/* Display risk counts here */}
-              {productFactorsChartData.map((data, index) => (
-                <Text key={index}>
-                  <Text as="p">
-                    {data.name}: {data.Count}
-                  </Text>
-                </Text>
-              ))}
+              <LevelAccordion nestedobj={dataset.factors.product_factors}  isDiagnostics={false}/>
             </Box>
           </Flex>
 
@@ -553,13 +541,7 @@ export const OverviewTab = () => {
             </Box>
             <Box>
               {/* Display risk counts here */}
-              {measuresChartData.map((data, index) => (
-                <Text key={index}>
-                  <Text as="p">
-                    {data.name}: {data.Count}
-                  </Text>
-                </Text>
-              ))}
+              <LevelAccordion nestedobj={dataset.measures}  isDiagnostics={false}/>
             </Box>
           </Flex>
 
@@ -653,13 +635,7 @@ export const OverviewTab = () => {
             </Box>
             <Box>
               {/* Display risk counts here */}
-              {diagnosticsChartData.map((data, index) => (
-                <Text key={index}>
-                  <Text as="p">
-                    {data.name}: {data.Count}
-                  </Text>
-                </Text>
-              ))}
+              <LevelAccordion nestedobj={dataset.diagnostics} isDiagnostics={true} />
             </Box>
           </Flex>
 
