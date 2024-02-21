@@ -170,7 +170,7 @@ all nodes will show a quality impact score showing how much they are bringing th
 Additionally, users are able to switch different tabs to select diaplay of the results. The second option\
 is to display the results in a list structure that shows how the software quality score was created.
 
-<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/development/public/PIQUE-Visualizer-Pictures/list_display.png" width="60%">
+<img src="https://github.com/MSUSEL/msusel-pique-visualizer/blob/development/src/assets/PIQUE-Visualizer-Pictures/list_display.png" width="60%">
 
 
 # Setup
