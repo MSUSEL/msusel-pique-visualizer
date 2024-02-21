@@ -27,17 +27,24 @@ interface ChartDataItem {
   Count: number;
 }
 
+interface Impact {
+  aspectName: string;
+  weight: number;
+}
+
+interface TopProblematicItem {
+  name: string;
+  details: FilterableItem;
+  impacts?: Impact[];
+}
+
 interface SectionComponentProps {
   title: string;
-  nestedObj: Record<string, FilterableItem>; // Adjust if your structure is different
+  nestedObj: Record<string, FilterableItem>;
   chartData: ChartDataItem[];
-  colors: Record<string, string>; // Mapping from item name to color
-  topProblematicItems: {
-    name: string;
-    details: FilterableItem;
-    weight?: number; // Optional if not all items have weights
-  }[];
-  isDiagnostics?: boolean; // Optional with default false
+  colors: Record<string, string>;
+  topProblematicItems: TopProblematicItem[];
+  isDiagnostics?: boolean;
 }
 
 const SectionComponent: React.FC<SectionComponentProps> = ({
@@ -120,14 +127,15 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                 </HoverCard.Trigger>
                 <HoverCard.Content>
                   <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                    {item.weight !== undefined && (
-                      <Text as="p">
-                        <Strong>Impact to Measures:</Strong>{" "}
-                        {item.weight.toFixed(3)}
+                    {item.impacts?.map((impact, impactIndex) => (
+                      <Text as="p" key={impactIndex}>
+                        <Strong>Impact to {impact.aspectName} :</Strong>{" "}
+                        {impact.weight.toFixed(3)}
                       </Text>
-                    )}
+                    ))}
                     <Text as="p">
-                      <Strong>Description:</Strong> {item.details.description}
+                      <Strong>Description:</Strong>{" "}
+                      {item.details.description || "Not Provided"}
                     </Text>
                   </Text>
                 </HoverCard.Content>
