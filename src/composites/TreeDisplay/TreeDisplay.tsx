@@ -16,6 +16,14 @@ import {
  */
 
 export function TreeDisplay(props) {
+
+  
+  const [selectedNode, setSelectedNode] = useState(null);
+
+  useEffect(() => {
+    console.log('Selected Node:', selectedNode);
+  }, [selectedNode]);
+
   const [qaChildrenEdgeVisibility, setQAChildrenEdgeVisibility] = useState(
     () => {
       let default_obj = {};
@@ -1034,21 +1042,24 @@ export function TreeDisplay(props) {
         .attr("dominant-baseline", "middle")
         .attr("text-anchor", "middle");
     }
+    
     const handleClickingNodeForDescriptionPanel = (e) => {
-      let nfpa = nodesForPanelBoxes;
+  let nfpa = nodesForPanelBoxes;
 
-      const clicked_id_name = e.path[0].id.split("^")[2];
+  const clicked_id_name = e.path[0].id.split("^")[2];
 
-      if (
-        nodesForPanelBoxes.filter((n) => n["name"] === clicked_id_name).length >
-        0
-      ) {
-        nfpa = nfpa.filter((e) => e.name !== clicked_id_name);
-      } else {
-        nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
-      }
-      setNodesForPanelBoxes(nfpa);
-    };
+  if (
+    nodesForPanelBoxes.filter((n) => n["name"] === clicked_id_name).length > 0
+  ) {
+    nfpa = nfpa.filter((e) => e.name !== clicked_id_name);
+    setSelectedNode(null); // Clear selectedNode if the node is being removed
+  } else {
+    nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
+    setSelectedNode(clicked_id_name); // Set selectedNode to the clicked node
+  }
+
+  setNodesForPanelBoxes(nfpa);
+};
 
     const handleClickingPFParentClicker = (e) => {
       //console.log(e.path[0].id)
