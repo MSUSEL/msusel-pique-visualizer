@@ -36,8 +36,8 @@ export function determineDescriptionClickerColor(
 
   const id_name = selected_id.split("^")[1];
 
-  if (panel_names.includes(id_name)) return "#F02113";
-  else return "#13F06E";
+  if (panel_names.includes(id_name)) return "#423E37";
+  else return "#EDEBD7";
 }
 
 export function determineDescriptionClickerBorder(
@@ -58,8 +58,8 @@ export function determineParentClickerColor(
 ) {
   const id_name = selected_id.split("^")[1];
 
-  if (nodeWithParentShowing === id_name) return "#F02113";
-  else return "#13F06E";
+  if (nodeWithParentShowing === id_name) return "#423E37";
+  else return "#EDEBD7";
 }
 
 export function determineParentClickerBorder(
