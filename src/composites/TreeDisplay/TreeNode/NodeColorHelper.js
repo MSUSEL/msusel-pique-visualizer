@@ -29,9 +29,9 @@ const Low = {
   
 };
 
-export default function NodeRiskColor(score, scale = "normal", selectedNode = null) {
+export default function NodeRiskColor(score, name, selectedNode, scale = "normal") {
   // Check if the node is the selected node, return ivory
-  if (selectedNode && selectedNode.id && selectedNode.id === score) {
+  if (name === selectedNode) {
     return "ivory";
   }
 
