@@ -4,6 +4,7 @@ import TreeNode from "./TreeNode/TreeNode";
 import NodeRiskColor from "./TreeNode/NodeColorHelper";
 import "./TreeDisplay.css";
 import NodeDescriptionPanel from "./nodeDescriptionPanel/NodeDescriptionPanel";
+import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 import {
   determineDescriptionClickerBorder,
   determineDescriptionClickerColor,
@@ -1106,6 +1107,24 @@ export function TreeDisplay(props) {
       const y = nodes[i].y.animVal.value;
       const width = nodes[i].width.animVal.value;
       const height = nodes[i].height.animVal.value;
+      // Adding an eye icon SVG on top of the rectangle
+      const iconWidth = width / 8; // Match the rectangle's width
+      svg
+        .append("svg:image")
+        .attr(
+          "xlink:href",
+          "data:image/svg+xml;base64," +
+            btoa(`
+            <svg width="${iconWidth}" height="${iconWidth}" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 11C4.80285 11 2.52952 9.62184 1.09622 7.50001C2.52952 5.37816 4.80285 4 7.5 4C10.1971 4 12.4705 5.37816 13.9038 7.50001C12.4705 9.62183 10.1971 11 7.5 11ZM7.5 3C4.30786 3 1.65639 4.70638 0.0760002 7.23501C-0.0253338 7.39715 -0.0253334 7.60288 0.0760014 7.76501C1.65639 10.2936 4.30786 12 7.5 12C10.6921 12 13.3436 10.2936 14.924 7.76501C15.0253 7.60288 15.0253 7.39715 14.924 7.23501C13.3436 4.70638 10.6921 3 7.5 3ZM7.5 9.5C8.60457 9.5 9.5 8.60457 9.5 7.5C9.5 6.39543 8.60457 5.5 7.5 5.5C6.39543 5.5 5.5 6.39543 5.5 7.5C5.5 8.60457 6.39543 9.5 7.5 9.5Z" 
+              fill="#49475B"/>
+              </svg>
+          `)
+        )
+        .attr("width", iconWidth)
+        .attr("height", iconWidth)
+        .attr("x", x + (27 * width) / 32)
+        .attr("y", y + height / 20);
 
       svg
         .append("rect")
@@ -1132,6 +1151,22 @@ export function TreeDisplay(props) {
         (node_type === "measures" &&
           measuresWithMultipleParents.hasOwnProperty(nodes[i].id.split("^")[1]))
       ) {
+        //up arrow icon to indicate showing edges to parent nodes
+        const upArrowIcon = btoa(`
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7.14645 2.14645C7.34171 1.95118 7.65829 1.95118 7.85355 2.14645L11.8536 6.14645C12.0488 6.34171 12.0488 6.65829 11.8536 6.85355C11.6583 7.04882 11.3417 7.04882 11.1464 6.85355L8 3.70711L8 12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5L7 3.70711L3.85355 6.85355C3.65829 7.04882 3.34171 7.04882 3.14645 6.85355C2.95118 6.65829 2.95118 6.34171 3.14645 6.14645L7.14645 2.14645Z" 
+    fill="#49475B"/>
+  </svg>
+`);
+
+        svg
+          .append("svg:image")
+          .attr("xlink:href", "data:image/svg+xml;base64," + upArrowIcon)
+          .attr("width", width / 8)
+          .attr("height", width / 8)
+          .attr("x", x + width / 32)
+          .attr("y", y + height / 20);
+
         svg
           .append("rect")
           .attr("id", "parents_clicker^" + nodes[i].id)

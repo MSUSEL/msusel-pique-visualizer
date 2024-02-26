@@ -36,8 +36,8 @@ export function determineDescriptionClickerColor(
 
   const id_name = selected_id.split("^")[1];
 
-  if (panel_names.includes(id_name)) return "#423E37";
-  else return "#EDEBD7";
+  if (panel_names.includes(id_name)) return "transparent";
+  else return "transparent";
 }
 
 export function determineDescriptionClickerBorder(
@@ -48,8 +48,8 @@ export function determineDescriptionClickerBorder(
 
   const id_name = selected_id.split("^")[1];
 
-  if (panel_names.includes(id_name)) return "#A3261D";
-  else return "#22BD37";
+  if (panel_names.includes(id_name)) return "transparent";
+  else return "transparent";
 }
 
 export function determineParentClickerColor(
@@ -58,8 +58,8 @@ export function determineParentClickerColor(
 ) {
   const id_name = selected_id.split("^")[1];
 
-  if (nodeWithParentShowing === id_name) return "#423E37";
-  else return "#EDEBD7";
+  if (nodeWithParentShowing === id_name) return "transparent";
+  else return "transparent";
 }
 
 export function determineParentClickerBorder(
@@ -68,6 +68,6 @@ export function determineParentClickerBorder(
 ) {
   const id_name = selected_id.split("^")[1];
 
-  if (nodeWithParentShowing === id_name) return "#A3261D";
-  else return "#22BD37";
+  if (nodeWithParentShowing === id_name) return "transparent";
+  else return "transparent";
 }
