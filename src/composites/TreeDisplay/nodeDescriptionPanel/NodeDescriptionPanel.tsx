@@ -7,6 +7,32 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
   const [orderDirection, setOrderDirection] = useState<string>("asc");
   const [newestNodeIndex, setNewestNodeIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [resizing, setResizing] = useState(false);
+
+const handleMouseDown = () => {
+  setResizing(true);
+};
+
+const handleMouseUp = () => {
+  setResizing(false);
+};
+
+const handleMouseMove = (e) => {
+  if (resizing) {
+    const newWidth = document.body.clientWidth - e.clientX;
+    document.getElementById("node_description_panel").style.width = `${newWidth}px`;
+  }
+};
+
+useEffect(() => {
+  document.addEventListener("mousemove", handleMouseMove);
+  document.addEventListener("mouseup", handleMouseUp);
+
+  return () => {
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+}, [resizing]);
 
   useEffect(() => {
     if (newestNodeIndex !== null && scrollRef.current) {
@@ -54,7 +80,8 @@ export default function NodeDescriptionPanel(props: { nodes: any[]; impacts: any
   };
 
   return (
-    <div id="node_description_panel" className="scrollable-panel">
+    <div id="node_description_panel" className={`scrollable-panel ${resizing ? "resizable" : ""}`}>
+      <div id="resize-handle" onMouseDown={handleMouseDown}></div>
       <label htmlFor="orderBy">Order By: </label>
       <select id="orderBy" value={orderBy} onChange={handleOrderByChange}>
         <option value="default">Insertion Order</option>
