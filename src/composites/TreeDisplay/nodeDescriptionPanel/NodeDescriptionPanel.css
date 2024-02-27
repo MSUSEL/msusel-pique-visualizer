@@ -2,6 +2,28 @@
   background-color: ivory;
   border: gray solid 3px;
   width: 35vw;
+  position: relative;
+}
+
+#node_description_panel.resizable {
+  resize: horizontal;
+  overflow: hidden;
+  cursor: ew-resize;
+}
+
+#resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px; 
+  height: 100%;
+  cursor: ew-resize;
+  background-color: transparent;
+  z-index: 1;
+}
+
+#resize-handle:hover {
+  cursor: ew-resize;
 }
 
 .node-panel,
@@ -29,30 +51,22 @@
 .scrollable-panel {
   overflow-y: auto;
   max-height: 100vh;
+  max-width: 70vw;
 }
 
-@keyframes shake {
-  0%,
-  100% {
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
     transform: translateX(0);
   }
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: translateX(-5px);
-  }
-  20%,
-  40%,
-  60%,
-  80% {
-    transform: translateX(5px);
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
 .highlight {
-  animation: shake 1s ease-in-out;
+  animation: fadeIn 1.25s ease-in-out;
 }
 
 .external-link-icon {
@@ -60,6 +74,10 @@
   height: 10px;
   width: 10px;
   color: gray;
+}
+.info-block{
+  margin-left: 1%;
+  margin-bottom: 0.05%;
 }
 
 .info-block:hover .external-link-icon {
