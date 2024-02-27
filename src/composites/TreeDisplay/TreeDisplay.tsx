@@ -549,7 +549,7 @@ export function TreeDisplay(props) {
       .attr("x", treeNodes[0].x)
       .attr("y", treeNodes[0].y)
       .style("fill", NodeRiskColor(treeNodes[0].json_data.value))
-      .style("stroke-width", "2px")
+      .style("stroke-width", "1px")
       .style("stroke", "black");
 
     svg
@@ -595,7 +595,7 @@ export function TreeDisplay(props) {
         .attr("x", treeNodes[item].x)
         .attr("y", treeNodes[item].y)
         .style("fill", NodeRiskColor(treeNodes[item].json_data.value))
-        .style("stroke-width", "2px")
+        .style("stroke-width", "1px")
         .style("stroke", "black")
         .on("click", handleQAEdgesToggle);
 
