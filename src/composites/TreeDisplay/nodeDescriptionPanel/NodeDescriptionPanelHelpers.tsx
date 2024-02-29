@@ -158,7 +158,10 @@ export function determineNodeInfo(node, impacts) {
         <div>
           {renderUtilityFunction()} 
         </div>
+        <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+
         {getQualityImpactScore()} 
+        </div>
       </div>
     </>
   );
