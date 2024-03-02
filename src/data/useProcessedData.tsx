@@ -1,17 +1,18 @@
-import { useMemo } from 'react';
-import { useAtomValue } from 'jotai';
-import { State } from '../state';
+import { useMemo } from "react";
+import { useAtomValue } from "jotai";
+import { State } from "../state";
 
-import { sort } from '../composites/Sorting/Sorting';
-import { filterByRiskLevels } from '../composites/Filtering/FilterByRiskLevel';
+import { sort } from "../composites/Sorting/Sorting";
+import { filterByRiskLevels } from "../composites/Filtering/FilterByRiskLevel";
 import { filterByWeightRange } from "../composites/Filtering/FilterByWeightRange";
 import { filterByValueRange } from "../composites/Filtering/FilterByValueRange";
 import { hideZeroWeightEdges } from "../composites/Filtering/HideZeroWeightEdges";
 
-
 export const useProcessedData = () => {
   // Retrieve state values
   const dataset = useAtomValue(State.dataset);
+  const adjustedImportance = useAtomValue(State.adjustedImportance);
+  const tqiValue = useAtomValue(State.tqiValue);
   const sortState = useAtomValue(State.sortingState);
   const filterState = useAtomValue(State.filteringState);
   const checkboxStates = useAtomValue(State.filteringByRiskLevelCheckboxStates);
@@ -24,9 +25,19 @@ export const useProcessedData = () => {
   return useMemo(() => {
     if (!dataset) return null;
 
+    if (dataset.factors.tqi && adjustedImportance) {
+      const firstTqiKey = Object.keys(dataset.factors.tqi)[0];
+      if (firstTqiKey && dataset.factors.tqi[firstTqiKey]) {
+        dataset.factors.tqi[firstTqiKey].weights = adjustedImportance;
+        if (tqiValue) {
+          dataset.factors.tqi[firstTqiKey].value = tqiValue;
+        }
+      }
+    }
+
     let data = sort(sortState, dataset);
 
-    const isHiding = hideZeroWeightEdgeState === 'hidding';
+    const isHiding = hideZeroWeightEdgeState === "hidding";
     data = hideZeroWeightEdges(data, isHiding);
 
     data = filterByRiskLevels(data, checkboxStates);
@@ -38,5 +49,17 @@ export const useProcessedData = () => {
     // Add any other processing steps here
 
     return data;
-  }, [dataset, sortState, filterState, checkboxStates, hideZeroWeightEdgeState, minValueState, maxValueState, minWeightState, maxWeightState]);
+  }, [
+    dataset,
+    adjustedImportance,
+    tqiValue,
+    sortState,
+    filterState,
+    checkboxStates,
+    hideZeroWeightEdgeState,
+    minValueState,
+    maxValueState,
+    minWeightState,
+    maxWeightState,
+  ]);
 };
