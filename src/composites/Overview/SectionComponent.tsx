@@ -117,9 +117,9 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                 <HoverCard.Trigger>
                   <Button style={{ background: "none" }}>
                     <Text as="p">
-                      <Link href="#">
+                      <Link href="#" style={{ color: "#5a5a5a" }}>
                         {item.name}:{" "}
-                        <Strong style={{ color: "#0070f3", fontSize: "1.2em" }}>
+                        <Strong style={{ color: "#0070f3" }}>
                           {item.details.value.toFixed(2)}
                         </Strong>
                       </Link>

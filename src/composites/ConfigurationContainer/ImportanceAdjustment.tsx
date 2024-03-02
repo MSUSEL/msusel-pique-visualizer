@@ -24,13 +24,13 @@ import * as Dialog from "@radix-ui/react-dialog";
 import "../Style/Dialog.css";
 import { ProfileSelection } from "./ImportanceAdjustment/ProfileSelection";
 import { AdjustmentTable } from "./ImportanceAdjustment/AdjustmentTable";
+import { AdjustmentTableLogic } from "./ImportanceAdjustment/AdjustmentTableLogic";
 import { Profile } from "../../types";
 
 export const ImportanceAdjustment = () => {
   const [selectedProfile, setSelectedProfile] = useState<
     Profile | Profile[] | null
   >(null);
-
 
   // Handler that updates the selectedProfile state
   const handleProfileApply = (profile: Profile[] | null) => {
@@ -114,7 +114,14 @@ export const ImportanceAdjustment = () => {
               <Separator my="3" size="4" />
 
               {/* show the adjustment table*/}
-              <AdjustmentTable
+              {/* <AdjustmentTable
+                selectedProfile={
+                  Array.isArray(selectedProfile) ? selectedProfile : undefined
+                }
+                isProfileApplied={isProfileApplied}
+                onResetApplied={handleReset}
+              /> */}
+              <AdjustmentTableLogic
                 selectedProfile={
                   Array.isArray(selectedProfile) ? selectedProfile : undefined
                 }
