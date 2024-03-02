@@ -556,13 +556,8 @@ export function TreeDisplay(props) {
       .attr("rx", 2)
       .attr("x", treeNodes[0].x)
       .attr("y", treeNodes[0].y)
-<<<<<<< HEAD
       .style("fill", NodeRiskColor(treeNodes[0].json_data.value, treeNodes[0].name, selectedNode))
-      .style("stroke-width", "2px")
-=======
-      .style("fill", NodeRiskColor(treeNodes[0].json_data.value))
       .style("stroke-width", "1px")
->>>>>>> 19b80e9ddb329f41c923f75803b2483a82cb1ad2
       .style("stroke", "black");
 
     svg
@@ -607,13 +602,8 @@ export function TreeDisplay(props) {
         .attr("rx", 2)
         .attr("x", treeNodes[item].x)
         .attr("y", treeNodes[item].y)
-<<<<<<< HEAD
         .style("fill", NodeRiskColor(treeNodes[item].json_data.value, treeNodes[item].name, selectedNode))
-        .style("stroke-width", "2px")
-=======
-        .style("fill", NodeRiskColor(treeNodes[item].json_data.value))
         .style("stroke-width", "1px")
->>>>>>> 19b80e9ddb329f41c923f75803b2483a82cb1ad2
         .style("stroke", "black")
         .on("click", handleQAEdgesToggle);
 
