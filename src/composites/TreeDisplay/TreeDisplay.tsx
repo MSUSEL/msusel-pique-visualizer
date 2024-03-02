@@ -4,9 +4,11 @@ import TreeNode from "./TreeNode/TreeNode";
 import NodeRiskColor from "./TreeNode/NodeColorHelper";
 import "./TreeDisplay.css";
 import NodeDescriptionPanel from "./nodeDescriptionPanel/NodeDescriptionPanel";
+import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 import {
   determineDescriptionClickerBorder,
   determineDescriptionClickerColor,
+  determineDescriptionClickerIcon,
   determineParentClickerBorder,
   determineParentClickerColor,
   findPIQUENode,
@@ -547,7 +549,7 @@ export function TreeDisplay(props) {
       .attr("x", treeNodes[0].x)
       .attr("y", treeNodes[0].y)
       .style("fill", NodeRiskColor(treeNodes[0].json_data.value))
-      .style("stroke-width", "2px")
+      .style("stroke-width", "1px")
       .style("stroke", "black");
 
     svg
@@ -593,7 +595,7 @@ export function TreeDisplay(props) {
         .attr("x", treeNodes[item].x)
         .attr("y", treeNodes[item].y)
         .style("fill", NodeRiskColor(treeNodes[item].json_data.value))
-        .style("stroke-width", "2px")
+        .style("stroke-width", "1px")
         .style("stroke", "black")
         .on("click", handleQAEdgesToggle);
 
@@ -1106,6 +1108,17 @@ export function TreeDisplay(props) {
       const y = nodes[i].y.animVal.value;
       const width = nodes[i].width.animVal.value;
       const height = nodes[i].height.animVal.value;
+      // Adding an eye icon SVG on top of the rectangle
+      const iconWidth = width / 8; // Match the rectangle's width
+      const iconBase64 = determineDescriptionClickerIcon(nodesForPanelBoxes, nodes[i].id);
+
+      svg
+        .append("svg:image")
+        .attr("xlink:href", "data:image/svg+xml;base64," + iconBase64)
+        .attr("width", iconWidth)
+        .attr("height", iconWidth)
+        .attr("x", x + (27 * width) / 32)
+        .attr("y", y + height / 20);
 
       svg
         .append("rect")
@@ -1132,6 +1145,22 @@ export function TreeDisplay(props) {
         (node_type === "measures" &&
           measuresWithMultipleParents.hasOwnProperty(nodes[i].id.split("^")[1]))
       ) {
+        //up arrow icon to indicate showing edges to parent nodes
+        const upArrowIcon = btoa(`
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7.14645 2.14645C7.34171 1.95118 7.65829 1.95118 7.85355 2.14645L11.8536 6.14645C12.0488 6.34171 12.0488 6.65829 11.8536 6.85355C11.6583 7.04882 11.3417 7.04882 11.1464 6.85355L8 3.70711L8 12.5C8 12.7761 7.77614 13 7.5 13C7.22386 13 7 12.7761 7 12.5L7 3.70711L3.85355 6.85355C3.65829 7.04882 3.34171 7.04882 3.14645 6.85355C2.95118 6.65829 2.95118 6.34171 3.14645 6.14645L7.14645 2.14645Z" 
+    fill="#49475B"/>
+  </svg>
+`);
+
+        svg
+          .append("svg:image")
+          .attr("xlink:href", "data:image/svg+xml;base64," + upArrowIcon)
+          .attr("width", width / 8)
+          .attr("height", width / 8)
+          .attr("x", x + width / 32)
+          .attr("y", y + height / 20);
+
         svg
           .append("rect")
           .attr("id", "parents_clicker^" + nodes[i].id)

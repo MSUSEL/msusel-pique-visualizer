@@ -21,7 +21,11 @@ interface ValidationErrorIssue {
 
 export const FileUploader = () => {
   const [_, selectFile] = useFileUpload();
+
   const setDataset = useSetAtom(State.dataset);
+  const setAdjustedImportance = useSetAtom(State.adjustedImportance);
+  const setTqiValue = useSetAtom(State.tqiValue);
+
   const [fileName, setFileName] = useState("");
   const [errorDetails, setErrorDetails] = useState("");
 
@@ -77,6 +81,14 @@ export const FileUploader = () => {
             if (validationResult.success) {
               setDataset(validationResult.data);
               setErrorDetails(""); // Clear error details on success
+
+              const tqiObjects = validationResult.data.factors.tqi;
+              const firstTqiKey = Object.keys(tqiObjects)[0];
+              const firstTqiObj = tqiObjects[firstTqiKey];
+              if (firstTqiObj) {
+                setAdjustedImportance(firstTqiObj.weights); // Set adjustedImportance
+                setTqiValue(firstTqiObj.value); // Set tqiValue
+              }
             } else {
               const details = JSON.stringify(
                 validationResult.error.issues,
