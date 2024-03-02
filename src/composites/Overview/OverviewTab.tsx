@@ -318,7 +318,7 @@ export const OverviewTab = () => {
         <Separator my="3" size="4" />
         {/* diagnostics */}
         <SectionComponent
-          title="Factors"
+          title="Diagnostics"
           nestedObj={dataset.diagnostics}
           chartData={filteredDiagnostics}
           colors={COLORS}
