@@ -1,6 +1,8 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import "../Style/LevelAccordion.css";
 import { ChevronUpIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { Table, Button } from "@radix-ui/themes";
+import { useState } from "react";
 
 interface FilterableItem {
   name: string;
@@ -57,18 +59,32 @@ const renderObjectDetails = (obj: { [key: string]: any }, keyPrefix = "") => {
     if (typeof value === "object" && value !== null && !Array.isArray(value)) {
       return (
         <div key={`${keyPrefix}${key}`}>
-          <strong>{key}:</strong>
+          <Table.Cell>
+            <strong>{key}:</strong>
+          </Table.Cell>
           <div style={{ paddingLeft: "20px" }}>
+            <p>Button Marker:</p>
             {renderObjectDetails(value, `${keyPrefix}${key}-`)}
           </div>
         </div>
       );
     } else {
-      return (
-        <div key={`${keyPrefix}${key}`}>
-          <strong>{key}:</strong> {value.toString()}
-        </div>
-      );
+      if (
+        keyPrefix === "" &&
+        (key === "name" || key === "value" || key === "description")
+      )
+        return;
+      else {
+        console.log(key, value);
+        return (
+          <div key={`${keyPrefix}${key}`}>
+            <Table.Cell>
+              <strong>{key}:</strong>
+            </Table.Cell>
+            <Table.Cell>{value.toString()}</Table.Cell>
+          </div>
+        );
+      }
     }
   });
 };
@@ -82,6 +98,12 @@ const LevelAccordion = ({
 }) => {
   const processedItems = classifyRiskLevels(nestedobj, isDiagnostics);
 
+  const [detailsVisible, setDetailsVisible] = useState(false); // State to track visibility
+
+  const toggleDetailsVisibility = () => {
+    setDetailsVisible((prevState) => !prevState); // Toggle visibility
+  };
+
   return (
     <Accordion.Root type="multiple" className="Level--AccordionRoot">
       {Object.entries(processedItems).map(([riskLevel, items]) => (
@@ -91,9 +113,17 @@ const LevelAccordion = ({
           className="Level--AccordionLevel"
         >
           <Accordion.Header className="Level--AccordionHeader">
-            <Accordion.Trigger className="Level--AccordionTrigger">
+            <Accordion.Trigger
+              className={`Level--AccordionTrigger ${
+                Object.keys(items).length === 0 ? "disabled" : ""
+              }`}
+              disabled={Object.keys(items).length === 0}
+            >
               {riskLevel} ({Object.keys(items).length})
-              <ChevronDownIcon className="Level--AccordionChevron" />
+              <ChevronDownIcon
+                className="Level--AccordionChevron"
+                display={Object.keys(items).length === 0 ? "none" : ""}
+              />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content className="Level--AccordionContent">
@@ -111,7 +141,35 @@ const LevelAccordion = ({
                     </Accordion.Trigger>
                   </Accordion.Header>
                   <Accordion.Content className="Level--AccordionContent">
-                    {renderObjectDetails(details)}
+                    <Table.Root>
+                      <Table.Body>
+                        <Table.Row>
+                          {
+                            <Table.Cell>
+                              <strong>Description: </strong>
+                              {details.description || "Not Provided"}
+                            </Table.Cell>
+                          }
+                        </Table.Row>
+                        <div className="toggle-button-container">
+                          <Button
+                            className="toggle-button"
+                            onClick={toggleDetailsVisibility}
+                            style={{ right: "0" }}
+                          >
+                            Additional Details
+                            {detailsVisible ? (
+                              <ChevronUpIcon className="chevron-icon" />
+                            ) : (
+                              <ChevronDownIcon className="chevron-icon" />
+                            )}
+                          </Button>
+                        </div>
+                        <Table.Row className="AdditionalDetails">
+                          {detailsVisible && renderObjectDetails(details)}
+                        </Table.Row>
+                      </Table.Body>
+                    </Table.Root>
                   </Accordion.Content>
                 </Accordion.Item>
               ))}

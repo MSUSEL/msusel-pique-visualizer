@@ -9,6 +9,7 @@ import {
   Separator,
   Badge,
   Strong,
+  ScrollArea,
 } from "@radix-ui/themes";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import "./Overview.css";
@@ -69,7 +70,12 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
           <Badge size="2">{title}</Badge>
         </Box>
         <Box>
-          <LevelAccordion nestedobj={nestedObj} isDiagnostics={isDiagnostics} />
+          <ScrollArea style={{ height: "35vh" }}>
+            <LevelAccordion
+              nestedobj={nestedObj}
+              isDiagnostics={isDiagnostics}
+            />
+          </ScrollArea>
         </Box>
       </Flex>
 

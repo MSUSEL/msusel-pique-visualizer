@@ -13,6 +13,7 @@ import {
   Separator,
   Badge,
   Strong,
+  ScrollArea,
 } from "@radix-ui/themes";
 import "./Overview.css";
 import "@radix-ui/colors/mauve.css";
