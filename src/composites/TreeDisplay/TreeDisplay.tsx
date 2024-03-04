@@ -21,6 +21,7 @@ export function TreeDisplay(props) {
 
   
   const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedNodes, setSelectedNodes] = useState([]);
 
   useEffect(() => {
     console.log('Selected Node:', selectedNode);
@@ -1038,22 +1039,25 @@ export function TreeDisplay(props) {
     }
     
     const handleClickingNodeForDescriptionPanel = (e) => {
-  let nfpa = nodesForPanelBoxes;
-
-  const clicked_id_name = e.path[0].id.split("^")[2];
-
-  if (
-    nodesForPanelBoxes.filter((n) => n["name"] === clicked_id_name).length > 0
-  ) {
-    nfpa = nfpa.filter((e) => e.name !== clicked_id_name);
-    setSelectedNode(null); // Clear selectedNode if the node is being removed
-  } else {
-    nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
-    setSelectedNode(clicked_id_name); // Set selectedNode to the clicked node
-  }
-
-  setNodesForPanelBoxes(nfpa);
-};
+      let nfpa = nodesForPanelBoxes;
+      const clicked_id_name = e.path[0].id.split("^")[2];
+    
+      if (
+        nodesForPanelBoxes.filter((n) => n["name"] === clicked_id_name).length > 0
+      ) {
+        nfpa = nfpa.filter((e) => e.name !== clicked_id_name);
+        const previousSelectedNode = selectedNodes[selectedNodes.length - 2]; 
+        setSelectedNodes((prevSelectedNodes) => prevSelectedNodes.slice(0, -1)); 
+        setSelectedNode(previousSelectedNode); 
+      } else {
+        nfpa = [...nfpa, findPIQUENode(props.fileData, e.path[0].id)];
+        setSelectedNodes((prevSelectedNodes) => [...prevSelectedNodes, clicked_id_name]);
+        setSelectedNode(clicked_id_name);
+      }
+    
+      setNodesForPanelBoxes(nfpa);
+    };
+    
 
     const handleClickingPFParentClicker = (e) => {
       //console.log(e.path[0].id)
