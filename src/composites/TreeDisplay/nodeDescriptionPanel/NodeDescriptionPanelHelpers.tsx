@@ -80,15 +80,14 @@ export function determineNodeInfo(node, impacts) {
   function renderUtilityFunction() {
     if (typeof node.utility_function === 'string') {
       return (
-        <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+        <div className="info-block">
           <b>Utility Function: </b>
           {node.utility_function} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
       );
     } else {
       return (
-        <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
-          
+        <div className="info-block"> 
           <b>Utility Function:</b> pique.evaluation.DefaultUtility <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
       );
@@ -122,44 +121,43 @@ export function determineNodeInfo(node, impacts) {
     <>
       <div className="node-name">{node.name}</div>
       <div className="node-info">
-      <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+      <div className="info-block"> 
           <b>Node Type: </b>
           {node_type} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
-        <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+        <div className="info-block"> 
           <b>Value: </b>
           {node.value.toFixed(5)} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
         {node.description !== "" ? (
-          <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+          <div className="info-block"> 
             <b>Description: </b>
             {node.description} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
         ) : null}
         {node_type === "Measure" ? (
-          <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+          <div className="info-block"> 
             <b>Thresholds: </b>[{getThresholds(node)}] <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
         ) : null}
         {node_type === "Diagnostic" ? (
-          <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+          <div className="info-block"> 
             <b>Tool: </b>
             {node.toolName} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
         ) : null}
-        <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+        <div className="info-block"> 
           <b>Evaluation Strategy: </b>
           {node.eval_strategy} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
-        <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
+        <div className="info-block"> 
           <b>Normalizer: </b>
           {node.normalizer} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
         <div>
           {renderUtilityFunction()} 
         </div>
-        <div className="info-block" onMouseEnter={() => handleMouseEnter('nodeType')} onMouseLeave={() => handleMouseLeave('nodeType')}>
-
+        <div className="info-block"> 
         {getQualityImpactScore()} 
         </div>
       </div>

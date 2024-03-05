@@ -46,8 +46,8 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
     .map(
       ([name, weight]) =>
         `${(dataset.factors.quality_aspects[name]?.value || 0).toFixed(
-          4
-        )} * ${weight.toFixed(4)}`
+          2
+        )} * ${weight.toFixed(2)}`
     )
     .join(" + ");
 

@@ -282,7 +282,7 @@ export const OverviewTab = () => {
           </Flex>
         </Flex>
 
-        <Separator my="3" size="4" />
+        {/* <Separator my="0" size="4" /> */}
         {/* characteristics */}
         <SectionComponent
           title="Characteristics"
@@ -293,7 +293,7 @@ export const OverviewTab = () => {
           isDiagnostics={false}
         />
 
-        <Separator my="3" size="4" />
+        {/* <Separator my="3" size="4" /> */}
         {/* factors */}
         <SectionComponent
           title="Factors"
@@ -304,7 +304,7 @@ export const OverviewTab = () => {
           isDiagnostics={false}
         />
 
-        <Separator my="3" size="4" />
+        {/* <Separator my="3" size="4" /> */}
         {/* measure */}
         <SectionComponent
           title="Measures"
@@ -315,7 +315,7 @@ export const OverviewTab = () => {
           isDiagnostics={false}
         />
 
-        <Separator my="3" size="4" />
+        {/* <Separator my="3" size="4" /> */}
         {/* diagnostics */}
         <SectionComponent
           title="Diagnostics"
