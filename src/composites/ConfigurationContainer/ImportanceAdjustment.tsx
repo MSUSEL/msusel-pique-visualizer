@@ -22,9 +22,10 @@ import {
 } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
 import "../Style/Dialog.css";
-import { ProfileSelection } from "./ImportanceAdjustment/ProfileSelection";
+// import { ProfileSelection } from "./ImportanceAdjustment/ProfileSelection";
 // import { AdjustmentTable } from "./ImportanceAdjustment/AdjustmentTable";
-import { AdjustmentTableLogic } from "./ImportanceAdjustment/AdjustmentTableLogic";
+import { AdjustmentTableLogic } from "./ImportanceAdjustment/AdjustmentTable/AdjustmentTableLogic";
+import ProfileSelectionLogic from "./ImportanceAdjustment/ProfileSelection/ProfileSelectionLogic";
 import { Profile } from "../../types";
 
 export const ImportanceAdjustment = () => {
@@ -106,7 +107,7 @@ export const ImportanceAdjustment = () => {
               <Separator my="3" size="4" />
 
               {/*Profile selection*/}
-              <ProfileSelection
+              <ProfileSelectionLogic
                 onProfileChange={handleProfileApply}
                 selectedProfile={selectedProfile}
               />
@@ -114,13 +115,6 @@ export const ImportanceAdjustment = () => {
               <Separator my="3" size="4" />
 
               {/* show the adjustment table*/}
-              {/* <AdjustmentTable
-                selectedProfile={
-                  Array.isArray(selectedProfile) ? selectedProfile : undefined
-                }
-                isProfileApplied={isProfileApplied}
-                onResetApplied={handleReset}
-              /> */}
               <AdjustmentTableLogic
                 selectedProfile={
                   Array.isArray(selectedProfile) ? selectedProfile : undefined
@@ -128,6 +122,8 @@ export const ImportanceAdjustment = () => {
                 isProfileApplied={isProfileApplied}
                 onResetApplied={handleReset}
               />
+
+              {/* Move the close and download button here */}
 
               {/* Position the close button absolutely within the Dialog.Content */}
               <Dialog.Close asChild>

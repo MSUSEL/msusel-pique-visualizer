@@ -1,9 +1,9 @@
 // AdjustmentTableLogic.tsx
 import { useAtomValue } from "jotai";
 import React, { useMemo, useState } from "react";
-import { State } from "../../../state";
-import { Profile } from "../../../types";
-import * as schema from "../../../data/schema";
+import { State } from "../../../../state";
+import { Profile } from "../../../../types";
+import * as schema from "../../../../data/schema";
 import { AdjustmentTableUI } from "./AdjustmentTableUI";
 
 interface Weights {
@@ -53,9 +53,10 @@ export const AdjustmentTableLogic: React.FC<AdjustmentTableProps> = ({
     return getInitialWeights(selectedProfile, dataset, useDataset);
   }, [selectedProfile, dataset, isProfileApplied]);
 
-  const [values, setValues] = useState<{ [key: string]: number }>(
-    () => sliderValues
-  );
+  const [values, setValues] = useState<{ [key: string]: number }>(sliderValues);
+  useMemo(() => {
+    setValues(sliderValues);
+  }, [sliderValues]);
 
   const resetAllAdjustments = () => {
     const resetValues = getInitialWeights(selectedProfile, dataset, true);
@@ -80,7 +81,44 @@ export const AdjustmentTableLogic: React.FC<AdjustmentTableProps> = ({
   };
 
   const handleDownload = () => {
-    // Function to handle download action
+    // Define the initial weights
+    let weights: Weights = {};
+    Object.entries(dataset.factors.tqi).forEach(([_, tqiEntry]) => {
+      const entry = tqiEntry as TQIEntry;
+      Object.entries(entry.weights).forEach(([aspect, importance]) => {
+        weights[aspect] = importance;
+      });
+    });
+
+    // Create a list of aspects that have changed
+    let changedAspects: any = [];
+    Object.entries(values).forEach(
+      ([aspect, recalculatedImportance]) => {
+        if (recalculatedImportance !== weights[aspect]) {
+          changedAspects.push(aspect);
+        }
+      }
+    );
+
+    // Generate the filename based on the changed aspects
+    let filename =
+      changedAspects.length > 0
+        ? `Custom_Profile_Changed_${changedAspects.join("_")}.json`
+        : `Custom_Profile_Unchanged.json`;
+
+    // Create a Profile object to download
+    let profileToDownload: Profile = {
+      type: "Custom Profile",
+      importance: recalculatedWeights,
+    };
+
+    const json = JSON.stringify(profileToDownload, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename; // Use the generated filename
+    link.click();
+    URL.revokeObjectURL(link.href);
   };
 
   return (

@@ -12,9 +12,16 @@ import {
   Avatar,
   Button,
 } from "@radix-ui/themes";
-import { ResetIcon, DownloadIcon } from "@radix-ui/react-icons";
+import {
+  ResetIcon,
+  DownloadIcon,
+  InfoCircledIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  DashIcon,
+} from "@radix-ui/react-icons";
 import SingleTableRow from "./SingleRowInTable";
-import * as schema from "../../../data/schema";
+import * as schema from "../../../../data/schema";
 
 interface AdjustmentTableUIProps {
   dataset: schema.base.Schema;
@@ -33,14 +40,23 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
   resetAllAdjustments,
   handleDownload,
 }) => {
-  const currentTQI = Object.values(dataset.factors.tqi)[0]?.value || 0;
-  const updatedTQI =
+  const precision = 4;
+  const currentTQI =
+    parseFloat(
+      Object.values(dataset.factors.tqi)[0]?.value.toFixed(precision)
+    ) || 0;
+  const updatedTQIRaw =
     recalculatedWeights &&
     Object.entries(recalculatedWeights).reduce(
       (total, [name, weight]) =>
         total + (dataset.factors.quality_aspects[name]?.value || 0) * weight,
       0
     );
+
+  // Ensure updatedTQI is formatted to the same precision
+  const updatedTQI = updatedTQIRaw
+    ? parseFloat(updatedTQIRaw.toFixed(precision))
+    : 0;
   // Construct the equation string
   const updatedTQIEquation = Object.entries(recalculatedWeights)
     .map(
@@ -54,13 +70,16 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
   return (
     <Flex direction={"column"} align={"center"}>
       <Box>
-        <Table.Root variant="surface">
+        <Table.Root variant="surface" style={{ width: "100%" }}>
           <Table.Header>
             <Table.Row align={"center"}>
               <Table.ColumnHeaderCell justify={"center"} width={"25%"}>
+                <Text>Characteristics </Text>
                 <HoverCard.Root>
                   <HoverCard.Trigger>
-                    <Link href="#">Characteristics</Link>
+                    <Link href="#">
+                      <InfoCircledIcon />
+                    </Link>
                   </HoverCard.Trigger>
                   <HoverCard.Content>
                     <Text as="div" style={{ maxWidth: 325 }}>
@@ -71,15 +90,18 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
                 </HoverCard.Root>
               </Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell justify={"center"} width={"15%"}>
-                Current Value
+               Characteristics Value
               </Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell justify={"center"} width={"15%"}>
-                Current Weight
+                Original Weight
               </Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell justify={"center"} width={"30%"}>
+                <Text>Importance Adjustment Sliders </Text>
                 <HoverCard.Root>
                   <HoverCard.Trigger>
-                    <Link href="#">Importance Adjustment Slider</Link>
+                    <Link href="#">
+                      <InfoCircledIcon />
+                    </Link>
                   </HoverCard.Trigger>
                   <HoverCard.Content>
                     <Text as="div" style={{ maxWidth: 325 }}>
@@ -127,10 +149,10 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
       <Flex
         direction={"row"}
         align={"center"}
-        justify="between"
+        justify="center"
         style={{ width: "100%" }}
       >
-        <Box style={{ flexBasis: "40%" }}>
+        <Box style={{ flexBasis: "37.5%" }}>
           <Card size="1">
             <Flex gap="3" align="center">
               <Avatar size="3" radius="full" fallback="Ini" color="indigo" />
@@ -145,7 +167,7 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
             </Flex>
           </Card>
         </Box>
-        <Box style={{ flexBasis: "40%" }}>
+        <Box style={{ flexBasis: "37.5%" }}>
           <Card size="1">
             <Flex gap="3" align="center">
               <Avatar size="3" radius="full" fallback="New" color="indigo" />
@@ -153,25 +175,24 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
                 <Text as="div" size="2" weight="bold">
                   Updated TQI
                 </Text>
-
-                {/* <Text
-                  as="div"
-                  size="2"
-                  color="gray"
-                  style={{ fontSize: "small" }}
-                >
-                  Equation: {update
-                    dTQIEquation} = 
-                </Text> 
-                */}
-                <Text as="div" size="2" color="gray">
-                  {updatedTQI.toFixed(4)}
-                </Text>
+                <Flex gap="2" align="center">
+                  <Text as="div" size="2" color="gray">
+                    {updatedTQI.toFixed(4)}
+                  </Text>
+                  {updatedTQI > currentTQI ? (
+                    <ArrowUpIcon style={{ color: "green" }} />
+                  ) : updatedTQI < currentTQI ? (
+                    <ArrowDownIcon style={{ color: "red" }} />
+                  ) : (
+                    <DashIcon style={{ color: "gray" }} />
+                  )}
+                </Flex>
               </Box>
             </Flex>
           </Card>
         </Box>
-        <Flex direction={"column"} style={{ width: "20%" }}>
+
+        <Flex direction={"column"} style={{ width: "10%" }}>
           <Box>
             <Button
               variant="surface"
