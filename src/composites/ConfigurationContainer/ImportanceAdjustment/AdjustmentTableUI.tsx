@@ -154,16 +154,18 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
                   Updated TQI
                 </Text>
 
-                <Text
+                {/* <Text
                   as="div"
                   size="2"
                   color="gray"
                   style={{ fontSize: "small" }}
                 >
-                  Equation: {updatedTQIEquation}
-                </Text>
+                  Equation: {update
+                    dTQIEquation} = 
+                </Text> 
+                */}
                 <Text as="div" size="2" color="gray">
-                  = {updatedTQI.toFixed(4)}
+                  {updatedTQI.toFixed(4)}
                 </Text>
               </Box>
             </Flex>

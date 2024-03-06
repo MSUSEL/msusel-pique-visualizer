@@ -23,7 +23,7 @@ import {
 import * as Dialog from "@radix-ui/react-dialog";
 import "../Style/Dialog.css";
 import { ProfileSelection } from "./ImportanceAdjustment/ProfileSelection";
-import { AdjustmentTable } from "./ImportanceAdjustment/AdjustmentTable";
+// import { AdjustmentTable } from "./ImportanceAdjustment/AdjustmentTable";
 import { AdjustmentTableLogic } from "./ImportanceAdjustment/AdjustmentTableLogic";
 import { Profile } from "../../types";
 
