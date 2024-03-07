@@ -1282,6 +1282,7 @@ export function TreeDisplay(props) {
 
   const clearSidePanel = () => {
     setNodesForPanelBoxes([]);
+    setSelectedNode(null);
   };
 
   // Adjusts SVG when node description panel opens up or close.
