@@ -261,6 +261,25 @@ export const OverviewTab = () => {
     (entry) => entry.Count !== 0
   );
 
+  function getValueRisk(
+    value: number | undefined,
+    isDiagnostics: boolean
+  ): string {
+    if (isDiagnostics) {
+      if (value < 0.2) return "Insignificant";
+      else if (value <= 0.5) return "Low";
+      else if (value <= 0.8) return "Medium";
+      else if (value <= 1.5) return "High";
+      else return "Severe";
+    } else {
+      if (value >= 0.8) return "Insignificant";
+      else if (value > 0.6) return "Low";
+      else if (value > 0.4) return "Medium";
+      else if (value > 0.2) return "High";
+      else return "Severe";
+    }
+  }
+
   return (
     <Flex direction={"row"} gap={"3"}>
       <Flex
@@ -275,31 +294,57 @@ export const OverviewTab = () => {
             width: "50vw",
           }}
         >
-          <Flex
-            direction={"row"}
-            gap={"5"}
-            align={"center"}
-            style={{ width: "100%" }}
-            justify={"center"}
-          >
-            <Box>
-              <Avatar
-                className="TQIAvatar"
-                size="5"
-                fallback="TQI"
-                style={{
-                  background: COLORS[tqiRiskLevel.level],
-                }}
-              />
-            </Box>
-            <Flex direction={"column"}>
-              <strong> {tqiRiskLevel.name}</strong>
-              <Text> Overall Score: {tqiRiskLevel.value?.toFixed(3)}</Text>
+          <Flex direction={"row"} gap={"5"} justify={"center"} align={"center"}>
+            <Flex direction={"column"} align={"center"} gap={"3"}>
+              <Strong style={{ alignSelf: "center" }}>
+                Total Quality Index
+              </Strong>
+              <Flex
+                direction={"row"}
+                gap={"5"}
+                align={"center"}
+                style={{ width: "100%" }}
+                justify={"center"}
+              >
+                <Box>
+                  <Avatar
+                    className="TQIAvatar"
+                    size="5"
+                    fallback={tqiRiskLevel.value?.toFixed(3)}
+                    style={{
+                      background: COLORS[tqiRiskLevel.level],
+                    }}
+                  />
+                </Box>
+
+                <Flex direction={"column"}>
+                  <Text> Project Name: </Text>
+                  <Strong> {tqiRiskLevel.name} </Strong>
+                </Flex>
+              </Flex>
             </Flex>
 
-            <Flex direction={"column"} align={"center"}>
-              <Strong>Lowest section scores</Strong>
-              <Flex direction={"row"} gap={"5"}>
+            <Separator
+              orientation="vertical"
+              style={{ height: "8vw" }}
+              decorative
+            ></Separator>
+
+            <Flex direction={"column"} align={"center"} gap={"3"}>
+              <Strong
+                style={{
+                  fontSize: "80%",
+                }}
+              >
+                Lowest section scores
+              </Strong>
+              <Flex
+                direction={"row"}
+                gap={"3"}
+                style={{
+                  fontSize: "80%",
+                }}
+              >
                 <Flex direction={"column"} align={"center"}>
                   <Text>Characteristics</Text>
                   <Avatar
@@ -307,7 +352,16 @@ export const OverviewTab = () => {
                       .at(0)
                       ?.details.value.toFixed(2)}
                     size={"4"}
-                    style={{ width: "75px" }}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicQualityAspects.at(0)?.details.value,
+                            false
+                          )
+                        ],
+                    }}
                   />
                 </Flex>
                 <Flex direction={"column"} align={"center"}>
@@ -317,7 +371,16 @@ export const OverviewTab = () => {
                       .at(0)
                       ?.details.value.toFixed(2)}
                     size={"4"}
-                    style={{ width: "75px" }}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicProductFactors.at(0)?.details.value,
+                            false
+                          )
+                        ],
+                    }}
                   />
                 </Flex>
                 <Flex direction={"column"} align={"center"}>
@@ -327,7 +390,16 @@ export const OverviewTab = () => {
                       .at(0)
                       ?.details.value.toFixed(2)}
                     size={"4"}
-                    style={{ width: "75px" }}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicMeasures.at(0)?.details.value,
+                            false
+                          )
+                        ],
+                    }}
                   />
                 </Flex>
                 <Flex direction={"column"} align={"center"}>
@@ -337,7 +409,16 @@ export const OverviewTab = () => {
                       .at(0)
                       ?.details.value.toFixed(2)}
                     size={"4"}
-                    style={{ width: "75px" }}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicDiagnostics.at(0)?.details.value,
+                            true
+                          )
+                        ],
+                    }}
                   />
                 </Flex>
               </Flex>
