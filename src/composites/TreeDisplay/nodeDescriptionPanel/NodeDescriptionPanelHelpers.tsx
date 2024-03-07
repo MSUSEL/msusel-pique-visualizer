@@ -161,6 +161,9 @@ function renderUtilityFunction() {
             {node.description} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
           </div>
         ) : null}
+        <div className="info-block"> 
+        {getQualityImpactScore()} 
+        </div>
         {node_type === "Measure" ? (
           <div className="info-block"> 
             <b>Thresholds: </b>[{getThresholds(node)}] <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
@@ -183,9 +186,6 @@ function renderUtilityFunction() {
         <div className="utility-block"> 
           <b>Utility Function:  <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" /></b>
           {renderUtilityFunction()}
-        </div>
-        <div className="info-block"> 
-        {getQualityImpactScore()} 
         </div>
       </div>
     </>
