@@ -5,5 +5,6 @@ export const COLORS: { [key: string]: string } = {
   Medium: "#ffee0080",
   Moderate: "#ffee0080",
   Minor: "#008ff580",
+  Low: "#008ff580",
   Insignificant: "#00a43380",
 };

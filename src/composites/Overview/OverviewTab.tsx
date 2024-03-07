@@ -14,6 +14,8 @@ import {
   Badge,
   Strong,
   ScrollArea,
+  Card,
+  Theme,
 } from "@radix-ui/themes";
 import "./Overview.css";
 import "@radix-ui/colors/mauve.css";
@@ -96,11 +98,12 @@ export const OverviewTab = () => {
     return { level: levelName, name, value };
   }, [tqiRiskData]);
 
-  const [isOverviewListOpen, setOverviewListOpen] = useState(false);
+  // Zac's note: These are no longer used after removal of original overview list code
+  // const [isOverviewListOpen, setOverviewListOpen] = useState(false);
 
-  const toggleOverviewList = () => {
-    setOverviewListOpen(!isOverviewListOpen);
-  };
+  // const toggleOverviewList = () => {
+  //   setOverviewListOpen(!isOverviewListOpen);
+  // };
 
   // Prepare data for the chart
   const qualityAspectsChartData = useMemo(
@@ -266,22 +269,81 @@ export const OverviewTab = () => {
         align={"center"}
         style={{ width: "100%", marginTop: "24px" }}
       >
-        <Flex
-          direction={"row"}
-          gap={"3"}
-          align={"center"}
-          style={{ width: "100%" }}
-          justify="center"
+        <Card
+          size={"1"}
+          style={{
+            width: "50vw",
+          }}
         >
-          <Box>
-            <Avatar size="5" fallback="TQI" />
-          </Box>
-          <Flex direction={"column"}>
-            <Text> Project Name: {tqiRiskLevel.name}</Text>
-            <Text> Total Quality Index: {tqiRiskLevel.value?.toFixed(3)}</Text>
-            <Text> Risk Level: {tqiRiskLevel.level}</Text>
+          <Flex
+            direction={"row"}
+            gap={"5"}
+            align={"center"}
+            style={{ width: "100%" }}
+            justify={"center"}
+          >
+            <Box>
+              <Avatar
+                className="TQIAvatar"
+                size="5"
+                fallback="TQI"
+                style={{
+                  background: COLORS[tqiRiskLevel.level],
+                }}
+              />
+            </Box>
+            <Flex direction={"column"}>
+              <strong> {tqiRiskLevel.name}</strong>
+              <Text> Overall Score: {tqiRiskLevel.value?.toFixed(3)}</Text>
+            </Flex>
+
+            <Flex direction={"column"} align={"center"}>
+              <Strong>Lowest section scores</Strong>
+              <Flex direction={"row"} gap={"5"}>
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Characteristics</Text>
+                  <Avatar
+                    fallback={topProblematicQualityAspects
+                      .at(0)
+                      ?.details.value.toFixed(2)}
+                    size={"4"}
+                    style={{ width: "75px" }}
+                  />
+                </Flex>
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Factors</Text>
+                  <Avatar
+                    fallback={topProblematicProductFactors
+                      .at(0)
+                      ?.details.value.toFixed(2)}
+                    size={"4"}
+                    style={{ width: "75px" }}
+                  />
+                </Flex>
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Measures</Text>
+                  <Avatar
+                    fallback={topProblematicMeasures
+                      .at(0)
+                      ?.details.value.toFixed(2)}
+                    size={"4"}
+                    style={{ width: "75px" }}
+                  />
+                </Flex>
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Diagnostics</Text>
+                  <Avatar
+                    fallback={topProblematicDiagnostics
+                      .at(0)
+                      ?.details.value.toFixed(2)}
+                    size={"4"}
+                    style={{ width: "75px" }}
+                  />
+                </Flex>
+              </Flex>
+            </Flex>
           </Flex>
-        </Flex>
+        </Card>
 
         <Separator my="3" size="4" />
         {/* characteristics */}

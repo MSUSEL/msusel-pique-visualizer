@@ -63,7 +63,6 @@ const renderObjectDetails = (obj: { [key: string]: any }, keyPrefix = "") => {
             <strong>{key}:</strong>
           </Table.Cell>
           <div style={{ paddingLeft: "20px" }}>
-            <p>Button Marker:</p>
             {renderObjectDetails(value, `${keyPrefix}${key}-`)}
           </div>
         </div>

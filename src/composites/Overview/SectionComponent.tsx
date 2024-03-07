@@ -114,7 +114,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
         style={{ flexBasis: "30%" }}
       >
         <Box>
-          <Text>Top 3 Problematic {title}:</Text>
+          <Text>Lowest 3 Scores:</Text>
         </Box>
         <Box>
           <Flex direction="column" gap="7" align="start">
