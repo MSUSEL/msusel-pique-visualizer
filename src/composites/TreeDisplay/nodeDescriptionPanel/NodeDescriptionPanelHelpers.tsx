@@ -77,22 +77,49 @@ export function determineNodeInfo(node, impacts) {
     }
   }
 
-  function renderUtilityFunction() {
-    if (typeof node.utility_function === 'string') {
+const renderObjectDetails = (obj: { [key: string]: any }, keyPrefix = "") => {
+  return Object.entries(obj).map(([key, value]) => {
+    if (typeof value === "object" && value !== null && !Array.isArray(value)) {
       return (
-        <div className="info-block">
-          <b>Utility Function: </b>
-          {node.utility_function} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
+        <div key={`${keyPrefix}${key}`}>
+          <strong>{key}:</strong>
+          <div style={{ paddingLeft: "20px" }}>
+            {renderObjectDetails(value, `${keyPrefix}${key}-`)}
+          </div>
         </div>
       );
     } else {
       return (
-        <div className="info-block"> 
-          <b>Utility Function:</b> pique.evaluation.DefaultUtility <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
+        <div key={`${keyPrefix}${key}`}>
+          <strong>{key}:</strong> {value.toString()}
         </div>
       );
     }
+  });
+};
+
+function renderUtilityFunction() {
+  const utilityFunction = node.utility_function;
+
+  if (typeof utilityFunction === 'string') {
+    return (
+      <div className="info-block">
+        <b>Utility Function: </b>
+        {utilityFunction} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
+      </div>
+    );
+  } else if (typeof utilityFunction === 'object' && utilityFunction !== null) {
+    return (
+      <div className="info-block">
+        <b>Utility Function:</b>
+        <div style={{ paddingLeft: "20px" }}>
+          {renderObjectDetails(utilityFunction)}
+        </div>
+        <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
+      </div>
+    );
   }
+}
   
 
   // change the name of the node when it is created as well as the image associated with gam
