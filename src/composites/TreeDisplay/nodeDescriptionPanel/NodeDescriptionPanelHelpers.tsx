@@ -110,12 +110,11 @@ function renderUtilityFunction() {
     );
   } else if (typeof utilityFunction === 'object' && utilityFunction !== null) {
     return (
+      
       <div className="info-block">
-        <b>Utility Function:</b>
         <div style={{ paddingLeft: "20px" }}>
           {renderObjectDetails(utilityFunction)}
         </div>
-        <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
       </div>
     );
   }
@@ -181,8 +180,9 @@ function renderUtilityFunction() {
           <b>Normalizer: </b>
           {node.normalizer} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
-        <div>
-          {renderUtilityFunction()} 
+        <div className="utility-block"> 
+          <b>Utility Function:  <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" /></b>
+          {renderUtilityFunction()}
         </div>
         <div className="info-block"> 
         {getQualityImpactScore()} 
