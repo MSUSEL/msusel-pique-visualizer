@@ -83,3 +83,7 @@
 .info-block:hover .external-link-icon {
   display: inline-block;
 }
+
+.labelWithShift {
+  margin-left: 1%;
+}
