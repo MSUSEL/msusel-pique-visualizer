@@ -19,9 +19,12 @@ import {
   ArrowUpIcon,
   ArrowDownIcon,
   DashIcon,
+  MagicWandIcon,
 } from "@radix-ui/react-icons";
 import SingleTableRow from "./SingleRowInTable";
 import * as schema from "../../../../data/schema";
+import { useAtom } from "jotai";
+import { State } from "../../../../state";
 
 interface AdjustmentTableUIProps {
   dataset: schema.base.Schema;
@@ -57,16 +60,17 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
   const updatedTQI = updatedTQIRaw
     ? parseFloat(updatedTQIRaw.toFixed(precision))
     : 0;
-  // Construct the equation string
-  const updatedTQIEquation = Object.entries(recalculatedWeights)
-    .map(
-      ([name, weight]) =>
-        `${(dataset.factors.quality_aspects[name]?.value || 0).toFixed(
-          2
-        )} * ${weight.toFixed(2)}`
-    )
-    .join(" + ");
 
+  // to apply the custermized importance
+  const [_, setTqiValue] = useAtom(State.tqiValue);
+  const [__, setAdjustedImportance] = useAtom(State.adjustedImportance);
+
+  const handleApply = () => {
+    setTqiValue(updatedTQI); // Set tqiValue as updatedTQI
+    setAdjustedImportance(recalculatedWeights); // Set adjustedImportance as recalculatedWeights
+    console.log('Applied updatedTQI:', updatedTQI);
+    console.log('Applied recalculatedWeights:', recalculatedWeights);
+  };
   return (
     <Flex direction={"column"} align={"center"}>
       <Box>
@@ -90,7 +94,7 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
                 </HoverCard.Root>
               </Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell justify={"center"} width={"15%"}>
-               Characteristics Value
+                Characteristics Value
               </Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell justify={"center"} width={"15%"}>
                 Original Weight
@@ -191,29 +195,44 @@ export const AdjustmentTableUI: React.FC<AdjustmentTableUIProps> = ({
             </Flex>
           </Card>
         </Box>
+      </Flex>
 
-        <Flex direction={"column"} style={{ width: "10%" }}>
-          <Box>
-            <Button
-              variant="surface"
-              onClick={resetAllAdjustments}
-              style={{ width: "100%", height: "30px" }}
-            >
-              <ResetIcon width="16" height="16" />
-              Reset
-            </Button>
-          </Box>
-          <Box>
-            <Button
-              variant={"surface"}
-              onClick={handleDownload}
-              style={{ width: "100%", height: "30px" }}
-            >
-              <DownloadIcon width="16" height="16" />
-              Download
-            </Button>
-          </Box>
-        </Flex>
+      <Flex
+        direction={"row"}
+        align={"center"}
+        justify="center"
+        style={{ width: "100%" }}
+      >
+        <Box style={{ flexBasis: "25%" }}>
+          <Button
+            variant="outline"
+            onClick={handleApply}
+            style={{ width: "100%", height: "30px" }}
+          >
+            <MagicWandIcon width="16" height="16" />
+            Apply
+          </Button>
+        </Box>
+        <Box style={{ flexBasis: "25%" }}>
+          <Button
+            variant="surface"
+            onClick={resetAllAdjustments}
+            style={{ width: "100%", height: "30px" }}
+          >
+            <ResetIcon width="16" height="16" />
+            Reset
+          </Button>
+        </Box>
+        <Box style={{ flexBasis: "25%" }}>
+          <Button
+            variant={"surface"}
+            onClick={handleDownload}
+            style={{ width: "100%", height: "30px" }}
+          >
+            <DownloadIcon width="16" height="16" />
+            Download
+          </Button>
+        </Box>
       </Flex>
     </Flex>
   );
