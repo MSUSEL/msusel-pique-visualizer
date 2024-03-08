@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useAtomValue } from "jotai";
 import * as Schema from "../../data/schema";
 import { State } from "../../state";
@@ -6,16 +6,10 @@ import {
   Flex,
   Text,
   Box,
-  Button,
   Avatar,
-  HoverCard,
-  Link,
   Separator,
-  Badge,
   Strong,
-  ScrollArea,
   Card,
-  Theme,
 } from "@radix-ui/themes";
 import "./Overview.css";
 import "@radix-ui/colors/mauve.css";
@@ -261,10 +255,7 @@ export const OverviewTab = () => {
     (entry) => entry.Count !== 0
   );
 
-  function getValueRisk(
-    value: number | undefined,
-    isDiagnostics: boolean
-  ): string {
+  function getValueRisk(value: number, isDiagnostics: boolean): string {
     if (isDiagnostics) {
       if (value < 0.2) return "Insignificant";
       else if (value <= 0.5) return "Low";
@@ -310,7 +301,11 @@ export const OverviewTab = () => {
                   <Avatar
                     className="TQIAvatar"
                     size="5"
-                    fallback={tqiRiskLevel.value?.toFixed(3)}
+                    fallback={
+                      tqiRiskLevel.value?.toFixed(
+                        3
+                      ) as NonNullable<React.ReactNode>
+                    }
                     style={{
                       background: COLORS[tqiRiskLevel.level],
                     }}
@@ -348,16 +343,21 @@ export const OverviewTab = () => {
                 <Flex direction={"column"} align={"center"}>
                   <Text>Characteristics</Text>
                   <Avatar
-                    fallback={topProblematicQualityAspects
-                      .at(0)
-                      ?.details.value.toFixed(2)}
+                    fallback={
+                      topProblematicQualityAspects
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
                     size={"4"}
                     style={{
                       width: "60px",
                       background:
                         COLORS[
                           getValueRisk(
-                            topProblematicQualityAspects.at(0)?.details.value,
+                            topProblematicQualityAspects.at(0)?.details
+                              .value as number,
                             false
                           )
                         ],
@@ -367,16 +367,21 @@ export const OverviewTab = () => {
                 <Flex direction={"column"} align={"center"}>
                   <Text>Factors</Text>
                   <Avatar
-                    fallback={topProblematicProductFactors
-                      .at(0)
-                      ?.details.value.toFixed(2)}
+                    fallback={
+                      topProblematicProductFactors
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
                     size={"4"}
                     style={{
                       width: "60px",
                       background:
                         COLORS[
                           getValueRisk(
-                            topProblematicProductFactors.at(0)?.details.value,
+                            topProblematicProductFactors.at(0)?.details
+                              .value as number,
                             false
                           )
                         ],
@@ -386,16 +391,21 @@ export const OverviewTab = () => {
                 <Flex direction={"column"} align={"center"}>
                   <Text>Measures</Text>
                   <Avatar
-                    fallback={topProblematicMeasures
-                      .at(0)
-                      ?.details.value.toFixed(2)}
+                    fallback={
+                      topProblematicMeasures
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
                     size={"4"}
                     style={{
                       width: "60px",
                       background:
                         COLORS[
                           getValueRisk(
-                            topProblematicMeasures.at(0)?.details.value,
+                            topProblematicMeasures.at(0)?.details
+                              .value as number,
                             false
                           )
                         ],
@@ -405,16 +415,21 @@ export const OverviewTab = () => {
                 <Flex direction={"column"} align={"center"}>
                   <Text>Diagnostics</Text>
                   <Avatar
-                    fallback={topProblematicDiagnostics
-                      .at(0)
-                      ?.details.value.toFixed(2)}
+                    fallback={
+                      topProblematicDiagnostics
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
                     size={"4"}
                     style={{
                       width: "60px",
                       background:
                         COLORS[
                           getValueRisk(
-                            topProblematicDiagnostics.at(0)?.details.value,
+                            topProblematicDiagnostics.at(0)?.details
+                              .value as number,
                             true
                           )
                         ],

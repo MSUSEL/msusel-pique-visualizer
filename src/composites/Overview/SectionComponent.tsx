@@ -3,13 +3,12 @@ import {
   Text,
   Box,
   Button,
-  Avatar,
   HoverCard,
   Link,
-  Separator,
   Badge,
   Strong,
   ScrollArea,
+  Popover,
 } from "@radix-ui/themes";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import "./Overview.css";
@@ -119,8 +118,8 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
         <Box>
           <Flex direction="column" gap="7" align="start">
             {topProblematicItems.map((item, index) => (
-              <HoverCard.Root key={index}>
-                <HoverCard.Trigger>
+              <Popover.Root key={index}>
+                <Popover.Trigger>
                   <Button style={{ background: "none" }}>
                     <Text as="p">
                       <Link href="#">
@@ -131,8 +130,8 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                       </Link>
                     </Text>
                   </Button>
-                </HoverCard.Trigger>
-                <HoverCard.Content>
+                </Popover.Trigger>
+                <Popover.Content>
                   <Text as="div" size="1" style={{ maxWidth: 250 }}>
                     {item.impacts && item.impacts.length > 0 ? (
                       item.impacts.map((impact, impactIndex) => (
@@ -152,8 +151,8 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                       {item.details.description || "Not Provided"}
                     </Text>
                   </Text>
-                </HoverCard.Content>
-              </HoverCard.Root>
+                </Popover.Content>
+              </Popover.Root>
             ))}
           </Flex>
         </Box>
