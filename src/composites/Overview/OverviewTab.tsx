@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useAtomValue } from "jotai";
 import * as Schema from "../../data/schema";
 import { State } from "../../state";
@@ -6,13 +6,10 @@ import {
   Flex,
   Text,
   Box,
-  Button,
   Avatar,
-  HoverCard,
-  Link,
   Separator,
-  Badge,
   Strong,
+  Card,
 } from "@radix-ui/themes";
 import "./Overview.css";
 import "@radix-ui/colors/mauve.css";
@@ -95,11 +92,12 @@ export const OverviewTab = () => {
     return { level: levelName, name, value };
   }, [tqiRiskData]);
 
-  const [isOverviewListOpen, setOverviewListOpen] = useState(false);
+  // Zac's note: These are no longer used after removal of original overview list code
+  // const [isOverviewListOpen, setOverviewListOpen] = useState(false);
 
-  const toggleOverviewList = () => {
-    setOverviewListOpen(!isOverviewListOpen);
-  };
+  // const toggleOverviewList = () => {
+  //   setOverviewListOpen(!isOverviewListOpen);
+  // };
 
   // Prepare data for the chart
   const qualityAspectsChartData = useMemo(
@@ -257,6 +255,22 @@ export const OverviewTab = () => {
     (entry) => entry.Count !== 0
   );
 
+  function getValueRisk(value: number, isDiagnostics: boolean): string {
+    if (isDiagnostics) {
+      if (value < 0.2) return "Insignificant";
+      else if (value <= 0.5) return "Low";
+      else if (value <= 0.8) return "Medium";
+      else if (value <= 1.5) return "High";
+      else return "Severe";
+    } else {
+      if (value >= 0.8) return "Insignificant";
+      else if (value > 0.6) return "Low";
+      else if (value > 0.4) return "Medium";
+      else if (value > 0.2) return "High";
+      else return "Severe";
+    }
+  }
+
   return (
     <Flex direction={"row"} gap={"3"}>
       <Flex
@@ -265,22 +279,167 @@ export const OverviewTab = () => {
         align={"center"}
         style={{ width: "100%", marginTop: "24px" }}
       >
-        <Flex
-          direction={"row"}
-          gap={"3"}
-          align={"center"}
-          style={{ width: "100%" }}
-          justify="center"
+        <Card
+          size={"1"}
+          style={{
+            width: "50vw",
+          }}
         >
-          <Box>
-            <Avatar size="5" fallback="TQI" />
-          </Box>
-          <Flex direction={"column"}>
-            <Text> Project Name: {tqiRiskLevel.name}</Text>
-            <Text> Total Quality Index: {tqiRiskLevel.value?.toFixed(3)}</Text>
-            <Text> Risk Level: {tqiRiskLevel.level}</Text>
+          <Flex direction={"row"} gap={"5"} justify={"center"} align={"center"}>
+            <Flex direction={"column"} align={"center"} gap={"3"}>
+              <Strong style={{ alignSelf: "center" }}>
+                Total Quality Index
+              </Strong>
+              <Flex
+                direction={"row"}
+                gap={"5"}
+                align={"center"}
+                style={{ width: "100%" }}
+                justify={"center"}
+              >
+                <Box>
+                  <Avatar
+                    className="TQIAvatar"
+                    size="5"
+                    fallback={
+                      tqiRiskLevel.value?.toFixed(
+                        3
+                      ) as NonNullable<React.ReactNode>
+                    }
+                    style={{
+                      background: COLORS[tqiRiskLevel.level],
+                    }}
+                  />
+                </Box>
+
+                <Flex direction={"column"}>
+                  <Text> Project Name: </Text>
+                  <Strong> {tqiRiskLevel.name} </Strong>
+                </Flex>
+              </Flex>
+            </Flex>
+
+            <Separator
+              orientation="vertical"
+              style={{ height: "8vw" }}
+              decorative
+            ></Separator>
+
+            <Flex direction={"column"} align={"center"} gap={"3"}>
+              <Strong
+                style={{
+                  fontSize: "80%",
+                }}
+              >
+                Lowest section scores
+              </Strong>
+              <Flex
+                direction={"row"}
+                gap={"3"}
+                style={{
+                  fontSize: "80%",
+                }}
+              >
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Characteristics</Text>
+                  <Avatar
+                    fallback={
+                      topProblematicQualityAspects
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
+                    size={"4"}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicQualityAspects.at(0)?.details
+                              .value as number,
+                            false
+                          )
+                        ],
+                    }}
+                  />
+                </Flex>
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Factors</Text>
+                  <Avatar
+                    fallback={
+                      topProblematicProductFactors
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
+                    size={"4"}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicProductFactors.at(0)?.details
+                              .value as number,
+                            false
+                          )
+                        ],
+                    }}
+                  />
+                </Flex>
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Measures</Text>
+                  <Avatar
+                    fallback={
+                      topProblematicMeasures
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
+                    size={"4"}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicMeasures.at(0)?.details
+                              .value as number,
+                            false
+                          )
+                        ],
+                    }}
+                  />
+                </Flex>
+                <Flex direction={"column"} align={"center"}>
+                  <Text>Diagnostics</Text>
+                  <Avatar
+                    fallback={
+                      topProblematicDiagnostics
+                        .at(0)
+                        ?.details.value.toFixed(
+                          2
+                        ) as NonNullable<React.ReactNode>
+                    }
+                    size={"4"}
+                    style={{
+                      width: "60px",
+                      background:
+                        COLORS[
+                          getValueRisk(
+                            topProblematicDiagnostics.at(0)?.details
+                              .value as number,
+                            true
+                          )
+                        ],
+                    }}
+                  />
+                </Flex>
+              </Flex>
+            </Flex>
           </Flex>
-        </Flex>
+        </Card>
 
         {/* <Separator my="0" size="4" /> */}
         {/* characteristics */}

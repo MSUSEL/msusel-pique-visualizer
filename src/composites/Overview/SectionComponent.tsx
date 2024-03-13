@@ -3,12 +3,12 @@ import {
   Text,
   Box,
   Button,
-  Avatar,
   HoverCard,
   Link,
-  Separator,
   Badge,
   Strong,
+  ScrollArea,
+  Popover,
 } from "@radix-ui/themes";
 import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import "./Overview.css";
@@ -69,14 +69,20 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
           backgroundColor: "#f0f0f0",
         }}
       >
-        <Text style={{ fontSize: "larger", textAlign: "center" }}>
-          {" "}
-          {title}
-        </Text>
+        <Box>
+          <Badge size="2">{title}</Badge>
+        </Box>
+        <Box>
+          <ScrollArea style={{ height: "35vh" }}>
+            <LevelAccordion
+              nestedobj={nestedObj}
+              isDiagnostics={isDiagnostics}
+            />
+          </ScrollArea>
+        </Box>
       </Flex>
 
       <Flex direction={"row"} style={{ width: "100%" }} justify="between">
-        {/* Accordion section */}
         <Flex
           direction={"column"}
           align={"center"}
@@ -91,64 +97,33 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
           </Box>
         </Flex>
 
-        {/* Pie chart section */}
-        <Flex
-          direction={"column"}
-          align={"center"}
-          gap={"5"}
-          style={{ flexBasis: "30%" }}
-        >
-          <Box>
-            <PieChart width={300} height={300}>
-              <Pie
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="Count"
-                label
-              >
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={colors[entry.name]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </Box>
-        </Flex>
-
         {/* Top problematic items section */}
         <Flex
           direction={"column"}
           align={"center"}
-          justify={"start"}
           gap={"5"}
           style={{ flexBasis: "30%" }}
         >
           <Box>
-            <Text size={"3"}>Top 3 Problematic {title}:</Text>
+            <Text>Lowest 3 Scores:</Text>
           </Box>
           <Box>
-            <Flex direction="column" gap="3" align="start" justify={"center"}>
+            <Flex direction="column" gap="7" align="start">
               {topProblematicItems.map((item, index) => (
-                <HoverCard.Root key={index}>
-                  <HoverCard.Trigger>
+                <Popover.Root key={index}>
+                  <Popover.Trigger>
                     <Button style={{ background: "none" }}>
                       <Text as="p">
-                        <Link
-                          href="#"
-                          style={{ color: "#5a5a5a", font: "small-caption" }}
-                        >
+                        <Link href="#">
                           {item.name}:{" "}
-                          <Strong style={{ color: "#0070f3" }}>
+                          <Strong style={{ color: "#0070f3", fontSize: "1.2em" }}>
                             {item.details.value.toFixed(2)}
                           </Strong>
                         </Link>
                       </Text>
                     </Button>
-                  </HoverCard.Trigger>
-                  <HoverCard.Content>
+                  </Popover.Trigger>
+                  <Popover.Content>
                     <Text as="div" size="1" style={{ maxWidth: 250 }}>
                       {item.impacts && item.impacts.length > 0 ? (
                         item.impacts.map((impact, impactIndex) => (
@@ -159,18 +134,12 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
                         ))
                       ) : item.weight !== undefined ? (
                         <Text as="p">
-                          <Strong>Impact to TQI:</Strong>{" "}
-                          {item.weight.toFixed(3)}
+                          <Strong>Impact:</Strong> {item.weight.toFixed(3)}
                         </Text>
                       ) : null}
-
-                      <Text as="p">
-                        <Strong>Description:</Strong>{" "}
-                        {item.details.description || "Not Provided"}
-                      </Text>
                     </Text>
-                  </HoverCard.Content>
-                </HoverCard.Root>
+                  </Popover.Content>
+                </Popover.Root>
               ))}
             </Flex>
           </Box>
