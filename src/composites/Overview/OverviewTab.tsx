@@ -288,7 +288,7 @@ export const OverviewTab = () => {
           <Flex direction={"row"} gap={"5"} justify={"center"} align={"center"}>
             <Flex direction={"column"} align={"center"} gap={"3"}>
               <Strong style={{ alignSelf: "center" }}>
-                Total Quality Index
+                Total Quality Index (TQI)
               </Strong>
               <Flex
                 direction={"row"}
@@ -303,7 +303,7 @@ export const OverviewTab = () => {
                     size="5"
                     fallback={
                       tqiRiskLevel.value?.toFixed(
-                        3
+                        2
                       ) as NonNullable<React.ReactNode>
                     }
                     style={{
@@ -319,7 +319,7 @@ export const OverviewTab = () => {
               </Flex>
             </Flex>
 
-            <Separator
+            {/* <Separator
               orientation="vertical"
               style={{ height: "8vw" }}
               decorative
@@ -419,7 +419,7 @@ export const OverviewTab = () => {
                       topProblematicDiagnostics
                         .at(0)
                         ?.details.value.toFixed(
-                          2
+                          0
                         ) as NonNullable<React.ReactNode>
                     }
                     size={"4"}
@@ -437,7 +437,7 @@ export const OverviewTab = () => {
                   />
                 </Flex>
               </Flex>
-            </Flex>
+            </Flex> */}
           </Flex>
         </Card>
 
