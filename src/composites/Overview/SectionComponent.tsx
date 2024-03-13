@@ -57,13 +57,17 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
   isDiagnostics = false,
 }) => {
   return (
-    <Flex direction={"row"} style={{ width: "100%" }} justify="between">
-      {/* Accordion section */}
+    <Flex direction={"column"} style={{ width: "100%" }}>
       <Flex
-        direction={"column"}
-        align={"center"}
-        gap={"5"}
-        style={{ flexBasis: "30%" }}
+        align="center"
+        style={{
+          width: "100%",
+          justifyContent: "center",
+          borderTop: "2px solid lightgray",
+          marginTop: "0",
+          marginBottom: "1rem",
+          backgroundColor: "#f0f0f0",
+        }}
       >
         <Box>
           <Badge size="2">{title}</Badge>
@@ -78,84 +82,68 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
         </Box>
       </Flex>
 
-      {/* Pie chart section */}
-      <Flex
-        direction={"column"}
-        align={"center"}
-        gap={"5"}
-        style={{ flexBasis: "30%" }}
-      >
-        <Box>
-          <PieChart width={300} height={300}>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="Count"
-              label
-            >
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={colors[entry.name]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </Box>
-      </Flex>
+      <Flex direction={"row"} style={{ width: "100%" }} justify="between">
+        <Flex
+          direction={"column"}
+          align={"center"}
+          gap={"5"}
+          style={{ flexBasis: "30%" }}
+        >
+          <Box style={{ justifyContent: "center", alignContent: "center" }}>
+            <LevelAccordion
+              nestedobj={nestedObj}
+              isDiagnostics={isDiagnostics}
+            />
+          </Box>
+        </Flex>
 
-      {/* Top problematic items section */}
-      <Flex
-        direction={"column"}
-        align={"center"}
-        gap={"5"}
-        style={{ flexBasis: "30%" }}
-      >
-        <Box>
-          <Text>Lowest 3 Scores:</Text>
-        </Box>
-        <Box>
-          <Flex direction="column" gap="7" align="start">
-            {topProblematicItems.map((item, index) => (
-              <Popover.Root key={index}>
-                <Popover.Trigger>
-                  <Button style={{ background: "none" }}>
-                    <Text as="p">
-                      <Link href="#">
-                        {item.name}:{" "}
-                        <Strong style={{ color: "#0070f3", fontSize: "1.2em" }}>
-                          {item.details.value.toFixed(2)}
-                        </Strong>
-                      </Link>
-                    </Text>
-                  </Button>
-                </Popover.Trigger>
-                <Popover.Content>
-                  <Text as="div" size="1" style={{ maxWidth: 250 }}>
-                    {item.impacts && item.impacts.length > 0 ? (
-                      item.impacts.map((impact, impactIndex) => (
-                        <Text as="p" key={impactIndex}>
-                          <Strong>Impact to {impact.aspectName}:</Strong>{" "}
-                          {impact.weight.toFixed(3)}
-                        </Text>
-                      ))
-                    ) : item.weight !== undefined ? (
+        {/* Top problematic items section */}
+        <Flex
+          direction={"column"}
+          align={"center"}
+          gap={"5"}
+          style={{ flexBasis: "30%" }}
+        >
+          <Box>
+            <Text>Lowest 3 Scores:</Text>
+          </Box>
+          <Box>
+            <Flex direction="column" gap="7" align="start">
+              {topProblematicItems.map((item, index) => (
+                <Popover.Root key={index}>
+                  <Popover.Trigger>
+                    <Button style={{ background: "none" }}>
                       <Text as="p">
-                        <Strong>Impact to TQI:</Strong> {item.weight.toFixed(3)}
+                        <Link href="#">
+                          {item.name}:{" "}
+                          <Strong style={{ color: "#0070f3", fontSize: "1.2em" }}>
+                            {item.details.value.toFixed(2)}
+                          </Strong>
+                        </Link>
                       </Text>
-                    ) : null}
-
-                    <Text as="p">
-                      <Strong>Description:</Strong>{" "}
-                      {item.details.description || "Not Provided"}
+                    </Button>
+                  </Popover.Trigger>
+                  <Popover.Content>
+                    <Text as="div" size="1" style={{ maxWidth: 250 }}>
+                      {item.impacts && item.impacts.length > 0 ? (
+                        item.impacts.map((impact, impactIndex) => (
+                          <Text as="p" key={impactIndex}>
+                            <Strong>Impact to {impact.aspectName}:</Strong>{" "}
+                            {impact.weight.toFixed(3)}
+                          </Text>
+                        ))
+                      ) : item.weight !== undefined ? (
+                        <Text as="p">
+                          <Strong>Impact:</Strong> {item.weight.toFixed(3)}
+                        </Text>
+                      ) : null}
                     </Text>
-                  </Text>
-                </Popover.Content>
-              </Popover.Root>
-            ))}
-          </Flex>
-        </Box>
+                  </Popover.Content>
+                </Popover.Root>
+              ))}
+            </Flex>
+          </Box>
+        </Flex>
       </Flex>
     </Flex>
   );
