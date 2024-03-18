@@ -22,7 +22,6 @@ const SingleTableRow: React.FC<SingleTableRowProps> = ({
     recalculatedWeight,
     onSliderChange,
 }) => {
-
     return (
         <Table.Row>
             <Table.ColumnHeaderCell align='center' justify={'center'}>
@@ -32,12 +31,11 @@ const SingleTableRow: React.FC<SingleTableRowProps> = ({
                     </HoverCard.Trigger>
                     <HoverCard.Content>
                         <Text as="div" style={{ maxWidth: 325 }}>
-                            <Strong>Meaning of {name}</Strong> : {qualityAspectDescription}
+                            <Strong>Meaning of {name}</Strong>:{qualityAspectDescription}
                         </Text>
                     </HoverCard.Content>
                 </HoverCard.Root>
             </Table.ColumnHeaderCell>
-
             <Table.Cell align='center' justify={'center'}>{qualityAspectValue.toFixed(2)}</Table.Cell>
             <Table.Cell align='center' justify={'center'}>{weightValue.toFixed(2)}</Table.Cell> {/* Original weight value */}
             <Table.Cell align='center' justify={'center'}>
