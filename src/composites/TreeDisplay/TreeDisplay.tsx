@@ -1327,7 +1327,7 @@ export function TreeDisplay(props) {
       <div id={"canvas_container"}>
         <div id={"tree_canvas"} ref={tree_canvas}></div>
         {nodesForPanelBoxes.length > 0 ? (
-          <NodeDescriptionPanel nodes={nodesForPanelBoxes} impacts={impacts} />
+          <NodeDescriptionPanel nodes={nodesForPanelBoxes} impacts={impacts} setSelectedNode={setSelectedNode} />
         ) : null}
       </div>
 
