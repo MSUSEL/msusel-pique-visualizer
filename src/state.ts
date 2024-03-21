@@ -26,9 +26,11 @@ export function createState() {
 
   // State for importance adjustment
   const adjustedImportance = atom<Record<string, number>>({});
+  const originalImportance = atom<Record<string, number>>({});
 
   // State for tqi update based on importance adjustment
   const tqiValue = atom<number | undefined>(undefined);
+  const originalTqiValue = atom<number | undefined>(undefined);
 
   return {
     dataset,
@@ -43,6 +45,8 @@ export function createState() {
     maxWeightState,
     adjustedImportance,
     tqiValue,
+    originalImportance,
+    originalTqiValue
   };
 }
 

@@ -3,7 +3,7 @@ import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { InfoCircledIcon, FileTextIcon } from "@radix-ui/react-icons";
 import { useFileUpload } from "./use-file-uploader";
 import * as schema from "../../data/schema";
-import { useSetAtom, useAtomValue } from "jotai";
+import { useSetAtom, useAtomValue, useAtom } from "jotai";
 import { State } from "../../state";
 import React, { useState } from "react";
 import "./AlertDialog.css";
@@ -22,12 +22,16 @@ interface ValidationErrorIssue {
 export const FileUploader = () => {
   const [_, selectFile] = useFileUpload();
 
-  let tqiValue = useAtomValue(State.tqiValue);
-  let adjustedImportance = useAtomValue(State.adjustedImportance)
-
   const setDataset = useSetAtom(State.dataset);
   const setAdjustedImportance = useSetAtom(State.adjustedImportance);
   const setTqiValue = useSetAtom(State.tqiValue);
+
+  const [originalTqiValue, setOriginalTqiValue] = useAtom(
+    State.originalTqiValue
+  );
+  const [originalImportance, setOriginalImportance] = useAtom(
+    State.originalImportance
+  );
 
   const [fileName, setFileName] = useState("");
   const [errorDetails, setErrorDetails] = useState("");
@@ -89,15 +93,13 @@ export const FileUploader = () => {
               const firstTqiKey = Object.keys(tqiObjects)[0];
               const firstTqiObj = tqiObjects[firstTqiKey];
               if (firstTqiObj) {
-                adjustedImportance = firstTqiObj.weights;
-                tqiValue = firstTqiObj.value;
-                setAdjustedImportance(firstTqiObj.weights); // Set adjustedImportance
-                setTqiValue(firstTqiObj.value); // Set tqiValue
-                // Logging the new values
-        console.log('New adjustedImportance:', adjustedImportance);
-        console.log('New tqiValue:', tqiValue);
+                // set the initial value for adjustments of tqi and importance
+                setAdjustedImportance(firstTqiObj.weights); 
+                setTqiValue(firstTqiObj.value); 
+                // set the initial tqi and importance for the use of reset
+                setOriginalTqiValue(firstTqiObj.value);
+                setOriginalImportance(firstTqiObj.weights);
               }
-              
             } else {
               const details = JSON.stringify(
                 validationResult.error.issues,
@@ -149,8 +151,10 @@ export const FileUploader = () => {
     >
       <div style={{ display: "flex", alignItems: "center" }}>
         <img
-          src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg"
-          alt="CISA Logo"
+          // src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg"
+          // alt="CISA Logo"
+          src="https://www.dhs.gov/sites/default/files/2023-03/ST_RGB_Hor_Blue_at20.svg"
+          alt="Science and Technology Directorate"
           width="100"
           height="100"
           style={{ marginRight: "20px" }}

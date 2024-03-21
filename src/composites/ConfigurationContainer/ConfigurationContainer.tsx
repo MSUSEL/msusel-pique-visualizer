@@ -16,7 +16,7 @@ export const ConfigurationContainer = () => {
         <Tabs.Root className="ConfigTab--TabsRoot" defaultValue="summary">
           <Tabs.List className="ConfigTab--TabsList">
             <Tabs.Trigger className="ConfigTab--TabsTrigger" value="summary">
-              <Strong>(In Progress)</Strong> Summary
+            Summary
             </Tabs.Trigger>
             <Tabs.Trigger className="ConfigTab--TabsTrigger" value="importance">
               Importance Adjustment

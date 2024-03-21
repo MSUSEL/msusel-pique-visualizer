@@ -65,12 +65,19 @@ export const Wrapper = () => {
         }}
       >
         <img
+          src="https://www.dhs.gov/sites/default/files/2023-03/ST_RGB_Hor_Blue_at20.svg"
+          alt="Science and Technology Directorate"
+          width="100"
+          height="100"
+          style={{ marginRight: "20px" }}
+        />
+        {/* <img
           src="https://www.cisa.gov/profiles/cisad8_gov/themes/custom/gesso/dist/images/backgrounds/6fdaa25709d28dfb5cca.svg"
           alt="CISA Logo"
           width="100"
           height="100"
           style={{ marginRight: "20px" }}
-        />
+        /> */}
         <Heading>PIQUE Visualizer</Heading>
         <img
           src="https://raw.githubusercontent.com/MSUSEL/msusel-pique-visualizer/refactorZiyi/src/assets/PIQUE_svg.svg"
