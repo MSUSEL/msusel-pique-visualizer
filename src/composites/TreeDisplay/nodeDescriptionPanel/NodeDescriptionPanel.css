@@ -88,24 +88,30 @@
   display: none;
 }
 
-.utility-block{
+.utility-block {
   margin-bottom: 0.05%;
   margin-left: 1%;
 }
 
-.utility-block:hover .external-link-icon {
-  display: inline-block;
-}
-
-.utility-block > div {
+.utility-details {
   display: none;
 }
 
-.utility-block:hover > div {
+.arrow-icon:hover + .utility-details,
+.utility-text:hover + .utility-details {
   display: block;
 }
 
-.utility-block.active > div {
-  display: block;
+.external-link-icon {
+  display: none;
 }
 
+.arrow-icon {
+  height: 12px;
+  width: 12px;
+  color: gray;
+}
+
+.utility-text {
+  display: inline-block; /* Ensures the text is displayed inline with the icon */
+}

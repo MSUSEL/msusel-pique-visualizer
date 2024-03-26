@@ -1,5 +1,5 @@
 import "./NodeDescriptionPanel.css";
-import {ExternalLinkIcon} from '@radix-ui/react-icons'
+import {ExternalLinkIcon, ArrowBottomRightIcon} from '@radix-ui/react-icons'
 
 // import linear from "./linearLine.PNG";
 // import gaussian from "./gaussianLine.PNG";
@@ -183,9 +183,12 @@ function renderUtilityFunction() {
           <b>Normalizer: </b>
           {node.normalizer} <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" />
         </div>
-        <div className="utility-block"> 
-          <b>Utility Function:  <ExternalLink href="https://github.com/MSUSEL/msusel-pique-visualizer" /></b>
+        <div className="utility-block">
+          <b className="utility-text"> Utility Function: </b>
+          <ArrowBottomRightIcon className="arrow-icon"/>
+          <div className="utility-details">
           {renderUtilityFunction()}
+          </div>
         </div>
       </div>
     </>
