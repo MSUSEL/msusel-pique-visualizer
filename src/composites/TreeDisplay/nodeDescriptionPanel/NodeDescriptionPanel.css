@@ -98,12 +98,8 @@
 }
 
 .arrow-icon:hover + .utility-details,
-.utility-text:hover + .utility-details {
+.utility-details:hover {
   display: block;
-}
-
-.external-link-icon {
-  display: none;
 }
 
 .arrow-icon {
@@ -113,5 +109,5 @@
 }
 
 .utility-text {
-  display: inline-block; /* Ensures the text is displayed inline with the icon */
+  display: inline-block;
 }
