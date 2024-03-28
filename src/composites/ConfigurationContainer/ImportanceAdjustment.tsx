@@ -19,6 +19,7 @@ import {
   GearIcon,
   Cross2Icon,
   Cross1Icon,
+  ResetIcon,
 } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
 import "../Style/Dialog.css";
@@ -29,6 +30,19 @@ import ProfileSelectionLogic from "./ImportanceAdjustment/ProfileSelection/Profi
 import { Profile } from "../../types";
 
 export const ImportanceAdjustment = () => {
+  // for reset
+  const [originalTqiValue, setOriginalTqiValue] = useAtom(
+    State.originalTqiValue
+  );
+  const [originalImportance, setOriginalImportance] = useAtom(
+    State.originalImportance
+  );
+  // for adjustment
+  const [tqiValue, setTqiValue] = useAtom(State.tqiValue);
+  const [adjustedImportance, setAdjustedImportance] = useAtom(
+    State.adjustedImportance
+  );
+
   const [selectedProfile, setSelectedProfile] = useState<
     Profile | Profile[] | null
   >(null);
@@ -90,7 +104,7 @@ export const ImportanceAdjustment = () => {
               {" "}
               Adjust{" "}
             </Button>
-          </Dialog.Trigger>
+          </Dialog.Trigger> 
 
           <Dialog.Portal>
             <Dialog.Overlay className="DialogOverlay" />
@@ -99,9 +113,24 @@ export const ImportanceAdjustment = () => {
                 Characteristics and corresponding weights
               </Dialog.Title>
               <Dialog.Description className="DialogDescription">
-                {/* Dialog description content */}
-                Adjust the importance of chrachteristics, the weights will be
-                recalculated automaticly.
+                Adjust the importance of characteristics, the weights will be
+                recalculated automatically.
+                {/* <br />
+                Original TQI Value: {originalTqiValue}
+                <ul>
+                  {Object.entries(originalImportance).map(([key, value]) => (
+                    <li key={key}>{`${key}: ${value}`}</li>
+                  ))}
+                </ul>
+                <br />
+                TQI Value: {tqiValue}
+                <br />
+                Adjusted Importance:
+                <ul>
+                  {Object.entries(adjustedImportance).map(([key, value]) => (
+                    <li key={key}>{`${key}: ${value}`}</li>
+                  ))}
+                </ul> */}
               </Dialog.Description>
 
               <Separator my="3" size="4" />

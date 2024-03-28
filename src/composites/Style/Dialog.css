@@ -63,6 +63,7 @@ input {
   background-color: white;
   color: var(--violet-11);
   box-shadow: 0 2px 10px var(--black-a7);
+  margin: 10px;
 }
 .Button.violet:hover {
   background-color: var(--mauve-3);

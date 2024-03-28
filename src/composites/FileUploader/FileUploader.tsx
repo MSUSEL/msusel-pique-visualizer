@@ -26,10 +26,10 @@ export const FileUploader = () => {
   const setAdjustedImportance = useSetAtom(State.adjustedImportance);
   const setTqiValue = useSetAtom(State.tqiValue);
 
-  const [originalTqiValue, setOriginalTqiValue] = useAtom(
+  const [, setOriginalTqiValue] = useAtom(
     State.originalTqiValue
   );
-  const [originalImportance, setOriginalImportance] = useAtom(
+  const [, setOriginalImportance] = useAtom(
     State.originalImportance
   );
 

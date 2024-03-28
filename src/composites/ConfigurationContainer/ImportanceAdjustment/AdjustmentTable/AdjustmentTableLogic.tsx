@@ -1,5 +1,5 @@
 // AdjustmentTableLogic.tsx
-import { useAtomValue } from "jotai";
+import { useAtomValue, useAtom } from "jotai";
 import React, { useMemo, useState } from "react";
 import { State } from "../../../../state";
 import { Profile } from "../../../../types";
@@ -27,6 +27,13 @@ export const AdjustmentTableLogic: React.FC<AdjustmentTableProps> = ({
 }) => {
   const dataset = useAtomValue(State.dataset);
   if (!dataset) return null;
+  // for reset
+  const [originalTqiValue, setOriginalTqiValue] = useAtom(
+    State.originalTqiValue
+  );
+  const [originalImportance, setOriginalImportance] = useAtom(
+    State.originalImportance
+  );
 
   const getInitialWeights = (
     selectedProfile: Profile[] | undefined,
@@ -59,8 +66,10 @@ export const AdjustmentTableLogic: React.FC<AdjustmentTableProps> = ({
   }, [sliderValues]);
 
   const resetAllAdjustments = () => {
-    const resetValues = getInitialWeights(selectedProfile, dataset, true);
-    setValues(resetValues);
+    // let resetValues = getInitialWeights(selectedProfile, dataset, true);
+    // resetValues = useAtomValue(State.originalImportance);
+    // setValues(resetValues);
+    setValues(originalImportance);
     onResetApplied();
   };
 
