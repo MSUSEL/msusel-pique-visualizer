@@ -37,6 +37,8 @@ export const ImportanceAdjustment = () => {
   const [originalImportance, setOriginalImportance] = useAtom(
     State.originalImportance
   );
+  const [profileSelectionKey, setProfileSelectionKey] = useState(0);
+
   // for adjustment
   const [tqiValue, setTqiValue] = useAtom(State.tqiValue);
   const [adjustedImportance, setAdjustedImportance] = useAtom(
@@ -56,6 +58,7 @@ export const ImportanceAdjustment = () => {
 
   const handleReset = () => {
     setSelectedProfile(null); // Reset the selected profile when the user clicks reset
+    setProfileSelectionKey(prevKey => prevKey + 1);
   };
 
   return (
@@ -137,6 +140,7 @@ export const ImportanceAdjustment = () => {
 
               {/*Profile selection*/}
               <ProfileSelectionLogic
+              key={profileSelectionKey}
                 onProfileChange={handleProfileApply}
                 selectedProfile={selectedProfile}
               />
